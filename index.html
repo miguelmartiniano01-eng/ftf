@@ -463,7 +463,10 @@ window.onload = function () {
 
         function renderizarCardHTML(item) {
             const container = document.getElementById('container-cards');
+            alert(container ? "container encontrado" : "container NULL");
             const card = document.createElement('div');
+            alert("renderizando " + item.nome);
+            
             
             card.style.backgroundColor = '#0b0f19';
             card.style.border = `1.5px solid #ffa502`; 
@@ -555,7 +558,7 @@ window.onload = function () {
             atualizarEstiloValorDoCard(card, item);
             gerarEstrelasDemanda(card, item.demanda);
             container.appendChild(card);
-            alert("adicionou: " + item.nome);
+            alert("appendChild executou");
         }
 
         function filtrarRaridade(raridadeAlvo) {
