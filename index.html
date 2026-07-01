@@ -315,9 +315,12 @@
         let listaDeMarretas = [];
         let raridadeAtual = 'legendary'; 
         
-        // CORREÇÃO CRÍTICA: Força o uso do banco limpo caso o navegador esteja engasgado
+            <script>
+        // ... (mantenha a sua lista BASE_PADRAO_MARRETAS e as variáveis aqui em cima igualzinho)
+
+        // SUBSITUA APENAS AS FUNÇÕES DE INICIALIZAÇÃO POR ESTAS:
+        
         function inicializarBancoDados() {
-            // Alteramos a chave para 'ftf_custom_v3' para zerar totalmente qualquer travamento antigo do tablet
             let dadosLocais = [];
             try {
                 dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v3')) || [];
@@ -331,6 +334,31 @@
                 listaDeMarretas = dadosLocais;
             }
         }
+
+        function forçarInjecaoListaPadrao() {
+            listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
+                id: m.id,
+                nome: m.nome || m.literal || "Marreta",
+                valor: 'unstable',
+                raridade: 'legendary',
+                demanda: '5',
+                tendencia: 'none',
+                status: 'none',
+                templates: 'Stable',
+                imgSrc: m.imgSrc
+            }));
+            localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+        }
+
+        // CORREÇÃO AQUI: Garante a ordem certa ao carregar a página
+        window.onload = function() {
+            inicializarBancoDados();
+            definirAbaAtivaVisual('legendary'); // Força a aba lendária visualmente
+            carregarCardsSalvos();             // Desenha os cards logo em seguida
+        };
+
+        // ... (mantenha o restante das funções como criarNovoCard, renderizarCardHTML, etc. igualzinho abaixo)
+
 
         function forçarInjecaoListaPadrao() {
             listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
