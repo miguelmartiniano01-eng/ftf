@@ -345,13 +345,11 @@
             localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
         }
 
-
-            
-window.onload = function () {
-    inicializarBancoDados();
-    definirAbaAtivaVisual("legendary");
-    carregarCardsSalvos();
-};
+        window.onload = function() {
+            inicializarBancoDados();
+            definirAbaAtivaVisual('legendary');
+            carregarCardsSalvos();
+        };
 
         function resetarParaPadraoCodigo() {
             localStorage.removeItem('ftf_custom_v3');
@@ -463,10 +461,7 @@ window.onload = function () {
 
         function renderizarCardHTML(item) {
             const container = document.getElementById('container-cards');
-            alert(container ? "container encontrado" : "container NULL");
             const card = document.createElement('div');
-            alert("renderizando " + item.nome);
-            
             
             card.style.backgroundColor = '#0b0f19';
             card.style.border = `1.5px solid #ffa502`; 
@@ -558,15 +553,6 @@ window.onload = function () {
             atualizarEstiloValorDoCard(card, item);
             gerarEstrelasDemanda(card, item.demanda);
             container.appendChild(card);
-             console.log("Depois do append:", container.children.length);
-
-setTimeout(() => {
-    console.log("100ms depois:", container.children.length);
-}, 100);
-
-setTimeout(() => {
-    console.log("500ms depois:", container.children.length);
-}, 500);
         }
 
         function filtrarRaridade(raridadeAlvo) {
@@ -626,24 +612,18 @@ setTimeout(() => {
         }
 
         function carregarCardsSalvos() {
-    alert("carregou: " + listaDeMarretas.length + " | " + raridadeAtual);
-
-    document.getElementById('container-cards').innerHTML = '';
-    const termoPesquisa = document.getElementById('barraPesquisa').value.toLowerCase();
-
-    const itensFiltrados = listaDeMarretas.filter(item => {
-        const bateRaridade = (item.raridade || 'legendary') === raridadeAtual;
-        const bateNome = item.nome.toLowerCase().includes(termoPesquisa);
-        return bateRaridade && bateNome;
-    });
-
-    alert("itens filtrados: " + itensFiltrados.length);
-
-    itensFiltrados.forEach(item => renderizarCardHTML(item));
-    atualizarNumbersVisuais();
+            document.getElementById('container-cards').innerHTML = '';
+            const termoPesquisa = document.getElementById('barraPesquisa').value.toLowerCase();
+            
+            const itensFiltrados = listaDeMarretas.filter(item => {
+                const bateRaridade = (item.raridade || 'legendary') === raridadeAtual;
+                const bateNome = item.nome.toLowerCase().includes(termoPesquisa);
+                return bateRaridade && bateNome;
+            });
+            
+            itensFiltrados.forEach(item => { renderizarCardHTML(item); });
+            atualizarNumbersVisuais();
         }
-        alert(document.getElementById("container-cards").children.length);
-
 
         function reordenarArrayEGuardar() {
             const cardsNaTela = document.querySelectorAll('#container-cards > div');
@@ -659,13 +639,6 @@ setTimeout(() => {
             localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
             atualizarNumbersVisuais();
         }
-        const container = document.getElementById("container-cards");
-
-alert(
-    "Filhos: " + container.children.length +
-    "\nDisplay: " + getComputedStyle(container).display +
-    "\nHTML: " + container.innerHTML.length
-);
 
         function atualizarNumbersVisuais() {
             const cardsNaTela = document.querySelectorAll('#container-cards > div');
@@ -683,3 +656,4 @@ alert(
     </script>
 </body>
 </html>
+
