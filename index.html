@@ -345,12 +345,6 @@
             localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
         }
 
-        window.onload = function() {
-            inicializarBancoDados();
-            definirAbaAtivaVisual('legendary');
-            carregarCardsSalvos();
-        };
-
         function resetarParaPadraoCodigo() {
             localStorage.removeItem('ftf_custom_v3');
             forçarInjecaoListaPadrao();
