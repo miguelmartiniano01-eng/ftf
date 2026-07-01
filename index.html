@@ -558,7 +558,15 @@ window.onload = function () {
             atualizarEstiloValorDoCard(card, item);
             gerarEstrelasDemanda(card, item.demanda);
             container.appendChild(card);
-            alert("appendChild executou");
+             console.log("Depois do append:", container.children.length);
+
+setTimeout(() => {
+    console.log("100ms depois:", container.children.length);
+}, 100);
+
+setTimeout(() => {
+    console.log("500ms depois:", container.children.length);
+}, 500);
         }
 
         function filtrarRaridade(raridadeAlvo) {
