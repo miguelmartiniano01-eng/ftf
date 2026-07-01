@@ -95,7 +95,7 @@
 
         <div id="form-massa" style="display: none;">
             <h3 style="margin-top: 0; color: #ffa502; margin-bottom: 5px;">Importador Automático</h3>
-            <p style="color: #62697e; font-size: 12px; margin-bottom: 15px;">Cole aqui os links (pode colocar de 15 em 15 ou quantos quiser):</p>
+            <p style="color: #62697e; font-size: 12px; margin-bottom: 15px;">Cole aqui os links (pode colocar quantos quiser de cada vez):</p>
             <textarea id="listaLinksMassa" rows="8" placeholder="https://i.postimg.cc/..." style="width: 95%; padding: 10px; background: #121826; color: #fff; border: 1px solid #232f4b; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 15px; resize: vertical;"></textarea>
             <button type="button" onclick="importarLinksEmMassa()" style="width: 100%; padding: 12px; background: #2ed573; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px;">Gerar Cards do Estoque 🚀</button>
         </div>
@@ -171,7 +171,7 @@
             }
         }
 
-        // Função CORRIGIDA que aceita lotes pequenos e ignora linhas vazias
+        // NOVA FUNÇÃO COM REGEX SUPER LIMPADOR DE QUEBRAS DE LINHA E ESPAÇOS
         function importarLinksEmMassa() {
             const campoTexto = document.getElementById('listaLinksMassa').value;
             if(!campoTexto.trim()) {
@@ -179,15 +179,17 @@
                 return;
             }
 
-            const links = campoTexto.split('\n');
+            // Separa por qualquer tipo de espaço, quebra de linha ou caractere invisível (\s+)
+            const links = campoTexto.split(/\s+/);
             let adicionados = 0;
 
             links.forEach((linha) => {
-                const url = linha.trim(); // Limpa espaços invisíveis
-                if(url && url.toLowerCase().startsWith('http')) {
+                const url = linha.trim();
+                // Verifica se a linha limpa realmente parece um link válido
+                if(url && (url.toLowerCase().startsWith('http://') || url.toLowerCase().startsWith('https://'))) {
                     adicionados++;
                     const novoObj = { 
-                        id: Date.now() + adicionados + Math.floor(Math.random() * 1000), 
+                        id: Date.now() + adicionados + Math.floor(Math.random() * 5000), 
                         nome: `Nova Marreta ${listaDeMarretas.length + 1}`, 
                         valor: 'unstable', 
                         raridade: raridadeAtual, 
@@ -205,9 +207,9 @@
                 atualizarLocalStorage();
                 carregarCardsSalvos();
                 document.getElementById('listaLinksMassa').value = '';
-                alert(`Sucesso! ${adicionados} marretas adicionadas. Agora salva e edita sem medo! 😎`);
+                alert(`Sucesso! ${adicionados} marretas carregadas nesta rodada. Pode colocar as próximas! 😎`);
             } else {
-                alert('Amg, nenhum link válido que começa com http foi achado nas linhas que você colou!');
+                alert('Eita! O app não encontrou nenhum link válido que comece com "http" no texto colado. Dá uma olhadinha se copiou certo!');
             }
         }
 
@@ -274,7 +276,6 @@
             const container = document.getElementById('container-cards');
             const card = document.createElement('div');
             
-            // BORDAS SEMPRE AMARELAS (#ffa502) CONFORME PEDIDO
             let corBordaFixa = '#ffa502'; 
 
             card.style.backgroundColor = '#0b0f19';
@@ -388,7 +389,6 @@
                 btn.style.borderColor = 'transparent';
             });
 
-            const coresAbas = { legendary: '#ffa502', epics: '#a55eea', rares: '#45aaf2', commons: '#a5b1c2' };
             const botaoAtivo = document.getElementById('aba-' + raridadeAlvo);
             if (botaoAtivo) {
                 botaoAtivo.style.background = '#1c2336';
@@ -408,7 +408,6 @@
             if (!containerValor) return;
 
             let badgeTendencia = '';
-            // TEXTO DO VALOR EM AMARELO PADRÃO (#ffa502) CONFORME PEDIDO
             let corValor = '#ffa502';
 
             let valorExibido = "unstable";
@@ -466,8 +465,9 @@
         function atualizarLocalStorage() {
             try {
                 localStorage.setItem('ftf_custom_list_url', JSON.stringify(listaDeMarretas));
+                console.log("Salvo com sucesso!");
             } catch(e) {
-                console.log("Erro ao salvar no localStorage");
+                alert("A memória do tablet encheu! Apague alguns cards antigos usando o botão ❌.");
             }
         }
 
@@ -517,3 +517,4 @@
 
 </body>
 </html>
+
