@@ -318,7 +318,7 @@
         function inicializarBancoDados() {
             let dadosLocais = [];
             try {
-                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v3'));
+                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
             } catch(e) {
                 dadosLocais = null;
             }
@@ -343,11 +343,11 @@
                 templates: m.templates || 'Stable',
                 imgSrc: m.imgSrc
             }));
-            localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
         }
 
         function resetarParaPadraoCodigo() {
-            localStorage.removeItem('ftf_custom_v3');
+            localStorage.removeItem('ftf_custom_v4');
             forçarInjecaoListaPadrao();
             carregarCardsSalvos();
             alert("Memória limpa! Todas as marretas foram carregadas do zero! 💎");
@@ -395,7 +395,7 @@
                 listaDeMarretas.push(novoObj);
             });
 
-            localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
             carregarCardsSalvos();
             document.getElementById('listaLinksMassa').value = '';
             alert('Links extras adicionados!');
@@ -443,7 +443,7 @@
             };
             
             listaDeMarretas.push(novoObj);
-            localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
             
             raridadeAtual = raridade;
             definirAbaAtivaVisual(raridade);
@@ -528,14 +528,14 @@
                 if (novoStatus) item.status = novoStatus.trim().toLowerCase();
                 if (novaRaridade) item.raridade = novaRaridade.trim().toLowerCase();
 
-                localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+                localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
                 carregarCardsSalvos();
             });
 
             card.querySelector('.btn-deletar').addEventListener('click', function() {
                 listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
                 card.remove();
-                localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+                localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
                 atualizarNumbersVisuais();
             });
 
@@ -665,7 +665,7 @@
             listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
             
             // 4. Salva de verdade no localStorage
-            localStorage.setItem('ftf_custom_v3', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
             atualizarNumbersVisuais();
         }
 
