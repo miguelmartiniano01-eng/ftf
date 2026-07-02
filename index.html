@@ -629,17 +629,32 @@
         }
 
         function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
-            const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
-            if (!containerEstrelas) return;
-            let notaNum = parseFloat(notaEstrelas) || 0;
-            let estrelasTexto = '';
-            for (let i = 1; i <= 5; i++) {
-                if (notaNum >= i) estrelasTexto += '<span style="color: #ffb830;">⭐</span>';
-                else if (notaNum > i - 1 && notaNum < i) estrelasTexto += '<span>✨</span>';
-                else estrelasTexto += '<span style="color: #323b54;">☆</span>';
-            }
-            containerEstrelas.innerHTML = estrelasTexto;
+    const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
+    if (!containerEstrelas) return;
+    
+    let notaNum = parseFloat(notaEstrelas) || 0;
+    let estrelasHTML = '';
+    
+    // Configuração de estilo comum para todas as estrelas ficarem grandes e iguais
+    const estiloEstrela = `font-size: 16px; display: inline-block; position: relative; font-family: sans-serif;`;
+
+    for (let i = 1; i <= 5; i++) {
+        if (notaNum >= i) {
+            // Estrela inteira amarela
+            estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
+        } else if (notaNum > i - 1 && notaNum < i) {
+            // Estrela perfeitamente cortada ao meio (Estilo idêntico ao print)
+            estrelasHTML += `
+                <span style="${estiloEstrela} color: #323b54;">★<span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830;">★</span></span>
+            `;
+        } else {
+            // Estrela inteira cinza escura
+            estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">★</span>`;
         }
+    }
+    containerEstrelas.innerHTML = estrelasHTML;
+}
+
 
                 function ordenarEAtualizar() {
             const criterio = document.getElementById('ordenacaoLista').value;
