@@ -317,19 +317,23 @@
         let raridadeAtual = 'legendary'; 
         
         function inicializarBancoDados() {
-            let dadosLocais = [];
-            try {
-                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
-            } catch(e) {
-                dadosLocais = null;
-            }
 
-            if(!Array.isArray(dadosLocais) || dadosLocais === null || dadosLocais.length === 0) {
-                forçarInjecaoListaPadrao();
-            } else {
-                listaDeMarretas = dadosLocais;
-            }
-            carregarCardsSalvos();
+    let dadosLocais = null;
+
+    try {
+        dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+    } catch (e) {
+        dadosLocais = null;
+    }
+
+    if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+        listaDeMarretas = [];
+        forçarInjecaoListaPadrao();
+    } else {
+        listaDeMarretas = dadosLocais;
+    }
+
+    carregarCardsSalvos();
         }
 
         function forçarInjecaoListaPadrao() {
@@ -685,22 +689,7 @@
             });
         }
 
-        inicializarBancoDados();
-
-<button onclick="localStorage.clear(); location.reload();"
-style="
-position: fixed;
-bottom: 10px;
-right: 10px;
-z-index: 99999;
-padding: 10px;
-background: red;
-color: white;
-border: none;
-border-radius: 8px;
-">
-RESET
-</button>
+    
         
     </script>
 </body>
