@@ -316,22 +316,20 @@
         let listaDeMarretas = [];
         let raridadeAtual = 'legendary'; 
         
-        function inicializarBancoDados() {
-            let dadosLocais = [];
-            try {
-                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
-            } catch(e) {
-                dadosLocais = null;
-            }
+       function inicializarBancoDados() {
 
-            if(!Array.isArray(dadosLocais) || dadosLocais === null || dadosLocais.length === 0) {
-                forçarInjecaoListaPadrao();
-            } else {
-                listaDeMarretas = dadosLocais;
-            }
-            carregarCardsSalvos();
-        }
+    let dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
 
+    if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+        listaDeMarretas = [];
+        forçarInjecaoListaPadrao();
+    } else {
+        listaDeMarretas = dadosLocais;
+    }
+
+    carregarCardsSalvos();
+       }
+        
         function forçarInjecaoListaPadrao() {
             listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
                 id: m.id,
