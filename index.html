@@ -635,25 +635,28 @@
     let notaNum = parseFloat(notaEstrelas) || 0;
     let estrelasHTML = '';
     
-    // Configuração de estilo comum para todas as estrelas ficarem grandes e iguais
-    const estiloEstrela = `font-size: 16px; display: inline-block; position: relative; font-family: sans-serif;`;
+    // Mantém o tamanho e o alinhamento idênticos para todas
+    const estiloEstrela = `font-size: 16px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle;`;
 
     for (let i = 1; i <= 5; i++) {
         if (notaNum >= i) {
-            // Estrela inteira amarela
+            // Estrela inteira cheia e amarela
             estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
         } else if (notaNum > i - 1 && notaNum < i) {
-            // Estrela perfeitamente cortada ao meio (Estilo idêntico ao print)
+            // Estrela pela metade: O fundo volta a ser a cheia cinza (★), com a metade amarela por cima
             estrelasHTML += `
-                <span style="${estiloEstrela} color: #323b54;">★<span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830;">★</span></span>
+                <span style="${estiloEstrela} color: #323b54;">★
+                    <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: sans-serif;">★</span>
+                </span>
             `;
         } else {
-            // Estrela inteira cinza escura
-            estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">★</span>`;
+            // Estrela vazia (apenas o contorno da borda cinza, igualzinha à foto)
+            estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">☆</span>`;
         }
     }
     containerEstrelas.innerHTML = estrelasHTML;
 }
+
 
 
                 function ordenarEAtualizar() {
