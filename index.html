@@ -42,9 +42,18 @@
         <button id="btn-limpar-tudo" onclick="resetarParaPadraoCodigo()" style="background: #ff4757; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">⚠️ Restaurar Tudo da Lista</button>
     </div>
 
-    <div id="search-container" style="max-width: 450px; margin: 0 auto 20px auto; text-align: center;">
-        <input type="text" id="barraPesquisa" placeholder="🔍 Pesquisar marreta pelo nome..." oninput="carregarCardsSalvos()" style="width: 95%; padding: 12px; background: #121826; color: #fff; border: 1px solid #ffa502; border-radius: 8px; font-size: 15px;">
+    <div id="search-container" style="max-width: 450px; margin: 0 auto 20px auto; text-align: center; display: flex; gap: 10px; justify-content: center; width: 95%;">
+        <input type="text" id="barraPesquisa" placeholder="🔍 Pesquisar marreta pelo nome..." oninput="carregarCardsSalvos()" style="flex: 2; padding: 12px; background: #121826; color: #fff; border: 1px solid #ffa502; border-radius: 8px; font-size: 15px;">
+        
+        <select id="ordenacaoLista" onchange="ordenarEAtualizar()" style="flex: 1; padding: 12px; background: #121826; color: #fff; border: 1px solid #ffa502; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;">
+            <option value="padrao">🔢 Ordem Padrão</option>
+            <option value="nome-az">🔤 Nome (A-Z)</option>
+            <option value="nome-za">🔤 Nome (Z-A)</option>
+            <option value="valor-alto">📈 Valor (Maior-Menor)</option>
+            <option value="valor-baixo">📉 Valor (Menor-Maior)</option>
+        </select>
     </div>
+
 
     <div id="criador-form" style="background-color: #0b0f19; padding: 20px; border-radius: 10px; border: 1px solid #1a2235; max-width: 450px; margin: 0 auto 40px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
         
@@ -631,6 +640,43 @@
             }
             containerEstrelas.innerHTML = estrelasTexto;
         }
+
+                function ordenarEAtualizar() {
+            const criterio = document.getElementById('ordenacaoLista').value;
+
+            if (criterio === 'nome-az') {
+                listaDeMarretas.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
+            } 
+            else if (criterio === 'nome-za') {
+                listaDeMarretas.sort((a, b) => (b.nome || "").localeCompare(a.nome || ""));
+            } 
+            else if (criterio === 'valor-alto') {
+                listaDeMarretas.sort((a, b) => {
+                    // Converte o valor para número. Se não for número válido (ex: texto), vira 0
+                    const valA = parseFloat((a.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+                    const valB = parseFloat((b.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+                    return valB - valA;
+                });
+            } 
+            else if (criterio === 'valor-baixo') {
+                listaDeMarretas.sort((a, b) => {
+                    const valA = parseFloat((a.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+                    const valB = parseFloat((b.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+                    return valA - valB;
+                });
+            } 
+            else if (criterio === 'padrao') {
+                // Se voltar pro padrão, apenas recarrega o banco como está salvo no LocalStorage
+                const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+                if (Array.isArray(dadosLocais)) {
+                    listaDeMarretas = dadosLocais;
+                }
+            }
+
+            // Renderiza novamente os cards com a nova ordem aplicada
+            carregarCardsSalvos();
+        }
+
 
                 function carregarCardsSalvos() {
             const container = document.getElementById('container-cards');
