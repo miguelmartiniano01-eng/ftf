@@ -317,19 +317,15 @@
         let raridadeAtual = 'legendary'; 
         
         function inicializarBancoDados() {
+    let dadosLocais = null;
+    try {
+        dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+    } catch (e) {
+        dadosLocais = null;
+    }
 
-let dadosLocais = null;
-
-try {
-    dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
-} catch (e) {
-    dadosLocais = null;
-}
-
-if (!Array.isArray(dadosLocais)) {
-    dadosLocais = [];
-}
-             {
+    // Se o banco estiver vazio, limpo ou não for uma lista válida, injeta o padrão
+    if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
         listaDeMarretas = [];
         forçarInjecaoListaPadrao();
     } else {
@@ -337,7 +333,8 @@ if (!Array.isArray(dadosLocais)) {
     }
 
     carregarCardsSalvos();
-        }
+}
+
 
         function forçarInjecaoListaPadrao() {
             listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
@@ -699,6 +696,8 @@ if (!Array.isArray(dadosLocais)) {
             });
         }
 
+// Coloque isso bem na última linha do seu script para fazer o site ligar sozinho!
+window.onload = inicializarBancoDados;
     
         
     </script>
