@@ -545,11 +545,15 @@
             });
 
             card.querySelector('.btn-deletar').addEventListener('click', function() {
-                listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
-                card.remove();
-                localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
-                atualizarNumbersVisuais();
-            });
+    // Adiciona o aviso antes de apagar
+    if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
+        listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
+        card.remove();
+        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+        atualizarNumbersVisuais();
+    }
+});
+
 
             card.querySelector('.btn-subir').addEventListener('click', function() {
                 const irmaoAnterior = card.previousElementSibling;
