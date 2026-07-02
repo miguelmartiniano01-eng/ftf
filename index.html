@@ -424,6 +424,9 @@ if (!Array.isArray(dadosLocais)) {
         }
 
         function criarNovoCard() {
+            if (!Array.isArray(listaDeMarretas)) {
+    listaDeMarretas = [];
+            }
             const nome = document.getElementById('nomeItem').value;
             const urlImagem = document.getElementById('linkImagem').value || 'https://via.placeholder.com/150';
             let valor = document.getElementById('valorItem').value || '10';
@@ -451,7 +454,11 @@ if (!Array.isArray(dadosLocais)) {
             };
             
             listaDeMarretas.push(novoObj);
-            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            try {
+    localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+} catch (e) {
+    console.error("Erro ao salvar:", e);
+            }
             
             raridadeAtual = raridade;
             definirAbaAtivaVisual(raridade);
