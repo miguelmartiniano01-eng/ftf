@@ -318,15 +318,18 @@
         
         function inicializarBancoDados() {
 
-    let dadosLocais = null;
+let dadosLocais = null;
 
-    try {
-        dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
-    } catch (e) {
-        dadosLocais = null;
-    }
+try {
+    dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+} catch (e) {
+    dadosLocais = null;
+}
 
-    if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+if (!Array.isArray(dadosLocais)) {
+    dadosLocais = [];
+}
+             {
         listaDeMarretas = [];
         forçarInjecaoListaPadrao();
     } else {
