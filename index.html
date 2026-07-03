@@ -62,6 +62,11 @@
             <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Vários Links Extra 🚀</button>
         </div>
 
+        <style>
+
+
+
+
         <div id="form-individual">
             <h3 style="margin-top: 0; color: #ffa502; margin-bottom: 15px;">Adicionar Novo Item Avulso</h3>
             <input type="text" id="nomeItem" placeholder="Nome do Item" style="width: 95%; padding: 10px; margin-bottom: 12px; background: #121826; color: #fff; border: 1px solid #232f4b; border-radius: 6px;">
@@ -381,6 +386,33 @@
                 document.getElementById('form-massa').style.display = 'block';
             }
         }
+
+        
+                </div>`;
+        }
+        
+        // 4. 📄 DESCRIPTION CHANGE (Tags, Labels e Estabilidade)
+        // Identifica palavras como set to, labeled to, Overpaid, Underpaid, Stable, Doing Well, etc.
+        else if (linhaLimpa.includes("set to") || linhaLimpa.includes("labeled to") || linhaLimpa.includes("label") || linhaLimpa.includes("Stability")) {
+            itensHTML += `
+                <div class="update-row type-description">
+                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+                    <div class="text-box">
+                        <span class="label">Description Change</span>
+                        <p>${linhaLimpa}</p>
+                    </div>
+                </div>`;
+        }
+        
+        // 5. 📜 BUG FIX (Bugs e links corrigidos)
+        else if (linhaLimpa.toLowerCase().includes("bug") || linhaLimpa.toLowerCase().includes("fixed") || linhaLimpa.toLowerCase().includes("fix")) {
+            itensHTML += `
+                <div class="update-row type-bug">
+                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.5 6.7.9 9.8 2.9 11.8c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.6z"/></svg></div>
+                    <div class="text-box">
+                        <span class="label">Bug Fix</span>
+                        <p>${linhaLimpa}</p>
+
 
         function importarLinksEmMassa() {
             const campoTexto = document.getElementById('listaLinksMassa').value;
