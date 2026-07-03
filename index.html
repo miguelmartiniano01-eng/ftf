@@ -23,6 +23,7 @@
         .hide-mode #search-container,
         .hide-mode .btn-deletar,
         .hide-mode .btn-acoes-card,
+        .hide-mode #painel-admin-container,
         .hide-mode #btn-limpar-tudo { display: none !important; }
 
         .form-tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #1a2235; padding-bottom: 8px; }
@@ -35,6 +36,12 @@
     <div style="text-align: center; margin-bottom: 30px;">
         <h1 style="color: #ffa502; font-size: 42px; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px;">FTF Custom Values 👑</h1>
         <p style="color: #62697e; margin: 0;">O seu ranking personalizado, justo e sem manipulação</p>
+    </div>
+
+    <div id="painel-admin-container" class="painel-admin">
+        <h3 style="color: #ffa502; margin-top: 0; margin-bottom: 10px;">Painel de Atualizações (Changelog)</h3>
+        <textarea id="input-update" placeholder="Cole as linhas de atualização aqui... (Ex: 1 Billion increased, etc.)"></textarea>
+        <button type="button" onclick="adicionarUpdate()">Adicionar Atualização ✨</button>
     </div>
 
     <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px;">
@@ -67,7 +74,7 @@
    1. CAIXA DE ENTRADA (Onde você cola o texto para atualizar)
    ========================================================================== */
 .painel-admin {
-    max-width: 600px;
+    max-width: 450px;
     margin: 20px auto;
     padding: 15px;
     background-color: #0b111e;
@@ -98,6 +105,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
+    width: 100%;
 }
 
 .painel-admin button:hover {
@@ -245,6 +253,8 @@
 
     </div>
 
+    <div id="aba-changelog" style="max-width: 1200px; margin: 0 auto 30px auto;"></div>
+
     <hr style="border: 1px solid #1a2235; margin: 40px 0;">
 
     <div style="max-width: 1200px; margin: 0 auto;">
@@ -278,7 +288,7 @@
             {"id":1009,"nome":"2026","imgSrc":"https://i.postimg.cc/90fcKWxR/2026.webp","raridade":"legendary"},
             {"id":1010,"nome":"2nd Anniversary","imgSrc":"https://i.postimg.cc/rF3qZ25f/2nd-Anniversary.webp","raridade":"legendary"},
             {"id":1011,"nome":"3rd Anniversary","imgSrc":"https://i.postimg.cc/ncgnSfqh/3rd-Anniversary.webp","raridade":"legendary"},
-            {"id":1012,"nome":"4th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLfS/4th-Anniversary.webp","raridade":"legendary"},
+            {"id":1012,"nome":"4th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLS/4th-Anniversary.webp","raridade":"legendary"},
             {"id":1013,"nome":"5 Billion","imgSrc":"https://i.postimg.cc/DZ62xWc1/5-Billion.webp","raridade":"legendary"},
             {"id":1014,"nome":"5th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLfv/5th-Anniversary.webp","raridade":"legendary"},
             {"id":1015,"nome":"6th Anniversary","imgSrc":"https://i.postimg.cc/J0dRW9gd/6th-Anniversary.webp","raridade":"legendary"},
@@ -463,23 +473,22 @@
         let raridadeAtual = 'legendary'; 
         
         function inicializarBancoDados() {
-    let dadosLocais = null;
-    try {
-        dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
-    } catch (e) {
-        dadosLocais = null;
-    }
+            let dadosLocais = null;
+            try {
+                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+            } catch (e) {
+                dadosLocais = null;
+            }
 
-    // Se o banco estiver vazio, limpo ou não for uma lista válida, injeta o padrão
-    if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
-        listaDeMarretas = [];
-        forçarInjecaoListaPadrao();
-    } else {
-        listaDeMarretas = dadosLocais;
-    }
+            if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+                listaDeMarretas = [];
+                forçarInjecaoListaPadrao();
+            } else {
+                listaDeMarretas = dadosLocais;
+            }
 
-    carregarCardsSalvos();
-}
+            carregarCardsSalvos();
+        }
 
 
         function forçarInjecaoListaPadrao() {
@@ -520,137 +529,104 @@
         }
 
         function adicionarUpdate() {
-    // Pega o texto que você colou na caixinha de entrada (input)
-    const textoDigitado = document.getElementById("input-update").value;
-    
-    // Quebra o texto em linhas
-    const linhas = textoDigitado.split('\n');
-    
-    let itensHTML = '';
+            const textoDigitado = document.getElementById("input-update").value;
+            const linhas = textoDigitado.split('\n');
+            let itensHTML = '';
 
-    linhas.forEach(linha => {
-        // Remove espaços extras no começo e fim da linha
-        const linhaLimpa = linha.trim();
-        if (linhaLimpa === "") return; // Pula linhas vazias
+            linhas.forEach(linha => {
+                const linhaLimpa = linha.trim();
+                if (linhaLimpa === "") return;
 
-        // 1. 📈 VALUE INCREASE (Subiu)
-        if (linhaLimpa.includes("increased") && !linhaLimpa.includes("stars") && !linhaLimpa.includes("to 3 stars")) {
-            itensHTML += `
-                <div class="update-row type-increase">
-                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg></div>
-                    <div class="text-box">
-                        <span class="label">Value Increase</span>
-                        <p>${linhaLimpa}</p>
+                if (linhaLimpa.includes("increased") && !linhaLimpa.includes("stars") && !linhaLimpa.includes("to 3 stars")) {
+                    itensHTML += `
+                        <div class="update-row type-increase">
+                            <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg></div>
+                            <div class="text-box">
+                                <span class="label">Value Increase</span>
+                                <p>${linhaLimpa}</p>
+                            </div>
+                        </div>`;
+                }
+                else if (linhaLimpa.includes("decreased") && !linhaLimpa.includes("stars")) {
+                    itensHTML += `
+                        <div class="update-row type-decrease">
+                            <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/></svg></div>
+                            <div class="text-box">
+                                <span class="label">Value Decrease</span>
+                                <p>${linhaLimpa}</p>
+                            </div>
+                        </div>`;
+                }
+                else if (linhaLimpa.includes("star") || linhaLimpa.includes("stars")) {
+                    itensHTML += `
+                        <div class="update-row type-demand">
+                            <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-2.5l-2-3-3 4.5L7 11H5V9h3.5l2 3 3-4.5L16 11h3v2z"/></svg></div>
+                            <div class="text-box">
+                                <span class="label">Demand Change</span>
+                                <p>${linhaLimpa}</p>
+                            </div>
+                        </div>`;
+                }
+                else if (linhaLimpa.includes("set to") || linhaLimpa.includes("labeled to") || linhaLimpa.includes("label") || linhaLimpa.includes("Stability")) {
+                    itensHTML += `
+                        <div class="update-row type-description">
+                            <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+                            <div class="text-box">
+                                <span class="label">Description Change</span>
+                                <p>${linhaLimpa}</p>
+                            </div>
+                        </div>`;
+                }
+                else if (linhaLimpa.toLowerCase().includes("bug") || linhaLimpa.toLowerCase().includes("fixed") || linhaLimpa.toLowerCase().includes("fix")) {
+                    itensHTML += `
+                        <div class="update-row type-bug">
+                            <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.5 6.7.9 9.8 2.9 11.8c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.6z"/></svg></div>
+                            <div class="text-box">
+                                <span class="label">Bug Fix</span>
+                                <p>${linhaLimpa}</p>
+                            </div>
+                        </div>`;
+                }
+                else {
+                    itensHTML += `
+                        <div class="update-row type-other">
+                            <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+                            <div class="text-box">
+                                <span class="label">Other</span>
+                                <p>${linhaLimpa}</p>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            const versaoCompletaHTML = `
+                <div class="version-card">
+                    <div class="version-header">
+                        <h2>Version ${obterProximaVersao()}</h2>
+                        <span class="version-date">${obterDataAtual()}</span>
                     </div>
-                </div>`;
-        }
-        
-        // 2. 📉 VALUE DECREASE (Desceu)
-        else if (linhaLimpa.includes("decreased") && !linhaLimpa.includes("stars")) {
-            itensHTML += `
-                <div class="update-row type-decrease">
-                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/></svg></div>
-                    <div class="text-box">
-                        <span class="label">Value Decrease</span>
-                        <p>${linhaLimpa}</p>
+                    <div class="version-list">
+                        ${itensHTML}
                     </div>
-                </div>`;
+                </div>
+            `;
+
+            const container = document.getElementById("aba-changelog");
+            container.innerHTML = versaoCompletaHTML + container.innerHTML;
+
+            localStorage.setItem("meuChangelogSalvo", container.innerHTML);
+            document.getElementById("input-update").value = "";
         }
-        
-        // 3. ⭐️ DEMAND CHANGE (Demanda - identificada por "stars" ou "star")
-        else if (linhaLimpa.includes("star") || linhaLimpa.includes("stars")) {
-            itensHTML += `
-                <div class="update-row type-demand">
-                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-2.5l-2-3-3 4.5L7 11H5V9h3.5l2 3 3-4.5L16 11h3v2z"/></svg></div>
-                    <div class="text-box">
-                        <span class="label">Demand Change</span>
-                        <p>${linhaLimpa}</p>
-                    </div>
-                </div>`;
+
+        function obterDataAtual() {
+            const opcoes = { month: 'long', day: 'numeric', year: 'numeric' };
+            return new Date().toLocaleDateString('en-US', opcoes);
         }
-        
-        // 4. 📄 DESCRIPTION CHANGE (Tags, Labels e Estabilidade)
-        // Identifica palavras como set to, labeled to, Overpaid, Underpaid, Stable, Doing Well, etc.
-        else if (linhaLimpa.includes("set to") || linhaLimpa.includes("labeled to") || linhaLimpa.includes("label") || linhaLimpa.includes("Stability")) {
-            itensHTML += `
-                <div class="update-row type-description">
-                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-                    <div class="text-box">
-                        <span class="label">Description Change</span>
-                        <p>${linhaLimpa}</p>
-                    </div>
-                </div>`;
+
+        function obterProximaVersao() {
+            const totalCards = document.querySelectorAll('.version-card').length;
+            return (totalCards + 1) + ".0";
         }
-        
-        // 5. 📜 BUG FIX (Bugs e links corrigidos)
-        else if (linhaLimpa.toLowerCase().includes("bug") || linhaLimpa.toLowerCase().includes("fixed") || linhaLimpa.toLowerCase().includes("fix")) {
-            itensHTML += `
-                <div class="update-row type-bug">
-                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.3C.5 6.7.9 9.8 2.9 11.8c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.6z"/></svg></div>
-                    <div class="text-box">
-                        <span class="label">Bug Fix</span>
-                        <p>${linhaLimpa}</p>
-                    </div>
-                </div>`;
-        }
-        
-        // 6. 📃 OTHER / CORREÇÃO (Se não entrar em nenhuma das de cima, cai em "Other")
-        else {
-            itensHTML += `
-                <div class="update-row type-other">
-                    <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 14H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
-                    <div class="text-box">
-                        <span class="label">Other</span>
-                        <p>${linhaLimpa}</p>
-                    </div>
-                </div>`;
-        }
-    });
-
-    // Pega a estrutura da versão (criando o card inteiro com a data atual)
-    const versaoCompletaHTML = `
-        <div class="version-card">
-            <div class="version-header">
-                <h2>Version ${obterProximaVersao()}</h2>
-                <span class="version-date">${obterDataAtual()}</span>
-            </div>
-            <div class="version-list">
-                ${itensHTML}
-            </div>
-        </div>
-    `;
-
-    // Adiciona o novo card no topo da aba de logs
-    const container = document.getElementById("aba-changelog");
-    container.innerHTML = versaoCompletaHTML + container.innerHTML;
-
-    // Guarda tudo salvo no navegador do admin (você) para não sumir
-    localStorage.setItem("meuChangelogSalvo", container.innerHTML);
-    
-    // Limpa a caixinha de texto depois de enviar
-    document.getElementById("input-update").value = "";
-}
-
-// Funções auxiliares automáticas para Data e Versão
-function obterDataAtual() {
-    const opcoes = { month: 'long', day: 'numeric', year: 'numeric' };
-    return new Date().toLocaleDateString('en-US', opcoes); // Formato "July 3rd, 2026"
-}
-
-function obtenerProximaVersao() {
-    // Conta quantos cards já existem para gerar o número da versão automaticamente (ex: 1.0, 2.0...)
-    const totalCards = document.querySelectorAll('.version-card').length;
-    return (totalCards + 1) + ".0";
-}
-
-// Recupera a lista salva assim que a página abre
-window.onload = function() {
-    const salvo = localStorage.getItem("meuChangelogSalvo");
-    if (salvo) {
-        document.getElementById("aba-changelog").innerHTML = salvo;
-    }
-};
-
 
         function importarLinksEmMassa() {
             const campoTexto = document.getElementById('listaLinksMassa').value;
@@ -701,7 +677,7 @@ window.onload = function() {
 
         function criarNovoCard() {
             if (!Array.isArray(listaDeMarretas)) {
-    listaDeMarretas = [];
+                listaDeMarretas = [];
             }
             const nome = document.getElementById('nomeItem').value;
             const urlImagem = document.getElementById('linkImagem').value || 'https://via.placeholder.com/150';
@@ -731,9 +707,9 @@ window.onload = function() {
             
             listaDeMarretas.push(novoObj);
             try {
-    localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
-} catch (e) {
-    console.error("Erro ao salvar:", e);
+                localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            } catch (e) {
+                console.error("Erro ao salvar:", e);
             }
             
             raridadeAtual = raridade;
@@ -824,15 +800,13 @@ window.onload = function() {
             });
 
             card.querySelector('.btn-deletar').addEventListener('click', function() {
-    // Adiciona o aviso antes de apagar
-    if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
-        listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
-        card.remove();
-        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
-        atualizarNumbersVisuais();
-    }
-});
-
+                if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
+                    listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
+                    card.remove();
+                    localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+                    atualizarNumbersVisuais();
+                }
+            });
 
             card.querySelector('.btn-subir').addEventListener('click', function() {
                 const irmaoAnterior = card.previousElementSibling;
@@ -899,37 +873,30 @@ window.onload = function() {
         }
 
         function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
-    const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
-    if (!containerEstrelas) return;
-    
-    let notaNum = parseFloat(notaEstrelas) || 0;
-    let estrelasHTML = '';
-    
-    // Mantém o tamanho e o alinhamento idênticos para todas
-    const estiloEstrela = `font-size: 16px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle;`;
+            const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
+            if (!containerEstrelas) return;
+            
+            let notaNum = parseFloat(notaEstrelas) || 0;
+            let estrelasHTML = '';
+            const estiloEstrela = `font-size: 16px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle;`;
 
-    for (let i = 1; i <= 5; i++) {
-        if (notaNum >= i) {
-            // Estrela inteira cheia e amarela
-            estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
-        } else if (notaNum > i - 1 && notaNum < i) {
-            // Estrela pela metade: O fundo volta a ser a cheia cinza (★), com a metade amarela por cima
-            estrelasHTML += `
-                <span style="${estiloEstrela} color: #323b54;">★
-                    <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: sans-serif;">★</span>
-                </span>
-            `;
-        } else {
-            // Estrela vazia (apenas o contorno da borda cinza, igualzinha à foto)
-            estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">☆</span>`;
+            for (let i = 1; i <= 5; i++) {
+                if (notaNum >= i) {
+                    estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
+                } else if (notaNum > i - 1 && notaNum < i) {
+                    estrelasHTML += `
+                        <span style="${estiloEstrela} color: #323b54;">★
+                            <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: sans-serif;">★</span>
+                        </span>
+                    `;
+                } else {
+                    estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">☆</span>`;
+                }
+            }
+            containerEstrelas.innerHTML = estrelasHTML;
         }
-    }
-    containerEstrelas.innerHTML = estrelasHTML;
-}
 
-
-
-                function ordenarEAtualizar() {
+        function ordenarEAtualizar() {
             const criterio = document.getElementById('ordenacaoLista').value;
 
             if (criterio === 'nome-az') {
@@ -940,7 +907,6 @@ window.onload = function() {
             } 
             else if (criterio === 'valor-alto') {
                 listaDeMarretas.sort((a, b) => {
-                    // Converte o valor para número. Se não for número válido (ex: texto), vira 0
                     const valA = parseFloat((a.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
                     const valB = parseFloat((b.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
                     return valB - valA;
@@ -954,28 +920,23 @@ window.onload = function() {
                 });
             } 
             else if (criterio === 'padrao') {
-                // Se voltar pro padrão, apenas recarrega o banco como está salvo no LocalStorage
                 const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
                 if (Array.isArray(dadosLocais)) {
                     listaDeMarretas = dadosLocais;
                 }
             }
 
-            // Renderiza novamente os cards com a nova ordem aplicada
             carregarCardsSalvos();
         }
 
-
-                function carregarCardsSalvos() {
+        function carregarCardsSalvos() {
             const container = document.getElementById('container-cards');
             if (!container) return;
 
-            // Pega o termo de pesquisa, ou deixa vazio se não existir o elemento
             const barra = document.getElementById('barraPesquisa');
             const termoPesquisa = barra ? barra.value.toLowerCase() : "";
 
             const itensFiltrados = listaDeMarretas.filter(item => {
-                // Força a raridade a ser comparada sempre em minúsculo para não dar erro
                 const raridadeItem = (item.raridade || 'legendary').toLowerCase();
                 const bateRaridade = raridadeItem === raridadeAtual.toLowerCase();
                 const bateNome = (item.nome || "").toLowerCase().includes(termoPesquisa);
@@ -994,12 +955,8 @@ window.onload = function() {
             atualizarNumbersVisuais();
         }
 
-
-                function reordenarArrayEGuardar() {
-            // 1. Pegamos todos os cards que NÃO SÃO da raridade atual (para não mexer neles)
+        function reordenarArrayEGuardar() {
             let listaLimpa = listaDeMarretas.filter(item => (item.raridade || 'legendary') !== raridadeAtual);
-            
-            // 2. Criamos uma lista temporária para colocar os cards da aba atual na ordem nova da tela
             let itensReordenadosDaAba = [];
 
             const cardsNaTela = document.querySelectorAll('#container-cards > div');
@@ -1007,18 +964,14 @@ window.onload = function() {
                 const id = parseInt(cardHTML.getAttribute('data-id'));
                 const correspondente = listaDeMarretas.find(m => m.id === id);
                 if (correspondente) {
-                    itensReordenadosDaAba.push(correspondente); // Junta na ordem certinha que está na tela
+                    itensReordenadosDaAba.push(correspondente);
                 }
             });
             
-            // 3. JUNTAMOS as duas listas: as outras raridades + a raridade atual reordenada
             listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
-            
-            // 4. Salva de verdade no localStorage
             localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
             atualizarNumbersVisuais();
         }
-
 
         function atualizarNumbersVisuais() {
             const cardsNaTela = document.querySelectorAll('#container-cards > div');
@@ -1034,11 +987,16 @@ window.onload = function() {
             });
         }
 
-// Coloque isso bem na última linha do seu script para fazer o site ligar sozinho!
-window.onload = inicializarBancoDados;
-    
-        
+        // UNIFICAÇÃO DO WINDOW.ONLOAD PARA INICIALIZAR AMBOS OS ARQUIVOS E BANCO
+        window.onload = function() {
+            inicializarBancoDados();
+            
+            // Tenta recuperar o histórico salvo do Changelog
+            const salvo = localStorage.getItem("meuChangelogSalvo");
+            if (salvo) {
+                document.getElementById("aba-changelog").innerHTML = salvo;
+            }
+        };
     </script>
 </body>
 </html>
-
