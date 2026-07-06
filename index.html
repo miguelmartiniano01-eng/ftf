@@ -226,11 +226,18 @@
         }
         #container-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
             gap: 14px;
             max-width: 950px;
             margin: 0 auto;
             padding: 5px 0;
+        }
+
+        /* SOLUÇÃO PARA O BUG: Força o grid a ter exatamente 5 colunas estruturadas durante a captura */
+        .hide-mode #container-cards {
+            grid-template-columns: repeat(5, 1fr) !important;
+            width: 950px !important;
+            max-width: 950px !important;
         }
     </style>
 </head>
@@ -530,16 +537,16 @@
         function inicializarBancoDados() {
             let dadosLocais = null;
             try {
-                dadosLocLocal = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
             } catch (e) {
-                dadosLocLocal = null;
+                dadosLocais = null;
             }
 
-            if (!Array.isArray(dadosLocLocal) || dadosLocLocal.length === 0) {
+            if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
                 listaDeMarretas = [];
                 forçarInjecaoListaPadrao();
             } else {
-                listaDeMarretas = dadosLocLocal;
+                listaDeMarretas = dadosLocais;
             }
 
             carregarCardsSalvos();
@@ -631,30 +638,27 @@
             }
         }
 
-        /* --- NOVA FUNÇÃO: SALVAR COMO IMAGEM DIRETAMENTE NA GALERIA --- */
         function salvarNaGaleria() {
-            // Ativa temporariamente o modo print para limpar a tela de botões indesejados
             const jáEstavaEmPrint = document.body.classList.contains('hide-mode');
             if (!jáEstavaEmPrint) {
                 document.body.classList.add('hide-mode');
             }
 
-            // Pequeno delay para garantir que a renderização CSS acompanhe
+            // Delay estratégico para reajuste estrutural do grid de 5 colunas
             setTimeout(() => {
                 const áreaCaptura = document.getElementById('capture-area');
                 
                 html2canvas(áreaCaptura, {
                     backgroundColor: "#0b0c10",
-                    useCORS: true, // Permite baixar imagens de servidores externos como o Postimages
-                    scale: 2 // Aumenta a qualidade da resolução final da imagem
+                    useCORS: true, 
+                    scale: 2,
+                    windowWidth: 1000 // Garante largura correta durante a renderização virtual
                 }).then(canvas => {
-                    // Transforma o resultado em um link clicável de download direto
                     const link = document.createElement('a');
                     link.download = `FTF-Custom-List-${raridadeAtual}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
 
-                    // Se não estava no modo print antes, desativa para voltar a editar normalmente
                     if (!jáEstavaEmPrint) {
                         document.body.classList.remove('hide-mode');
                         const btn = document.getElementById('togglePrintBtn');
@@ -663,10 +667,10 @@
                         btn.style.color = "#ffa502";
                     }
                 }).catch(err => {
-                    alert("Erro ao gerar imagem. Verifique se as imagens externas carregaram totalmente.");
+                    alert("Erro ao gerar imagem. Verifique as URLs externas das imagens.");
                     if (!jáEstavaEmPrint) document.body.classList.remove('hide-mode');
                 });
-            }, 300);
+            }, 350);
         }
 
         function criarNovoCard() {
