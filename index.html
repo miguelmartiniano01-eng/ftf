@@ -12,9 +12,6 @@
     <meta name="msapplication-navbutton-color" content="#060913">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link rel="icon" sizes="192x192" href="https://via.placeholder.com/192">
-    <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
@@ -222,28 +219,35 @@
             gap: 12px;
         }
         
-        /* Estrutura horizontal compacta idêntica a uma Tier List Real */
+        /* ZONA DE CAPTURA - ESTILOS DE TIER LIST REAL (HORIZONTAL FIXA) */
+        #capture-zone {
+            background-color: #0b0c10; 
+            padding: 15px; 
+            border-radius: 8px;
+            width: 100%;
+            overflow-x: auto; /* Permite rolar de lado se o celular for pequeno */
+        }
+
         .tier-row-container {
-            max-width: 950px;
-            margin: 0 auto 10px auto;
+            margin: 0 auto 6px auto;
             background-color: #11141c;
             border: 1px solid #1f2533;
-            border-radius: 6px;
+            border-radius: 4px;
             display: flex;
             align-items: stretch;
-            overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+
         .tier-label-block {
-            background-color: #ffa502;
-            color: #000;
-            width: 70px;
-            min-width: 70px;
+            background-color: #e74c3c; /* Cor padrão Tier 1 */
+            color: #ffffff;
+            width: 85px;
+            min-width: 85px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 15px;
+            font-size: 16px;
             text-align: center;
             text-transform: uppercase;
             padding: 10px;
@@ -251,53 +255,71 @@
         
         .tier-cards-grid {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-wrap: wrap; /* No modo edição quebra */
+            gap: 6px;
             width: 100%;
-            padding: 8px;
+            padding: 6px;
             background-color: #14171f;
         }
 
-        /* Estilos aplicados dinamicamente quando a classe .print-active estiver ativa */
-        .print-active .card-marreta-item {
-            width: 76px !important;
-            min-width: 76px !important;
+        /* --- REGRAS DO MODO PRINT FORÇADO NA HORIZONTAL --- */
+        /* Quando essa classe entrar, a tier list se comporta como um bloco desktop largo de 1300px */
+        .forcar-layout-horizontal {
+            width: 1350px !important; 
+            min-width: 1350px !important;
+            max-width: 1350px !important;
+        }
+
+        .forcar-layout-horizontal .tier-cards-grid {
+            flex-wrap: nowrap !important; /* FORÇA os 15-20 itens a ficarem um do lado do outro! */
+            justify-content: flex-start !important;
+        }
+
+        .forcar-layout-horizontal .card-marreta-item {
+            width: 72px !important;
+            min-width: 72px !important;
+            max-width: 72px !important;
             padding: 4px !important;
             border-radius: 4px !important;
             gap: 2px !important;
         }
-        .print-active .card-marreta-item .box-img-holder {
-            height: 55px !important;
+
+        .forcar-layout-horizontal .card-marreta-item .box-img-holder {
+            height: 52px !important;
         }
-        .print-active .card-marreta-item h3 {
-            font-size: 10px !important;
+
+        .forcar-layout-horizontal .card-marreta-item h3 {
+            font-size: 9px !important;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .print-active .card-marreta-item .txt-posicao-automatica,
-        .print-active .card-marreta-item .box-badge-status,
-        .print-active .card-marreta-item .txt-estabilidade,
-        .print-active .card-marreta-item span[style*="uppercase"],
-        .print-active .card-marreta-item .btn-acoes-card,
-        .print-active .card-marreta-item .btn-deletar,
-        .print-active .card-marreta-item div[style*="letter-spacing"] {
+
+        /* Esconde botões e detalhes no print horizontal */
+        .forcar-layout-horizontal .card-marreta-item .txt-posicao-automatica,
+        .forcar-layout-horizontal .card-marreta-item .box-badge-status,
+        .forcar-layout-horizontal .card-marreta-item .txt-estabilidade,
+        .forcar-layout-horizontal .card-marreta-item span[style*="uppercase"],
+        .forcar-layout-horizontal .card-marreta-item .btn-acoes-card,
+        .forcar-layout-horizontal .card-marreta-item .btn-deletar,
+        .forcar-layout-horizontal .card-marreta-item div[style*="letter-spacing"] {
             display: none !important;
         }
-        .print-active .card-marreta-item .box-valor-dinamico {
+
+        .forcar-layout-horizontal .card-marreta-item .box-valor-dinamico {
             font-size: 11px !important;
             text-align: center;
             width: 100%;
             display: block;
+            margin-top: 2px;
         }
-        .print-active .card-marreta-item .txt-demanda-estrelas {
-            font-size: 8px !important;
-            text-align: center;
-            width: 100%;
-            display: block;
+
+        .forcar-layout-horizontal .card-marreta-item .txt-demanda-estrelas {
+            display: none !important; /* Remove estrelas no modo mini tier list */
         }
-        .print-active .card-marreta-item div[style*="border-top"] {
+
+        .forcar-layout-horizontal .card-marreta-item div[style*="border-top"] {
             border: none !important;
             padding-top: 0 !important;
             margin-top: 0 !important;
@@ -399,64 +421,43 @@
 
     <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
     
-    <div id="capture-zone" style="background-color: #0b0c10; padding: 15px; border-radius: 8px;">
+    <div id="capture-zone">
         <div id="container-lista-dinamica"></div>
     </div>
 
     <script>
         const BASE_PADRAO_MARRETAS = [
-            {"id":1001,"nome":"1 Billion","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
-            {"id":1002,"nome":"2019","imgSrc":"https://i.postimg.cc/HkMdfvtB/2019.webp","raridade":"legendary"},
-            {"id":1003,"nome":"2020","imgSrc":"https://i.postimg.cc/qMSpDH27/2020.webp","raridade":"legendary"},
-            {"id":1004,"nome":"2021","imgSrc":"https://i.postimg.cc/sx03Rt88/2021.webp","raridade":"legendary"},
-            {"id":1005,"nome":"2022","imgSrc":"https://i.postimg.cc/brFqjKM4/2022.webp","raridade":"legendary"},
-            {"id":1006,"nome":"2023","imgSrc":"https://i.postimg.cc/5ykfMZGZ/2023.webp","raridade":"legendary"},
-            {"id":1007,"nome":"2024","imgSrc":"https://i.postimg.cc/KjsmydV6/2024.webp","raridade":"legendary"},
-            {"id":1008,"nome":"2025","imgSrc":"https://i.postimg.cc/7hQqypdv/2025.webp","raridade":"legendary"},
-            {"id":1009,"nome":"2026","imgSrc":"https://i.postimg.cc/90fcKWxR/2026.webp","raridade":"legendary"},
-            {"id":1010,"nome":"2nd Anniversary","imgSrc":"https://i.postimg.cc/rF3qZ25f/2nd-Anniversary.webp","raridade":"legendary"},
-            {"id":1011,"nome":"3rd Anniversary","imgSrc":"https://i.postimg.cc/ncgnSfqh/3rd-Anniversary.webp","raridade":"legendary"},
-            {"id":1012,"nome":"4th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLfS/4th-Anniversary.webp","raridade":"legendary"},
-            {"id":1013,"nome":"5 Billion","imgSrc":"https://i.postimg.cc/DZ62xWc1/5-Billion.webp","raridade":"legendary"},
-            {"id":1014,"nome":"5th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLfv/5th-Anniversary.webp","raridade":"legendary"},
-            {"id":1015,"nome":"6th Anniversary","imgSrc":"https://i.postimg.cc/J0dRW9gd/6th-Anniversary.webp","raridade":"legendary"},
-            {"id":1016,"nome":"7th Anniversary","imgSrc":"https://i.postimg.cc/mkrTJbdP/7th-Anniversary.webp","raridade":"legendary"},
-            {"id":1017,"nome":"8th Anniversary","imgSrc":"https://i.postimg.cc/qq7pSkmg/8th-Anniversary.webp","raridade":"legendary"},
-            {"id":1018,"nome":"Acidic Potions","imgSrc":"https://i.postimg.cc/FKgmKf8c/Acidic-Potions.webp","raridade":"legendary"},
-            {"id":1019,"nome":"Alchemist Hunter","imgSrc":"https://i.postimg.cc/LsBRsqw1/Alchemist-Hunter.webp","raridade":"legendary"},
-            {"id":1020,"nome":"Ancestral Trident","imgSrc":"https://i.postimg.cc/W1ZTQYns/Ancestral-Trident.webp","raridade":"legendary"},
-            {"id":1021,"nome":"Ancient Portal","imgSrc":"https://i.postimg.cc/MZs6RQTR/Ancient-Portal.webp","raridade":"legendary"},
-            {"id":1022,"nome":"Ancient Trident","imgSrc":"https://i.postimg.cc/YCFMJD3M/Ancient-Trident.webp","raridade":"legendary"},
-            {"id":1023,"nome":"Antique Piano","imgSrc":"https://i.postimg.cc/jjQKjWmD/Antique-Piano.webp","raridade":"legendary"},
-            {"id":1024,"nome":"Aurora Abolisher","imgSrc":"https://i.postimg.cc/TYFTNvng/Aurora-Abolisher.webp","raridade":"legendary"},
-            {"id":1025,"nome":"Autumn Crops","imgSrc":"https://i.postimg.cc/vHcQvZgk/Autumn-Crops.webp","raridade":"legendary"},
-            {"id":1026,"nome":"Autumn Lamp","imgSrc":"https://i.postimg.cc/KjsmydVQ/Autumn-Lamp.webp","raridade":"legendary"},
-            {"id":1027,"nome":"Autumn Scarecrow","imgSrc":"https://i.postimg.cc/QMrhsg41/Autumn-Scarecrow.webp","raridade":"legendary"},
-            {"id":1028,"nome":"Autumn Tent","imgSrc":"https://i.postimg.cc/rpLMcGnL/Autumn-Tent.webp","raridade":"legendary"},
-            {"id":1029,"nome":"Batwing Basher","imgSrc":"https://i.postimg.cc/HxYm8Y1h/Batwing-Basher.webp","raridade":"legendary"},
-            {"id":1030,"nome":"Beach Boat","imgSrc":"https://i.postimg.cc/J7TrJknT/Beach-Boat.webp","raridade":"legendary"},
-            {"id":1031,"nome":"Bitter Lemonade Basket","imgSrc":"https://i.postimg.cc/3wC7wyVF/Bitter-Lemonade-Basket.webp","raridade":"legendary"},
-            {"id":1032,"nome":"Black Light Madness","imgSrc":"https://i.postimg.cc/MKvWYpfK/Black-Light-Madness.webp","raridade":"legendary"},
-            {"id":1033,"nome":"Blade of Thorns","imgSrc":"https://i.postimg.cc/LsBRsqwn/Blade-of-Thorns.webp","raridade":"legendary"},
-            {"id":1034,"nome":"Bleeding Heart","imgSrc":"https://i.postimg.cc/MGbxGcNt/Bleeding-Heart.webp","raridade":"legendary"},
-            {"id":1035,"nome":"Bloodline Bat","imgSrc":"https://i.postimg.cc/tJg9wXr1/Bloodline-Bat.webp","raridade":"legendary"},
-            {"id":1036,"nome":"Bloodthirst Axe","imgSrc":"https://i.postimg.cc/DzdFzWHd/Bloodthirst-Axe.webp","raridade":"legendary"},
-            {"id":1037,"nome":"Blue Nutcracker","imgSrc":"https://i.postimg.cc/gknYK2LL/Blue-Nutcracker.webp","raridade":"legendary"},
-            {"id":1038,"nome":"Blueberry Jam Basket","imgSrc":"https://i.postimg.cc/7LMDLCdV/Blueberry-Jam-Basket.webp","raridade":"legendary"},
-            {"id":1039,"nome":"Book of Fortunes","imgSrc":"https://i.postimg.cc/fTpMqQYL/Book-of-Fortunes.webp","raridade":"legendary"},
-            {"id":1040,"nome":"Bundle Of Harmony","imgSrc":"https://i.postimg.cc/mrNRrcJn/Bundle-Of-Harmony.png","raridade":"legendary"},
-            {"id":1041,"nome":"Bundle Of Longevity","imgSrc":"https://i.postimg.cc/4y3XqJ8w/Bundle-Of-Longevity.png","raridade":"legendary"},
-            {"id":1042,"nome":"Candy Cane Jar","imgSrc":"https://i.postimg.cc/htmcHZrn/Candy-Cane-Jar.webp","raridade":"legendary"},
-            {"id":1043,"nome":"Celestial Witch Broom","imgSrc":"https://i.postimg.cc/NjXBWCx7/Celestial-Witch-Broom.webp","raridade":"legendary"}
+            {"id":1001,"nome":"Party Balloons","valor":"300","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
+            {"id":1002,"nome":"Lovesick Bow","valor":"270","imgSrc":"https://i.postimg.cc/HkMdfvtB/2019.webp","raridade":"legendary"},
+            {"id":1003,"nome":"Gothic Bouquet","valor":"220","imgSrc":"https://i.postimg.cc/qMSpDH27/2020.webp","raridade":"legendary"},
+            {"id":1004,"nome":"Devilish Candle","valor":"180","imgSrc":"https://i.postimg.cc/sx03Rt88/2021.webp","raridade":"legendary"},
+            {"id":1005,"nome":"Ice-Cream","valor":"125","imgSrc":"https://i.postimg.cc/brFqjKM4/2022.webp","raridade":"legendary"},
+            {"id":1006,"nome":"Pumpkin Slice","valor":"125","imgSrc":"https://i.postimg.cc/5ykfMZGZ/2023.webp","raridade":"legendary"},
+            {"id":1007,"nome":"Cherry Blossom","valor":"120","imgSrc":"https://i.postimg.cc/KjsmydV6/2024.webp","raridade":"legendary"},
+            {"id":1008,"nome":"Pegasus Blade","valor":"115","imgSrc":"https://i.postimg.cc/7hQqypdv/2025.webp","raridade":"legendary"},
+            {"id":1009,"nome":"Spooky Brew","valor":"115","imgSrc":"https://i.postimg.cc/90fcKWxR/2026.webp","raridade":"legendary"},
+            {"id":1010,"nome":"Batwing Basher","valor":"90","imgSrc":"https://i.postimg.cc/rF3qZ25f/2nd-Anniversary.webp","raridade":"legendary"},
+            {"id":1011,"nome":"Psycho Chainsaw","valor":"75","imgSrc":"https://i.postimg.cc/ncgnSfqh/3rd-Anniversary.webp","raridade":"legendary"},
+            {"id":1012,"nome":"Sakura Scythe","valor":"70","imgSrc":"https://i.postimg.cc/tJm9HLfS/4th-Anniversary.webp","raridade":"legendary"},
+            {"id":1013,"nome":"Strawberry Flavored","valor":"60","imgSrc":"https://i.postimg.cc/DZ62xWc1/5-Billion.webp","raridade":"legendary"},
+            {"id":1014,"nome":"Classic","valor":"60","imgSrc":"https://i.postimg.cc/tJm9HLfv/5th-Anniversary.webp","raridade":"legendary"},
+            {"id":1015,"nome":"Merry Music Box","valor":"60","imgSrc":"https://i.postimg.cc/J0dRW9gd/6th-Anniversary.webp","raridade":"legendary"}
         ];
 
         let listaDeMarretas = [];
         let raridadeAtual = 'legendary'; 
         let modoPrintAtivo = false; 
+
+        // Cores clássicas das linhas de Tier List (De T1 até T13)
+        const CORES_TIERS = [
+            "#ff7f7f", "#ffbf7f", "#ffdf7f", "#ffff7f", "#bfff7f", 
+            "#7fff7f", "#7fffb0", "#7fffff", "#7fbcff", "#a37fff", 
+            "#ff7fff", "#ff7fbc", "#dbdbdb"
+        ];
         
         function inicializarBancoDados() {
             let dadosLocais = null;
-            try { dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4')); } catch (e) { dadosLocais = null; }
+            try { dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5')); } catch (e) { dadosLocais = null; }
 
             if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
                 forçarInjecaoListaPadrao();
@@ -468,16 +469,15 @@
 
         function forçarInjecaoListaPadrao() {
             listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
-                id: m.id, nome: m.nome || "Marreta", valor: m.valor || '10', raridade: m.raridade || 'legendary',
-                demanda: m.demanda || '5', tendencia: m.tendencia || 'none', status: m.status || 'none',
-                templates: m.templates || 'Stable', imgSrc: m.imgSrc
+                id: m.id, nome: m.nome, valor: m.valor, raridade: m.raridade,
+                demanda: '5', tendencia: 'none', status: 'none', templates: 'Stable', imgSrc: m.imgSrc
             }));
-            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
         }
 
         function resetarParaPadraoCodigo() {
             if (confirm("Deseja restaurar todos os itens?")) {
-                localStorage.removeItem('ftf_custom_v4');
+                localStorage.removeItem('ftf_custom_v5');
                 forçarInjecaoListaPadrao();
                 carregarCardsSalvos();
                 alert("Memória limpa! 💎");
@@ -516,7 +516,7 @@
                 listaDeMarretas.push(novoObj);
             });
 
-            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
             carregarCardsSalvos();
             document.getElementById('listaLinksMassa').value = '';
             alert('Links extras adicionados!');
@@ -526,13 +526,14 @@
             modoPrintAtivo = !modoPrintAtivo;
             
             const btn = document.getElementById('togglePrintBtn');
+            const alvo = document.getElementById('capture-zone');
             if (modoPrintAtivo) {
-                document.getElementById('capture-zone').classList.add('print-active');
+                alvo.classList.add('forcar-layout-horizontal');
                 btn.innerText = "👁️ Modo Edição";
                 btn.style.background = "#ffa502";
                 btn.style.color = "#000";
             } else {
-                document.getElementById('capture-zone').classList.remove('print-active');
+                alvo.classList.remove('forcar-layout-horizontal');
                 btn.innerText = "👁️ Visualizar Modo Print";
                 btn.style.background = "#1c2336";
                 btn.style.color = "#ffa502";
@@ -541,41 +542,44 @@
         }
 
         function baixarListaPrint() {
-            // Se não estiver no modo print, ativa temporariamente
+            // Garante que o layout horizontal rígido de Tier list está ativado para a foto sair perfeita
+            const alvo = document.getElementById('capture-zone');
             const estavaEdicao = !modoPrintAtivo;
+            
             if (estavaEdicao) {
-                togglePrintMode();
+                alvo.classList.add('forcar-layout-horizontal');
             }
 
-            // Oculta a interface de edição completamente do documento para não confundir o renderizador
+            // Oculta tudo que não faz parte da imagem do ranking
             document.getElementById('interface-completa').style.display = 'none';
+            document.getElementById('titulo-secao').style.display = 'none';
             
-            alert("Gerando imagem em alta resolução... Aguarde!");
-
             setTimeout(() => {
-                const alvo = document.getElementById('capture-zone');
-                
                 html2canvas(alvo, {
                     useCORS: true, 
                     allowTaint: false,
                     logging: false,
                     backgroundColor: "#0b0c10",
-                    scale: 2 // Mantém nítido
+                    scale: 2, // Garante que as fotos das marretas fiquem nítidas mesmo pequenas
+                    windowWidth: 1400 // Força o html2canvas a enxergar como uma tela larga de computador
                 }).then(canvas => {
                     const link = document.createElement('a');
-                    link.download = `FTF-Values-${raridadeAtual}.png`;
+                    link.download = `TierList-FTF-${raridadeAtual}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     
-                    // Restaura a interface de volta
-                    document.getElementById('interface-completa').style.style = '';
+                    // Restaura a interface original após o clique
                     document.getElementById('interface-completa').style.display = 'block';
-                    if (estavaEdicao) { togglePrintMode(); }
+                    document.getElementById('titulo-secao').style.display = 'block';
+                    if (estavaEdicao) {
+                        alvo.classList.remove('forcar-layout-horizontal');
+                    }
                 }).catch(err => {
-                    alert("A imagem foi bloqueada pelo navegador do celular. Tire um print da tela no modo de visualização!");
+                    alert("Erro ao processar imagem automaticamente. Você também pode tirar um print da tela no 'Modo Print' horizontal!");
                     document.getElementById('interface-completa').style.display = 'block';
+                    document.getElementById('titulo-secao').style.display = 'block';
                 });
-            }, 600);
+            }, 500);
         }
 
         function criarNovoCard() {
@@ -596,7 +600,7 @@
             };
             
             listaDeMarretas.push(novoObj);
-            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
             
             raridadeAtual = raridade;
             definirAbaAtivaVisual(raridade);
@@ -678,7 +682,7 @@
                 if (novoStatus) item.status = novoStatus.trim().toLowerCase();
                 if (novaRaridade) item.raridade = novaRaridade.trim().toLowerCase();
 
-                localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+                localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
                 carregarCardsSalvos();
             });
 
@@ -686,7 +690,7 @@
                 if (confirm(`Excluir?`)) {
                     listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
                     card.remove();
-                    localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+                    localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
                     atualizarNumbersVisuais();
                 }
             });
@@ -733,7 +737,7 @@
             else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #ffa502; font-weight:bold;">*</span>`; }
             
             containerValor.style.color = '#ffa502';
-            containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
+            containerValor.innerHTML = `[${valorExibido}]${badgeTendencia}`;
 
             if (containerBadge) {
                 containerBadge.innerHTML = '';
@@ -771,7 +775,7 @@
                 listaDeMarretas.sort((a, b) => (parseFloat(a.valor) || 0) - (parseFloat(b.valor) || 0));
             } 
             else if (criterio === 'padrao') {
-                const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+                const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5'));
                 if (Array.isArray(dadosLocais)) listaDeMarretas = dadosLocais;
             }
             carregarCardsSalvos();
@@ -793,8 +797,9 @@
 
             containerMestre.innerHTML = '';
 
-            if (modoPrintAtivo) {
-                const itensPorTier = 18; // Capacidade perfeita por linha horizontal
+            if (modoPrintAtivo || document.getElementById('capture-zone').classList.contains('forcar-layout-horizontal')) {
+                // Modo Tier List Perfeito: Junta em fileiras horizontais de 18 a 20 marretas cada
+                const itensPorTier = 18;
                 const totalTiers = Math.ceil(itensFiltrados.length / itensPorTier);
 
                 for (let i = 0; i < totalTiers; i++) {
@@ -805,7 +810,10 @@
 
                     const labelBlock = document.createElement('div');
                     labelBlock.className = 'tier-label-block';
-                    labelBlock.innerText = `T ${i + 1}`;
+                    // Distribui cores do gradiente clássico de tierlists
+                    labelBlock.style.backgroundColor = CORES_TIERS[i % CORES_TIERS.length];
+                    labelBlock.style.color = (i % CORES_TIERS.length === 3 || i % CORES_TIERS.length === 4) ? "#000" : "#fff";
+                    labelBlock.innerText = `Tier ${i + 1}`;
 
                     const gridCards = document.createElement('div');
                     gridCards.className = 'tier-cards-grid';
@@ -820,6 +828,7 @@
                     containerMestre.appendChild(tierRow);
                 }
             } else {
+                // Modo Edição normal em grade adaptável para celular
                 const normalGrid = document.createElement('div');
                 normalGrid.className = 'normal-cards-grid';
 
@@ -845,7 +854,7 @@
             });
             
             listaDeMarretas = [...listaLimpa, ...itensReordenados];
-            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
             atualizarNumbersVisuais();
         }
 
