@@ -59,9 +59,9 @@
             font-size: 14px;
         }
 
-        /* --- TOOLBAR SUPERIOR (Estilo Foto 2) --- */
+        /* --- TOOLBAR SUPERIOR --- */
         .toolbar-container {
-            max-width: 950px;
+            max-width: 1850px;
             margin: 0 auto 20px auto;
             background-color: #14171f;
             border-bottom: 2px solid #ffa502;
@@ -117,7 +117,7 @@
         #barraPesquisa { flex: 2; }
         #ordenacaoLista { flex: 1; font-weight: bold; cursor: pointer; }
 
-        /* --- FORMULÁRIO DE CRIAÇÃO (Estilo Moderno e Compacto) --- */
+        /* --- FORMULÁRIO DE CRIAÇÃO --- */
         #criador-form {
             background-color: #14171f;
             padding: 20px;
@@ -184,7 +184,7 @@
         .btn-massa { background: #2ed573; color: white; }
         .btn-massa:hover { background: #26af5f; }
 
-        /* --- ABAS DE FILTRAGEM (Estilo Customizado das Fotos) --- */
+        /* --- ABAS DE FILTRAGEM --- */
         .btn-aba-container {
             display: flex;
             justify-content: center;
@@ -195,7 +195,7 @@
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #232834;
-            max-width: 950px;
+            max-width: 1850px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -213,9 +213,9 @@
         #btn-exportar-container { text-align: center; margin-bottom: 25px; }
         .btn-backup { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* --- GRID DOS CARDS DE ITEM --- */
+        /* --- GRID DOS CARDS DE ITEM (Modificado para caber cerca de 18 por linha) --- */
         #titulo-secao {
-            max-width: 950px;
+            max-width: 1850px;
             margin: 0 auto 15px auto;
             color: #fff;
             font-size: 20px;
@@ -226,18 +226,18 @@
         }
         #container-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-            gap: 14px;
-            max-width: 950px;
+            grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            gap: 8px;
+            max-width: 1850px;
             margin: 0 auto;
             padding: 5px 0;
         }
 
-        /* SOLUÇÃO PARA O BUG: Força o grid a ter exatamente 5 colunas estruturadas durante a captura */
+        /* FORÇA EXATAMENTE 18 COLUNAS NA HORIZONTAL DURANTE A CAPTURA */
         .hide-mode #container-cards {
-            grid-template-columns: repeat(5, 1fr) !important;
-            width: 950px !important;
-            max-width: 950px !important;
+            grid-template-columns: repeat(18, 1fr) !important;
+            width: 1850px !important;
+            max-width: 1850px !important;
         }
     </style>
 </head>
@@ -644,7 +644,6 @@
                 document.body.classList.add('hide-mode');
             }
 
-            // Delay estratégico para reajuste estrutural do grid de 5 colunas
             setTimeout(() => {
                 const áreaCaptura = document.getElementById('capture-area');
                 
@@ -652,7 +651,7 @@
                     backgroundColor: "#0b0c10",
                     useCORS: true, 
                     scale: 2,
-                    windowWidth: 1000 // Garante largura correta durante a renderização virtual
+                    windowWidth: 1900 // Largura ideal simulada para as 18 colunas
                 }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = `FTF-Custom-List-${raridadeAtual}.png`;
@@ -721,8 +720,8 @@
 
             card.style.backgroundColor = '#14171f';
             card.style.border = `1.5px solid #2d3545`; 
-            card.style.borderRadius = '10px';
-            card.style.padding = '12px';
+            card.style.borderRadius = '6px';
+            card.style.padding = '6px';
             card.style.width = '100%'; 
             card.style.color = '#fff';
             card.style.position = 'relative';
@@ -743,38 +742,38 @@
             const caminhoImagem = item.imgSrc || `./imagens/${item.id}.${extensao}`;
 
             card.innerHTML = `
-                <button class="btn-deletar" style="position: absolute; top: 8px; right: 8px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 13px; z-index: 5;">❌</button>
+                <button class="btn-deletar" style="position: absolute; top: 4px; right: 4px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 11px; z-index: 5;">❌</button>
                 
-                <div style="background-color: #0e1117; width: 100%; height: 110px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 6px; border: 1px solid #1f2533; padding: 4px;">
+                <div style="background-color: #0e1117; width: 100%; height: 65px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; border-radius: 4px; border: 1px solid #1f2533; padding: 2px;">
                     <img src="${caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
                 </div>
 
-                <span class="txt-posicao-automatica" style="position: absolute; top: 14px; left: 14px; background: #ffa502; color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
+                <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
                 
-                <h3 style="margin: 0 0 2px 0; color: #ffffff; font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
-                <span style="color: #62697e; font-size: 9px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
+                <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
+                <span style="color: #62697e; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
                 
-                <div style="margin-top: 10px; font-size: 11px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                     <div>
-                        <div style="color: #4b5266; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">VALUE</div>
+                        <div style="color: #4b5266; font-size: 7px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3px;">VALUE</div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="box-valor-dinamico" style="font-size: 17px; font-weight: 900;"></span>
-                            <span class="txt-estabilidade" style="background: #121620; color: #8fa0c4; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #232f4b;">${item.templates || 'Stable'}</span>
+                            <span class="box-valor-dinamico" style="font-size: 12px; font-weight: 900;"></span>
+                            <span class="txt-estabilidade" style="background: #121620; color: #8fa0c4; font-size: 7px; font-weight: bold; padding: 1px 3px; border-radius: 3px; border: 1px solid #232f4b;">${item.templates || 'Stable'}</span>
                         </div>
                     </div>
-                    <div class="box-badge-status" style="display: flex; justify-content: flex-end; margin-top: -2px; min-height: 14px;"></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px; border-top: 1px solid #1f2533; padding-top: 8px;">
-                        <span style="color: #4b5266; font-size: 8px; font-weight: bold; letter-spacing: 0.5px;">DEMAND</span>
-                        <span class="txt-demanda-estrelas" style="font-size: 11px;"></span>
+                    <div class="box-badge-status" style="display: flex; justify-content: flex-end; margin-top: -1px; min-height: 10px;"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1px; border-top: 1px solid #1f2533; padding-top: 4px;">
+                        <span style="color: #4b5266; font-size: 7px; font-weight: bold; letter-spacing: 0.3px;">DEMAND</span>
+                        <span class="txt-demanda-estrelas" style="font-size: 9px;"></span>
                     </div>
                 </div>
 
-                <div class="btn-acoes-card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #1f2533; padding-top: 8px;">
-                    <div style="display: flex; gap: 4px;">
-                        <button class="btn-subir" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 5px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold;">▲ Subir</button>
-                        <button class="btn-descer" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 5px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold;">▼ Descer</button>
+                <div class="btn-acoes-card" style="margin-top: 6px; display: flex; flex-direction: column; gap: 3px; border-top: 1px solid #1f2533; padding-top: 4px;">
+                    <div style="display: flex; gap: 2px;">
+                        <button class="btn-subir" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 3px; cursor: pointer; border-radius: 3px; font-size: 8px; font-weight: bold;">▲</button>
+                        <button class="btn-descer" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 3px; cursor: pointer; border-radius: 3px; font-size: 8px; font-weight: bold;">▼</button>
                     </div>
-                    <button class="btn-editar" style="background: #1c2336; color: #ffa502; border: 1px solid #2d3854; padding: 5px; cursor: pointer; border-radius: 4px; font-size: 11px; font-weight: bold;">✏️ Editar</button>
+                    <button class="btn-editar" style="background: #1c2336; color: #ffa502; border: 1px solid #2d3854; padding: 3px; cursor: pointer; border-radius: 3px; font-size: 9px; font-weight: bold;">✏️ Editar</button>
                 </div>
             `;
 
@@ -866,9 +865,9 @@
 
             if (containerBadge) {
                 containerBadge.innerHTML = '';
-                if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #2ed573; font-size: 8px; font-weight: bold; background: rgba(46, 213, 115, 0.1); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(46, 213, 115, 0.3);">+ Overpaid</span>`;
-                else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #ff9f43; font-size: 8px; font-weight: bold; background: rgba(255, 159, 67, 0.1); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(255, 159, 67, 0.3);">- Underpaid</span>`;
-                else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #a55eea; font-size: 8px; font-weight: bold; background: rgba(165, 94, 234, 0.1); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(165, 94, 234, 0.3);">💎 Niche</span>`;
+                if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #2ed573; font-size: 6px; font-weight: bold; background: rgba(46, 213, 115, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(46, 213, 115, 0.3);">+ OP</span>`;
+                else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #ff9f43; font-size: 6px; font-weight: bold; background: rgba(255, 159, 67, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(255, 159, 67, 0.3);">- UP</span>`;
+                else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #a55eea; font-size: 6px; font-weight: bold; background: rgba(165, 94, 234, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(165, 94, 234, 0.3);">💎 Niche</span>`;
             }
         }
 
@@ -878,7 +877,7 @@
             
             let notaNum = parseFloat(notaEstrelas) || 0;
             let estrelasHTML = '';
-            const estiloEstrela = `font-size: 15px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle; margin: 0 1px;`;
+            const estiloEstrela = `font-size: 9px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle; margin: 0;`;
 
             for (let i = 1; i <= 5; i++) {
                 if (notaNum >= i) {
