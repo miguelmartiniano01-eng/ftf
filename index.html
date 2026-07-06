@@ -292,6 +292,15 @@
             min-height: 85px !important;
             padding: 10px !important;
         }
+
+                /* Garante que no modo print ela não fique gigante sobre a imagem */
+        .hide-mode #container-cards .txt-posicao-automatica {
+            font-size: 8px !important;
+            padding: 1px 3px !important;
+            min-width: auto !important;
+        }
+
+        
     </style>
 </head>
 <body id="capture-area">
@@ -843,10 +852,10 @@
                 
                 <div style="background-color: #0e1117; width: 100%; height: 65px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; border-radius: 4px; border: 1px solid #1f2533; padding: 2px;">
                     <img src="${caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
-                </div>
+                </div> 
 
-                <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
-                
+               <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; min-width: 22px; text-align: center; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
+
                 <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;" title="${item.nome}">${item.nome}</h3>
                 <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: center; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
                 
