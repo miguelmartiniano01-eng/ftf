@@ -885,7 +885,7 @@
                 </div>
             `;
 
-                        card.querySelector('.btn-editar').addEventListener('click', function() {
+          card.querySelector('.btn-editar').addEventListener('click', function() {
                 // 1. Nome, Link e Valor continuam texto livre
                 const novoNome = prompt("Mudar nome:", item.nome);
                 if (novoNome !== null) item.nome = novoNome.trim();
@@ -932,7 +932,54 @@
                 else if (menuTendencia === "3") item.tendencia = "caiu";
                 else if (menuTendencia === "4") item.tendencia = "corrigido";
 
-                // 5. Menu para Status Especial
+            card.querySelector('.btn-editar').addEventListener('click', function() {
+                // 1. Textos livres (Nome, Link e Valor)
+                const novoNome = prompt("Mudar nome:", item.nome);
+                if (novoNome !== null) item.nome = novoNome.trim();
+
+                const novoLink = prompt("Novo Link da Imagem:", item.imgSrc || "");
+                if (novoLink !== null) item.imgSrc = novoLink.trim();
+
+                const novoValor = prompt("Novo Valor:", item.valor);
+                if (novoValor !== null) item.valor = novoValor.trim();
+                
+                // 2. Menu numérico para Raridade
+                const menuRaridade = prompt(
+                    "Escolha a Raridade:\n\n" +
+                    "1 - 👑 Legendary\n" +
+                    "2 - ✨ Epic\n" +
+                    "3 - 💎 Rare\n" +
+                    "4 - 📦 Common", 
+                    "1"
+                );
+                if (menuRaridade === "1") item.raridade = "legendary";
+                else if (menuRaridade === "2") item.raridade = "epics";
+                else if (menuRaridade === "3") item.raridade = "rares";
+                else if (menuRaridade === "4") item.raridade = "commons";
+
+                // 3. Menu para Demanda (Mantém o padrão original)
+                const menuDemanda = prompt(
+                    "Escolha a nota de Demanda (0 a 5):\n\n" +
+                    "Opções válidas: 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0", 
+                    item.demanda
+                );
+                if (menuDemanda !== null) item.demanda = menuDemanda.trim();
+
+                // 4. Menu numérico para Tendência de Valor
+                const menuTendencia = prompt(
+                    "Escolha a Tendência de Valor:\n\n" +
+                    "1 - Estável / Sem Setinha\n" +
+                    "2 - Subiu (↑ Verde)\n" +
+                    "3 - Caiu (↓ Vermelho)\n" +
+                    "4 - Corrigido (* Amarelo)", 
+                    "1"
+                );
+                if (menuTendencia === "1") item.tendencia = "none";
+                else if (menuTendencia === "2") item.tendencia = "subiu";
+                else if (menuTendencia === "3") item.tendencia = "caiu";
+                else if (menuTendencia === "4") item.tendencia = "corrigido";
+
+                // 5. Menu numérico para Status Especial
                 const menuStatus = prompt(
                     "Escolha o Status Especial:\n\n" +
                     "1 - Nenhum\n" +
@@ -946,7 +993,7 @@
                 else if (menuStatus === "3") item.status = "underpaid";
                 else if (menuStatus === "4") item.status = "niche";
 
-                // 6. Menu para Estabilidade
+                // 6. Menu numérico para Estabilidade
                 const menuEstabilidade = prompt(
                     "Escolha a Estabilidade:\n\n" +
                     "1 - Rising\n" +
@@ -964,10 +1011,40 @@
                     item.templates = opcoesEstabilidade[menuEstabilidade - 1];
                 }
 
-                // Salva tudo no LocalStorage e atualiza a tela
                 localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
                 carregarCardsSalvos();
             });
+
+            // DAQUI PARA BAIXO CONTINUA EXATAMENTE IGUAL AO SEU ORIGINAL:
+            card.querySelector('.btn-deletar').addEventListener('click', function() {
+                if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
+                    listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
+                    card.remove();
+                    localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+                    atualizarNumbersVisuais();
+                }
+            });
+
+            card.querySelector('.btn-subir').addEventListener('click', function() {
+                const irmaoAnterior = card.previousElementSibling;
+                if (irmaoAnterior) {
+                    container.insertBefore(card, irmaoAnterior);
+                    reordenarArrayEGuardar();
+                }
+            });
+
+            card.querySelector('.btn-descer').addEventListener('click', function() {
+                const proximoIrmao = card.nextElementSibling;
+                if (proximoIrmao) {
+                    container.insertBefore(proximoIrmao, card);
+                    reordenarArrayEGuardar();
+                }
+            });
+
+            atualizarEstiloValorDoCard(card, item);
+            gerarEstrelasDemanda(card, item.demanda);
+            return card;
+        }
 
 
         function filtrarRaridade(raridadeAlvo) {
