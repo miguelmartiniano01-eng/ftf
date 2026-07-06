@@ -258,6 +258,24 @@
             box-sizing: border-box !important;
         }
 
+        /* Estilização Base da Tag de Hashtag/Posição */
+        .txt-posicao-automatica {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #ffa502;
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            z-index: 4;
+            /* Largura aumentada e espaçamento generoso para a tela padrão */
+            font-size: 11px;
+            padding: 2px 8px;
+            min-width: 32px;
+        }
+
         /* --- MELHORIAS VISUAIS EXCLUSIVAS PARA O LAYOUT DE 5 COLUNAS (TELA NORMAL) --- */
         body:not(.hide-mode) #container-cards h3 {
             font-size: 14px !important;
@@ -293,13 +311,14 @@
             padding: 10px !important;
         }
 
-                /* Garante que no modo print ela não fique gigante sobre a imagem */
+        /* No modo print (16 colunas compactas), reduzimos a largura para não tampar o item */
         .hide-mode #container-cards .txt-posicao-automatica {
             font-size: 8px !important;
-            padding: 1px 3px !important;
-            min-width: auto !important;
+            padding: 1px 4px !important;
+            min-width: 20px !important;
+            top: 6px !important;
+            left: 6px !important;
         }
-
         
     </style>
 </head>
@@ -490,46 +509,6 @@
             {"id":1068,"nome":"Elf Box","imgSrc":"https://i.postimg.cc/FznhQ28m/Elf-Box.webp","raridade":"legendary"},
             {"id":1069,"nome":"Enchanted Circus Tent","imgSrc":"https://i.postimg.cc/bNWqVf1F/Enchanted-Circus-Tent.webp","raridade":"legendary"},
             {"id":1070,"nome":"Eye of Blizzaria","imgSrc":"https://i.postimg.cc/j2jRms8H/Eye-of-Blizzaria.webp","raridade":"legendary"},
-            {"id":1071,"nome":"Fairy Tale Book","imgSrc":"https://i.postimg.cc/1XYyZL2t/Fairy-Tale-Book.webp","raridade":"legendary"},
-            {"id":1072,"nome":"Fall Harvester","imgSrc":"https://i.postimg.cc/kG57znj8/Fall-Harvester.webp","raridade":"legendary"},
-            {"id":1073,"nome":"Fall Wheelbarrow","imgSrc":"https://i.postimg.cc/MHGzNWsV/Fall-Wheelbarrow.webp","raridade":"legendary"},
-            {"id":1074,"nome":"Festive Candelabra","imgSrc":"https://i.postimg.cc/Gp1drP7R/Festive-Candelabra.webp","raridade":"legendary"},
-            {"id":1075,"nome":"Festive Fruitcake","imgSrc":"https://i.postimg.cc/QCMjwX6k/Festive-Fruitcake.webp","raridade":"legendary"},
-            {"id":1076,"nome":"Festive Pinecone","imgSrc":"https://i.postimg.cc/kMjJ8bGP/Festive-Pinecone.webp","raridade":"legendary"},
-            {"id":1077,"nome":"Festive Train","imgSrc":"https://i.postimg.cc/ncCH1hjy/Festive-Train.webp","raridade":"legendary"},
-            {"id":1078,"nome":"Fiery Phoenix","imgSrc":"https://i.postimg.cc/CKVSYCPL/Fiery-Phoenix.webp","raridade":"legendary"},
-            {"id":1079,"nome":"Fish Tank","imgSrc":"https://i.postimg.cc/nhmp6S1g/Fish-Tank.webp","raridade":"legendary"},
-            {"id":1080,"nome":"Flourished Fountain","imgSrc":"https://i.postimg.cc/tCYXz4nR/Flourished-Fountain.webp","raridade":"legendary"},
-            {"id":1081,"nome":"Fortune House","imgSrc":"https://i.postimg.cc/vZnbp2zR/Fortune-House.webp","raridade":"legendary"},
-            {"id":1082,"nome":"Frost Engine","imgSrc":"https://i.postimg.cc/gkQGtb3K/Frost-Engine.webp","raridade":"legendary"},
-            {"id":1083,"nome":"Frostbite","imgSrc":"https://i.postimg.cc/8cnTVq9P/Frostbite.webp","raridade":"legendary"},
-            {"id":1084,"nome":"Frosted Frequency","imgSrc":"https://i.postimg.cc/C56wVWXS/Frosted-Frequency.webp","raridade":"legendary"},
-            {"id":1085,"nome":"Frozen Fortress","imgSrc":"https://i.postimg.cc/yxr7zwtV/Frozen-Fortress.webp","raridade":"legendary"},
-            {"id":1086,"nome":"Fudge Bunny","imgSrc":"https://i.postimg.cc/ZYfb3dRs/Fudge-Bunny.webp","raridade":"legendary"},
-            {"id":1087,"nome":"Fungal Thumper","imgSrc":"https://i.postimg.cc/Kc9GLMzD/Fungal-Thumper.webp","raridade":"legendary"},
-            {"id":1088,"nome":"Gingerbread House","imgSrc":"https://i.postimg.cc/02b8CyKx/Gingerbread-House.webp","raridade":"legendary"},
-            {"id":1089,"nome":"Golden Firework","imgSrc":"https://i.postimg.cc/yYt7pC00/Golden-Firework.webp","raridade":"legendary"},
-            {"id":1090,"nome":"Gothic Bouquet","imgSrc":"https://i.postimg.cc/gJzpLzPz/Gothic-Bouquet.webp","raridade":"legendary"},
-            {"id":1091,"nome":"Grandfather Clock","imgSrc":"https://i.postimg.cc/nLtpZKR7/Grandfather-Clock.webp","raridade":"legendary"},
-            {"id":1092,"nome":"Grape Barrel","imgSrc":"https://i.postimg.cc/vTmGkQP7/Grape-Barrel.webp","raridade":"legendary"},
-            {"id":1093,"nome":"Grim Galleon","imgSrc":"https://i.postimg.cc/5tMb157y/Grim-Galleon.webp","raridade":"legendary"},
-            {"id":1094,"nome":"Haunted Circus Tent","imgSrc":"https://i.postimg.cc/hP6KZRVy/Haunted-Circus-Tent.webp","raridade":"legendary"},
-            {"id":1095,"nome":"Holiday Hotline","imgSrc":"https://i.postimg.cc/QxwjYZcp/Holiday-Hotline.webp","raridade":"legendary"},
-            {"id":1096,"nome":"Hollow Scythe","imgSrc":"https://i.postimg.cc/cJMZJK22/Hollow-Scythe.webp","raridade":"legendary"},
-            {"id":1097,"nome":"Honey Cheesecake","imgSrc":"https://i.postimg.cc/wMB9Z6Wn/Honey-Cheesecake.png","raridade":"legendary"},
-            {"id":1098,"nome":"Honey Hive Tree","imgSrc":"https://i.postimg.cc/152y71DN/Honey-Hive-Tree.webp","raridade":"legendary"},
-            {"id":1099,"nome":"Ice Sleigh","imgSrc":"https://i.postimg.cc/c4rscLtN/Ice-Sleigh.webp","raridade":"legendary"},
-            {"id":1100,"nome":"Icecream Mix","imgSrc":"https://i.postimg.cc/4dfGHfRj/Icecream-Mix.webp","raridade":"legendary"},
-            {"id":1101,"nome":"Irish Harp","imgSrc":"https://i.postimg.cc/C56wVWX5/Irish-Harp.webp","raridade":"legendary"},
-            {"id":1102,"nome":"Jade Viper","imgSrc":"https://i.postimg.cc/GmDdZgQh/Jade-Viper.webp","raridade":"legendary"},
-            {"id":1103,"nome":"Jello Dessert","imgSrc":"https://i.postimg.cc/VNcm19GJ/Jello-Dessert.webp","raridade":"legendary"},
-            {"id":1104,"nome":"Jingle Bells","imgSrc":"https://i.postimg.cc/kMjJ8bGd/Jingle-Bells.webp","raridade":"legendary"},
-            {"id":1105,"nome":"Jollyday Batter","imgSrc":"https://i.postimg.cc/9fjCVP8y/Jollyday-Batter.webp","raridade":"legendary"},
-            {"id":1106,"nome":"Krampus Chimney","imgSrc":"https://i.postimg.cc/yYkVT8g5/Krampus-Chimney.webp","raridade":"legendary"},
-            {"id":1107,"nome":"Leprechaun Boot","imgSrc":"https://i.postimg.cc/7hLqdxBf/Leprechaun-Boot.webp","raridade":"legendary"},
-            {"id":1108,"nome":"Light Bone Crusher","imgSrc":"https://i.postimg.cc/1zcPzg2g/Light-Bone-Crusher.webp","raridade":"legendary"},
-            {"id":1109,"nome":"Lil Tree","imgSrc":"https://i.postimg.cc/Dy82cw4W/Lil-Tree.webp","raridade":"legendary"},
-            {"id":1110,"nome":"Lilium Bush","imgSrc":"https://i.postimg.cc/GmDdZgjW/Lilium-Bush.webp","raridade":"legendary"},
             {"id":1111,"nome":"Lily of The Valley","imgSrc":"https://i.postimg.cc/MHGzNWsd/Lily-of-The-Valley.png","raridade":"legendary"},
             {"id":1112,"nome":"Lonely Date","imgSrc":"https://i.postimg.cc/hvGK6SCs/Lonely-Date.png","raridade":"legendary"},
             {"id":1113,"nome":"Lovely Heart","imgSrc":"https://i.postimg.cc/tgtyg1wm/Lovely-Heart.webp","raridade":"legendary"},
@@ -854,7 +833,7 @@
                     <img src="${caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
                 </div> 
 
-               <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; min-width: 22px; text-align: center; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
+               <span class="txt-posicao-automatica">#--</span>
 
                 <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;" title="${item.nome}">${item.nome}</h3>
                 <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: center; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
@@ -984,7 +963,6 @@
             let notaNum = parseFloat(notaEstrelas) || 0;
             let estrelasHTML = '';
             
-            // Estrelas grandes na tela de 5 colunas e pequenas (9px) no modo print/16 colunas
             const eModoPrint = document.body.classList.contains('hide-mode');
             const TAMANHO_ESTRELA = eModoPrint ? '9px' : '14px'; 
 
