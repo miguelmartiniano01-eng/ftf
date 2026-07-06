@@ -903,27 +903,28 @@
     let notaNum = parseFloat(notaEstrelas) || 0;
     let estrelasHTML = '';
     
-    // Novo estilo com a fonte corrigida para todas as estrelas ficarem cheinhas
-    const estiloEstrela = `font-size: 11px; display: inline-block; position: relative; font-family: 'Segoe UI Symbol', 'Arial', sans-serif; font-weight: bold; line-height: 1; vertical-align: middle; margin: 0 1px;`;
+    // O segredo aqui é o text-shadow, que faz um contorno na estrela deixando ela bem robusta
+    const estiloEstrela = `font-size: 11px; display: inline-block; position: relative; font-family: 'Arial Black', 'Impact', sans-serif; font-weight: 900; line-height: 1; vertical-align: middle; margin: 0; text-shadow: 0.5px 0px 0px currentColor, -0.5px 0px 0px currentColor;`;
 
     for (let i = 1; i <= 5; i++) {
         if (notaNum >= i) {
-            // Estrela completamente cheia
+            // Estrela cheia bem gordinha
             estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
         } else if (notaNum > i - 1 && notaNum < i) {
-            // Estrela metade (Ajustada com a nova fonte no "miolo" também)
+            // Estrela metade engordada dos dois lados
             estrelasHTML += `
                 <span style="${estiloEstrela} color: #323b54;">★
-                    <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: 'Segoe UI Symbol', 'Arial', sans-serif; font-weight: bold;">★</span>
+                    <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: 'Arial Black', 'Impact', sans-serif; font-weight: 900; text-shadow: 0.5px 0px 0px #ffb830, -0.5px 0px 0px #ffb830;">★</span>
                 </span>
             `;
         } else {
-            // Estrela vazia
-            estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">☆</span>`;
+            // Estrela vazia (usamos a cheia com cor escura para manter o mesmo formato gordo, mudando apenas a cor)
+            estrelasHTML += `<span style="${estiloEstrela} color: #232a3d;">★</span>`;
         }
     }
     containerEstrelas.innerHTML = estrelasHTML;
 }
+
 
 
         function ordenarEAtualizar() {
