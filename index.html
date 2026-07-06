@@ -284,10 +284,10 @@
 
             <label class="form-label">Raridade do Item:</label>
             <select id="raridadeItem" class="input-style form-input-full">
-                <option value="legendary">⭐ Legendary</option>
+                <option value="legendary">👑 Legendary</option>
                 <option value="epics">✨ Epics</option>
                 <option value="rares">💎 Rares</option>
-                <option value="commons">📦 Commons</option>
+                <option value="commons">🍃 Commons</option>
             </select>
 
             <label class="form-label">Demanda (Ex: 4.5):</label>
@@ -350,10 +350,10 @@
         };
 
         const CORES_RARIDADE = {
-            "legendary": "#ffa502", 
-            "epics": "#a55eea",     
-            "rares": "#45aaf2",     
-            "commons": "#2ed573"    
+            "legendary": "#F2BE24", 
+            "epics": "#C523F2",     
+            "rares": "#23CFF2",     
+            "commons": "#8BCC14"    
         };
 
         const BASE_PADRAO_MARRETAS = [
@@ -775,8 +775,8 @@
 
                 <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
                 
-                <h3 style="margin: 0 0 1px 0; color: ${corRaridade}; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
-                <span style="color: #62697e; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
+                <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
+                <span style="color: ${corRaridade};; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
                 
                 <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                     <div>
@@ -881,18 +881,18 @@
             let badgeTendencia = '';
             let valorExibido = item.valor || "10";
 
-            if (item.tendencia === 'subiu') { badgeTendencia = ` <span style="color: #2ed573; font-weight:bold;">↑</span>`; }
-            else if (item.tendencia === 'caiu') { badgeTendencia = ` <span style="color: #ff4757; font-weight:bold;">↓</span>`; }
-            else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #ffa502; font-weight:bold;">*</span>`; }
+            if (item.tendencia === 'subiu') { badgeTendencia = ` <span style="color: #47cc6a; font-weight:bold;">↑</span>`; }
+            else if (item.tendencia === 'caiu') { badgeTendencia = ` <span style="color: #d84146; font-weight:bold;">↓</span>`; }
+            else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #f2be24; font-weight:bold;">*</span>`; }
             
             containerValor.style.color = '#ffa502';
             containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
 
             if (containerBadge) {
                 containerBadge.innerHTML = '';
-                if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #2ed573; font-size: 6px; font-weight: bold; background: rgba(46, 213, 115, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(46, 213, 115, 0.3);">+ OP</span>`;
-                else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #ff9f43; font-size: 6px; font-weight: bold; background: rgba(255, 159, 67, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(255, 159, 67, 0.3);">- UP</span>`;
-                else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #a55eea; font-size: 6px; font-weight: bold; background: rgba(165, 94, 234, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(165, 94, 234, 0.3);">💎 Niche</span>`;
+                if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #47cc6a; font-size: 6px; font-weight: bold; background: rgba(71, 204, 106, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(46, 213, 115, 0.3);">+ OP</span>`;
+                else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #d84146; font-size: 6px; font-weight: bold; background: rgba(216, 65, 70, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(255, 159, 67, 0.3);">- UP</span>`;
+                else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #23cff2; font-size: 6px; font-weight: bold; background: rgba(35, 207, 242, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(165, 94, 234, 0.3);">💎 Niche</span>`;
             }
         }
 
@@ -902,7 +902,7 @@
             
             let notaNum = parseFloat(notaEstrelas) || 0;
             let estrelasHTML = '';
-            const estiloEstrela = `font-size: 9px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle; margin: 0;`;
+            const estiloEstrela = `font-size: 11px; display: inline-block; position: relative; font-family: 'Segoe UI symbol', 'Arial', sans-serif; font-weight: bold; line-height: 1; vertical-align: middle; margin: 0 1px;`;
 
             for (let i = 1; i <= 5; i++) {
                 if (notaNum >= i) {
