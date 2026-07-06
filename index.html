@@ -367,13 +367,25 @@
             <label class="form-label">Raridade do Item:</label>
             <select id="raridadeItem" class="input-style form-input-full">
                 <option value="legendary">👑 Legendary</option>
-                <option value="epics">✨ Epics</option>
-                <option value="rares">💎 Rares</option>
-                <option value="commons">🍃 Commons</option>
+                <option value="epics">✨ Epic</option>
+                <option value="rares">💎 Rare</option>
+                <option value="commons">🍃 Common</option>
             </select>
 
-            <label class="form-label">Demanda (Ex: 4.5):</label>
-            <input type="text" id="demandaNota" class="input-style form-input-full" placeholder="Ex: 4.5">
+            <label class="form-label">Demanda:</label>
+            <select id="demandaNota" class="input-style form-input-full">
+                <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                <option value="4.5">4.5</option>
+                <option value="4">4</option>
+                <option value="3.5">3.5</option>
+                <option value="3">3</option>
+                <option value="2.5">2.5</option>
+                <option value="2">2</option>
+                <option value="1.5">1.5</option>
+                <option value="1">1</option>
+                <option value="0.5">0.5</option>
+                <option value="0">0</option>
+            </select>
 
             <label class="form-label">Tendência de Valor:</label>
             <select id="tendenciaValor" class="input-style form-input-full">
@@ -391,7 +403,18 @@
                 <option value="niche">Niche (💎 Raro)</option>
             </select>
 
-            <input type="text" id="estabilidadeItem" class="input-style form-input-full" placeholder="Estabilidade (Ex: Stable, Rising, Struggling)">
+            <label class="form-label">Estabilidade:</label>
+            <select id="estabilidadeItem" class="input-style form-input-full">
+                <option value="Rising">Rising</option>
+                <option value="Doing Well">Doing Well</option>
+                <option value="Improving">Improving</option>
+                <option value="Stable" selected>Stable</option>
+                <option value="Fluctuating">Fluctuating</option>
+                <option value="Struggling">Struggling</option>
+                <option value="Receding">Receding</option>
+                <option value="Dropping">Dropping</option>
+            </select>
+            
             <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item ✨</button>
         </div>
 
@@ -758,10 +781,10 @@
             const urlImagem = document.getElementById('linkImagem').value || 'https://via.placeholder.com/150';
             let valor = document.getElementById('valorItem').value || '10';
             const raridade = document.getElementById('raridadeItem').value;
-            const demanda = document.getElementById('demandaNota').value || '5';
+            const demanda = document.getElementById('demandaNota').value;
             const tendencia = document.getElementById('tendenciaValor').value;
             const status = document.getElementById('statusItem').value;
-            const estabilidade = document.getElementById('estabilidadeItem').value || 'Stable';
+            const estabilidade = document.getElementById('estabilidadeItem').value;
 
             if (!nome) {
                 alert('Por favor, dê um nome!');
@@ -967,7 +990,7 @@
             const TAMANHO_ESTRELA = eModoPrint ? '9px' : '14px'; 
 
             const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-            const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #3E3E49; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+            const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #232a3d; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
 
             for (let i = 1; i <= 5; i++) {
                 if (notaNum >= i) {
@@ -975,7 +998,7 @@
                 } else if (notaNum > i - 1 && notaNum < i) {
                     estrelasHTML += `
                         <span style="display: inline-block; position: relative; width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; margin: 0 0.5px; vertical-align: middle; line-height: 1;">
-                            <svg viewBox="0 0 24 24" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #5B5B66;">
+                            <svg viewBox="0 0 24 24" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #232a3d;">
                                 <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
                             </svg>
                             <span style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
