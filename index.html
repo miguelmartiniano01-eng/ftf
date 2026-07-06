@@ -15,6 +15,8 @@
     <link rel="icon" sizes="192x192" href="https://via.placeholder.com/192">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         /* Reset e Configurações Gerais Baseadas nas Imagens */
         *, *::before, *::after {
@@ -56,7 +58,7 @@
             font-size: 14px;
         }
 
-        /* --- TOOLBAR SUPERIOR (Estilo Foto 2) --- */
+        /* --- TOOLBAR SUPERIOR --- */
         .toolbar-container {
             max-width: 950px;
             margin: 0 auto 20px auto;
@@ -112,7 +114,7 @@
         #barraPesquisa { flex: 2; }
         #ordenacaoLista { flex: 1; font-weight: bold; cursor: pointer; }
 
-        /* --- FORMULÁRIO DE CRIAÇÃO (Estilo Moderno e Compacto) --- */
+        /* --- FORMULÁRIO DE CRIAÇÃO --- */
         #criador-form {
             background-color: #14171f;
             padding: 20px;
@@ -179,7 +181,7 @@
         .btn-massa { background: #2ed573; color: white; }
         .btn-massa:hover { background: #26af5f; }
 
-        /* --- ABAS DE FILTRAGEM (Estilo Customizado das Fotos) --- */
+        /* --- ABAS DE FILTRAGEM --- */
         .btn-aba-container {
             display: flex;
             justify-content: center;
@@ -227,6 +229,14 @@
             margin: 0 auto;
             padding: 5px 0;
         }
+
+        /* Envoltório para facilitar a captura da foto perfeita da lista */
+        #area-print-lista {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #0b0c10;
+        }
     </style>
 </head>
 <body>
@@ -238,7 +248,7 @@
 
     <div class="toolbar-container" id="toolbar-menu">
         <div class="toolbar-left">
-            <button id="togglePrintBtn" onclick="togglePrintMode()">Modo Print</button>
+            <button id="togglePrintBtn" class="ui-btn" onclick="baixarListaComoPrint()">Baixar Lista em Print 📸</button>
         </div>
         <div class="toolbar-right">
             <button id="btn-limpar-tudo" class="ui-btn" onclick="resetarParaPadraoCodigo()">⚠️ Restaurar Tudo da Lista</button>
@@ -321,11 +331,12 @@
         <button type="button" class="btn-backup" onclick="exportarLista()">Copiar Backup da Lista 📋</button>
     </div>
 
-    <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
-    <div id="container-cards"></div>
+    <div id="area-print-lista">
+        <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
+        <div id="container-cards"></div>
+    </div>
 
     <script>
-        // O Array original gigante enviado por você foi preservado 100% intacto abaixo:
         const BASE_PADRAO_MARRETAS = [
             {"id":1001,"nome":"1 Billion","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
             {"id":1002,"nome":"2019","imgSrc":"https://i.postimg.cc/HkMdfvtB/2019.webp","raridade":"legendary"},
@@ -338,7 +349,7 @@
             {"id":1009,"nome":"2026","imgSrc":"https://i.postimg.cc/90fcKWxR/2026.webp","raridade":"legendary"},
             {"id":1010,"nome":"2nd Anniversary","imgSrc":"https://i.postimg.cc/rF3qZ25f/2nd-Anniversary.webp","raridade":"legendary"},
             {"id":1011,"nome":"3rd Anniversary","imgSrc":"https://i.postimg.cc/ncgnSfqh/3rd-Anniversary.webp","raridade":"legendary"},
-            {"id":1012,"nome":"4th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLfS/4th-Anniversary.webp","raridade":"legendary"},
+            {"id":1012,"nome":"4th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLS/4th-Anniversary.webp","raridade":"legendary"},
             {"id":1013,"nome":"5 Billion","imgSrc":"https://i.postimg.cc/DZ62xWc1/5-Billion.webp","raridade":"legendary"},
             {"id":1014,"nome":"5th Anniversary","imgSrc":"https://i.postimg.cc/tJm9HLfv/5th-Anniversary.webp","raridade":"legendary"},
             {"id":1015,"nome":"6th Anniversary","imgSrc":"https://i.postimg.cc/J0dRW9gd/6th-Anniversary.webp","raridade":"legendary"},
@@ -612,18 +623,34 @@
             alert('Links extras adicionados!');
         }
 
-        function togglePrintMode() {
-            document.body.classList.toggle('hide-mode');
-            const btn = document.getElementById('togglePrintBtn');
-            if (document.body.classList.contains('hide-mode')) {
-                btn.innerText = "Modo Edição";
-                btn.style.background = "#ffa502";
-                btn.style.color = "#000";
-            } else {
-                btn.innerText = "Modo Print";
-                btn.style.background = "#1c2336";
-                btn.style.color = "#ffa502";
-            }
+        /* --- NOVA FUNÇÃO ATUALIZADA: Baixa o print exclusivo da aba selecionada --- */
+        function baixarListaComoPrint() {
+            // Entra no modo print temporariamente ocultando o form, botões de ação e pesquisa
+            document.body.classList.add('hide-mode');
+
+            const elementoAlvo = document.getElementById('area-print-lista');
+
+            // Gera a foto estilizada
+            html2canvas(elementoAlvo, {
+                useCORS: true,
+                scale: 2, // Garante alta definição de imagem
+                backgroundColor: '#0b0c10' // Força o fundo escuro bonito
+            }).then(canvas => {
+                const imagemUrl = canvas.toDataURL('image/png');
+                
+                const linkDownload = document.createElement('a');
+                linkDownload.href = imagemUrl;
+                // O nome do arquivo vai mudar sozinho dependendo da aba ativa! Ex: lista-marretas-epics.png
+                linkDownload.download = `lista-marretas-${raridadeAtual}.png`;
+                
+                linkDownload.click();
+
+                // Remove o modo print para o site voltar ao normal após o download
+                document.body.classList.remove('hide-mode');
+            }).catch(err => {
+                console.error("Erro ao gerar print:", err);
+                document.body.classList.remove('hide-mode');
+            });
         }
 
         function criarNovoCard() {
@@ -668,12 +695,10 @@
             document.getElementById('valorItem').value = '';
         }
 
-        /* --- ATUALIZADO: RENDERIZADOR COMPLETO COM ESTILO CLUBE PREMIUM DAS FOTOS --- */
         function renderizarCardHTML(item) {
             const container = document.getElementById('container-cards');
             const card = document.createElement("div");
 
-            // Customização Exata do Card de Exibição
             card.style.backgroundColor = '#14171f';
             card.style.border = `1.5px solid #2d3545`; 
             card.style.borderRadius = '10px';
@@ -733,7 +758,6 @@
                 </div>
             `;
 
-            // Mantendo a lógica de edição intacta
             card.querySelector('.btn-editar').addEventListener('click', function() {
                 const novoNome = prompt("Mudar nome:", item.nome);
                 const novoValor = prompt("Novo Valor:", item.valor);
