@@ -897,28 +897,34 @@
         }
 
         function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
-            const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
-            if (!containerEstrelas) return;
-            
-            let notaNum = parseFloat(notaEstrelas) || 0;
-            let estrelasHTML = '';
-            const estiloEstrela = `font-size: 11px; display: inline-block; position: relative; font-family: 'Segoe UI symbol', 'Arial', sans-serif; font-weight: bold; line-height: 1; vertical-align: middle; margin: 0 1px;`;
+    const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
+    if (!containerEstrelas) return;
+    
+    let notaNum = parseFloat(notaEstrelas) || 0;
+    let estrelasHTML = '';
+    
+    // Novo estilo com a fonte corrigida para todas as estrelas ficarem cheinhas
+    const estiloEstrela = `font-size: 11px; display: inline-block; position: relative; font-family: 'Segoe UI Symbol', 'Arial', sans-serif; font-weight: bold; line-height: 1; vertical-align: middle; margin: 0 1px;`;
 
-            for (let i = 1; i <= 5; i++) {
-                if (notaNum >= i) {
-                    estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
-                } else if (notaNum > i - 1 && notaNum < i) {
-                    estrelasHTML += `
-                        <span style="${estiloEstrela} color: #323b54;">★
-                            <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: sans-serif;">★</span>
-                        </span>
-                    `;
-                } else {
-                    estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">☆</span>`;
-                }
-            }
-            containerEstrelas.innerHTML = estrelasHTML;
+    for (let i = 1; i <= 5; i++) {
+        if (notaNum >= i) {
+            // Estrela completamente cheia
+            estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`;
+        } else if (notaNum > i - 1 && notaNum < i) {
+            // Estrela metade (Ajustada com a nova fonte no "miolo" também)
+            estrelasHTML += `
+                <span style="${estiloEstrela} color: #323b54;">★
+                    <span style="position: absolute; top: 0; left: 0; width: 50%; overflow: hidden; color: #ffb830; font-family: 'Segoe UI Symbol', 'Arial', sans-serif; font-weight: bold;">★</span>
+                </span>
+            `;
+        } else {
+            // Estrela vazia
+            estrelasHTML += `<span style="${estiloEstrela} color: #323b54;">☆</span>`;
         }
+    }
+    containerEstrelas.innerHTML = estrelasHTML;
+}
+
 
         function ordenarEAtualizar() {
             const criterio = document.getElementById('ordenacaoLista').value;
