@@ -32,15 +32,6 @@
             padding: 20px;
         }
 
-        /* Classes de Controle do Modo Print/Baixar */
-        .hide-mode #criador-form,
-        .hide-mode .btn-aba-container,
-        .hide-mode #btn-exportar-container,
-        .hide-mode #search-container,
-        .hide-mode .btn-deletar,
-        .hide-mode .btn-acoes-card,
-        .hide-mode #btn-limpar-tudo { display: none !important; }
-
         /* Título Principal */
         .main-header {
             text-align: center;
@@ -231,7 +222,7 @@
             gap: 12px;
         }
         
-        /* AJUSTADO: Estrutura horizontal compacta idêntica a uma Tier List Real */
+        /* Estrutura horizontal compacta idêntica a uma Tier List Real */
         .tier-row-container {
             max-width: 950px;
             margin: 0 auto 10px auto;
@@ -258,7 +249,6 @@
             padding: 10px;
         }
         
-        /* Modificado para alinhar em linha de 15-20 itens usando flex em vez de grid travado */
         .tier-cards-grid {
             display: flex;
             flex-wrap: wrap;
@@ -268,150 +258,148 @@
             background-color: #14171f;
         }
 
-        /* Ajuste do tamanho dos cards individuais exclusivos para o Modo Print */
-        .hide-mode .card-marreta-item {
+        /* Estilos aplicados dinamicamente quando a classe .print-active estiver ativa */
+        .print-active .card-marreta-item {
             width: 76px !important;
             min-width: 76px !important;
             padding: 4px !important;
             border-radius: 4px !important;
             gap: 2px !important;
         }
-        .hide-mode .card-marreta-item .box-img-holder {
+        .print-active .card-marreta-item .box-img-holder {
             height: 55px !important;
         }
-        .hide-mode .card-marreta-item h3 {
+        .print-active .card-marreta-item h3 {
             font-size: 10px !important;
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .hide-mode .card-marreta-item .txt-posicao-automatica,
-        .hide-mode .card-marreta-item .box-badge-status,
-        .hide-mode .card-marreta-item .txt-estabilidade,
-        .hide-mode .card-marreta-item span[style*="uppercase"],
-        .hide-mode .card-marreta-item div[style*="letter-spacing"] {
+        .print-active .card-marreta-item .txt-posicao-automatica,
+        .print-active .card-marreta-item .box-badge-status,
+        .print-active .card-marreta-item .txt-estabilidade,
+        .print-active .card-marreta-item span[style*="uppercase"],
+        .print-active .card-marreta-item .btn-acoes-card,
+        .print-active .card-marreta-item .btn-deletar,
+        .print-active .card-marreta-item div[style*="letter-spacing"] {
             display: none !important;
         }
-        .hide-mode .card-marreta-item .box-valor-dinamico {
+        .print-active .card-marreta-item .box-valor-dinamico {
             font-size: 11px !important;
             text-align: center;
             width: 100%;
             display: block;
         }
-        .hide-mode .card-marreta-item .txt-demanda-estrelas {
+        .print-active .card-marreta-item .txt-demanda-estrelas {
             font-size: 8px !important;
             text-align: center;
             width: 100%;
             display: block;
         }
-        .hide-mode .card-marreta-item div[style*="border-top"] {
+        .print-active .card-marreta-item div[style*="border-top"] {
             border: none !important;
             padding-top: 0 !important;
             margin-top: 0 !important;
-        }
-
-        @media print {
-            body { background-color: #0b0c10 !important; padding: 0; }
-            #criador-form, .btn-aba-container, #btn-exportar-container, 
-            #search-container, .btn-deletar, .btn-acoes-card, 
-            #btn-limpar-tudo, .toolbar-container { display: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="main-header">
-        <h1>FTF Custom Values 👑</h1>
-        <p>O seu ranking personalizado, justo e sem manipulação</p>
-    </div>
-
-    <div class="toolbar-container" id="toolbar-menu">
-        <div class="toolbar-left">
-            <button id="togglePrintBtn" class="ui-btn" onclick="togglePrintMode()">👁️ Visualizar Modo Print</button>
-            <button id="downloadListBtn" class="ui-btn" onclick="baixarListaPrint()">📸 Salvar Direto na Galeria</button>
-        </div>
-        <div class="toolbar-right">
-            <button id="btn-limpar-tudo" class="ui-btn" onclick="resetarParaPadraoCodigo()">⚠️ Restaurar Tudo da Lista</button>
-        </div>
-    </div>
-
-    <div class="search-wrapper" id="search-container">
-        <input type="text" id="barraPesquisa" class="input-style" placeholder="🔍 Pesquisar marreta pelo nome..." oninput="carregarCardsSalvos()">
-        
-        <select id="ordenacaoLista" class="input-style" onchange="ordenarEAtualizar()">
-            <option value="padrao">🔢 Ordem Padrão</option>
-            <option value="nome-az">🔤 Nome (A-Z)</option>
-            <option value="nome-za">🔤 Nome (Z-A)</option>
-            <option value="valor-alto">📈 Valor (Maior-Menor)</option>
-            <option value="valor-baixo">📉 Valor (Menor-Maior)</option>
-        </select>
-    </div>
-
-    <div id="criador-form">
-        <div class="form-tabs">
-            <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual</button>
-            <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Vários Links Extra 🚀</button>
+    <div id="interface-completa">
+        <div class="main-header">
+            <h1>FTF Custom Values 👑</h1>
+            <p>O seu ranking personalizado, justo e sem manipulação</p>
         </div>
 
-        <div id="form-individual" class="form-section">
-            <h3>Adicionar Novo Item Avulso</h3>
-            <input type="text" id="nomeItem" class="input-style form-input-full" placeholder="Nome do Item">
-            <input type="text" id="linkImagem" class="input-style form-input-full" placeholder="Link da Imagem (URL)">
-            <input type="text" id="valorItem" class="input-style form-input-full" placeholder="Valor em FV">
+        <div class="toolbar-container" id="toolbar-menu">
+            <div class="toolbar-left">
+                <button id="togglePrintBtn" class="ui-btn" onclick="togglePrintMode()">👁️ Visualizar Modo Print</button>
+                <button id="downloadListBtn" class="ui-btn" onclick="baixarListaPrint()">📸 Salvar Direto na Galeria</button>
+            </div>
+            <div class="toolbar-right">
+                <button id="btn-limpar-tudo" class="ui-btn" onclick="resetarParaPadraoCodigo()">⚠️ Restaurar Tudo da Lista</button>
+            </div>
+        </div>
 
-            <label class="form-label">Raridade do Item:</label>
-            <select id="raridadeItem" class="input-style form-input-full">
-                <option value="legendary">⭐ Legendary</option>
-                <option value="epics">✨ Epics</option>
-                <option value="rares">💎 Rares</option>
-                <option value="commons">📦 Commons</option>
+        <div class="search-wrapper" id="search-container">
+            <input type="text" id="barraPesquisa" class="input-style" placeholder="🔍 Pesquisar marreta pelo nome..." oninput="carregarCardsSalvos()">
+            
+            <select id="ordenacaoLista" class="input-style" onchange="ordenarEAtualizar()">
+                <option value="padrao">🔢 Ordem Padrão</option>
+                <option value="nome-az">🔤 Nome (A-Z)</option>
+                <option value="nome-za">🔤 Nome (Z-A)</option>
+                <option value="valor-alto">📈 Valor (Maior-Menor)</option>
+                <option value="valor-baixo">📉 Valor (Menor-Maior)</option>
             </select>
-
-            <label class="form-label">Demanda (Ex: 4.5):</label>
-            <input type="text" id="demandaNota" class="input-style form-input-full" placeholder="Ex: 4.5">
-
-            <label class="form-label">Tendência de Valor:</label>
-            <select id="tendenciaValor" class="input-style form-input-full">
-                <option value="none">Estável / Sem Setinha</option>
-                <option value="subiu">Subiu (↑ Verde)</option>
-                <option value="caiu">Caiu (↓ Vermelho)</option>
-                <option value="corrigido">Corrigido (* Amarelo)</option>
-            </select>
-
-            <label class="form-label">Status Especial:</label>
-            <select id="statusItem" class="input-style form-input-full">
-                <option value="none">Nenhum</option>
-                <option value="overpaid">Overpaid For (📈)</option>
-                <option value="underpaid">Underpaid For (📉)</option>
-                <option value="niche">Niche (💎 Raro)</option>
-            </select>
-
-            <input type="text" id="estabilidadeItem" class="input-style form-input-full" placeholder="Estabilidade (Ex: Stable)">
-            <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item ✨</button>
         </div>
 
-        <div id="form-massa" class="form-section" style="display: none;">
-            <h3>Importador Extra</h3>
-            <p style="color: #62697e; font-size: 12px; margin-bottom: 15px;">Quer adicionar mais links no futuro? Cole aqui:</p>
-            <textarea id="listaLinksMassa" class="input-style form-input-full" rows="8" placeholder="Cole os links extras aqui..." style="resize: vertical; font-family: monospace; font-size: 12px;"></textarea>
-            <button type="button" class="btn-submit" onclick="importarLinksEmMassa()">Adicionar à Lista 🚀</button>
+        <div id="criador-form">
+            <div class="form-tabs">
+                <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual</button>
+                <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Vários Links Extra 🚀</button>
+            </div>
+
+            <div id="form-individual" class="form-section">
+                <h3>Adicionar Novo Item Avulso</h3>
+                <input type="text" id="nomeItem" class="input-style form-input-full" placeholder="Nome do Item">
+                <input type="text" id="linkImagem" class="input-style form-input-full" placeholder="Link da Imagem (URL)">
+                <input type="text" id="valorItem" class="input-style form-input-full" placeholder="Valor em FV">
+
+                <label class="form-label">Raridade do Item:</label>
+                <select id="raridadeItem" class="input-style form-input-full">
+                    <option value="legendary">⭐ Legendary</option>
+                    <option value="epics">✨ Epics</option>
+                    <option value="rares">💎 Rares</option>
+                    <option value="commons">📦 Commons</option>
+                </select>
+
+                <label class="form-label">Demanda (Ex: 4.5):</label>
+                <input type="text" id="demandaNota" class="input-style form-input-full" placeholder="Ex: 4.5">
+
+                <label class="form-label">Tendência de Valor:</label>
+                <select id="tendenciaValor" class="input-style form-input-full">
+                    <option value="none">Estável / Sem Setinha</option>
+                    <option value="subiu">Subiu (↑ Verde)</option>
+                    <option value="caiu">Caiu (↓ Vermelho)</option>
+                    <option value="corrigido">Corrigido (* Amarelo)</option>
+                </select>
+
+                <label class="form-label">Status Especial:</label>
+                <select id="statusItem" class="input-style form-input-full">
+                    <option value="none">Nenhum</option>
+                    <option value="overpaid">Overpaid For (📈)</option>
+                    <option value="underpaid">Underpaid For (📉)</option>
+                    <option value="niche">Niche (💎 Raro)</option>
+                </select>
+
+                <input type="text" id="estabilidadeItem" class="input-style form-input-full" placeholder="Estabilidade (Ex: Stable)">
+                <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item ✨</button>
+            </div>
+
+            <div id="form-massa" class="form-section" style="display: none;">
+                <h3>Importador Extra</h3>
+                <p style="color: #62697e; font-size: 12px; margin-bottom: 15px;">Quer adicionar mais links no futuro? Cole aqui:</p>
+                <textarea id="listaLinksMassa" class="input-style form-input-full" rows="8" placeholder="Cole os links extras aqui..." style="resize: vertical; font-family: monospace; font-size: 12px;"></textarea>
+                <button type="button" class="btn-submit" onclick="importarLinksEmMassa()">Adicionar à Lista 🚀</button>
+            </div>
         </div>
-    </div>
 
-    <hr style="border: none; border-top: 1px solid #1a2235; margin: 30px 0;">
+        <div class="btn-aba-container" id="abas-filtro">
+            <button class="btn-aba" id="aba-legendary" onclick="filtrarRaridade('legendary')" style="background: #1c2336; color: #ffa502; border: 1px solid #ffa502;">👑 Legendaries</button>
+            <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')" style="color: #a55eea;">✨ Epics</button>
+            <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')" style="color: #45aaf2;">💎 Rares</button>
+            <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')" style="color: #a5b1c2;">📦 Commons</button>
+        </div>
 
-    <div class="btn-aba-container">
-        <button class="btn-aba" id="aba-legendary" onclick="filtrarRaridade('legendary')" style="background: #1c2336; color: #ffa502; border: 1px solid #ffa502;">👑 Legendaries</button>
-        <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')" style="color: #a55eea;">✨ Epics</button>
-        <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')" style="color: #45aaf2;">💎 Rares</button>
-        <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')" style="color: #a5b1c2;">📦 Commons</button>
-    </div>
-
-    <div id="btn-exportar-container">
-        <button type="button" class="btn-backup" onclick="exportarLista()">Copiar Backup da Lista 📋</button>
+        <div id="btn-exportar-container">
+            <button type="button" class="btn-backup" onclick="exportarLista()">Copiar Backup da Lista 📋</button>
+        </div>
     </div>
 
     <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
     
-    <div id="capture-zone" style="background-color: #0b0c10; padding: 10px; border-radius: 8px;">
+    <div id="capture-zone" style="background-color: #0b0c10; padding: 15px; border-radius: 8px;">
         <div id="container-lista-dinamica"></div>
     </div>
 
@@ -480,15 +468,9 @@
 
         function forçarInjecaoListaPadrao() {
             listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
-                id: m.id,
-                nome: m.nome || "Marreta",
-                valor: m.valor || '10',
-                raridade: m.raridade || 'legendary',
-                demanda: m.demanda || '5',
-                tendencia: m.tendencia || 'none',
-                status: m.status || 'none',
-                templates: m.templates || 'Stable',
-                imgSrc: m.imgSrc
+                id: m.id, nome: m.nome || "Marreta", valor: m.valor || '10', raridade: m.raridade || 'legendary',
+                demanda: m.demanda || '5', tendencia: m.tendencia || 'none', status: m.status || 'none',
+                templates: m.templates || 'Stable', imgSrc: m.imgSrc
             }));
             localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
         }
@@ -524,22 +506,12 @@
             const regexLinks = /(https?:\/\/[^\s]+)/g;
             const linksEncontrados = campoTexto.match(regexLinks);
 
-            if(!linksEncontrados) {
-                alert('Nenhum link detectado.');
-                return;
-            }
+            if(!linksEncontrados) { alert('Nenhum link detectado.'); return; }
 
             linksEncontrados.forEach((url, i) => {
                 const novoObj = { 
-                    id: Date.now() + i + Math.floor(Math.random() * 9000), 
-                    nome: `Item Extra ${listaDeMarretas.length + 1}`, 
-                    valor: '10', 
-                    raridade: raridadeAtual, 
-                    demanda: '5', 
-                    tendencia: 'none', 
-                    status: 'none', 
-                    templates: 'Stable', 
-                    imgSrc: url.trim() 
+                    id: Date.now() + i + Math.floor(Math.random() * 9000), nome: `Item Extra ${listaDeMarretas.length + 1}`, 
+                    valor: '10', raridade: raridadeAtual, demanda: '5', tendencia: 'none', status: 'none', templates: 'Stable', imgSrc: url.trim() 
                 };
                 listaDeMarretas.push(novoObj);
             });
@@ -552,14 +524,15 @@
 
         function togglePrintMode() {
             modoPrintAtivo = !modoPrintAtivo;
-            document.body.classList.toggle('hide-mode', modoPrintAtivo);
             
             const btn = document.getElementById('togglePrintBtn');
             if (modoPrintAtivo) {
+                document.getElementById('capture-zone').classList.add('print-active');
                 btn.innerText = "👁️ Modo Edição";
                 btn.style.background = "#ffa502";
                 btn.style.color = "#000";
             } else {
+                document.getElementById('capture-zone').classList.remove('print-active');
                 btn.innerText = "👁️ Visualizar Modo Print";
                 btn.style.background = "#1c2336";
                 btn.style.color = "#ffa502";
@@ -567,32 +540,42 @@
             carregarCardsSalvos();
         }
 
-        // NOVA FUNÇÃO: Processa a captura nativa do bloco HTML transformando em arquivo .png baixável
         function baixarListaPrint() {
-            if (!modoPrintAtivo) {
+            // Se não estiver no modo print, ativa temporariamente
+            const estavaEdicao = !modoPrintAtivo;
+            if (estavaEdicao) {
                 togglePrintMode();
             }
+
+            // Oculta a interface de edição completamente do documento para não confundir o renderizador
+            document.getElementById('interface-completa').style.display = 'none';
             
-            alert("Montando sua imagem... Aguarde um segundo! 📸");
+            alert("Gerando imagem em alta resolução... Aguarde!");
 
             setTimeout(() => {
                 const alvo = document.getElementById('capture-zone');
                 
                 html2canvas(alvo, {
                     useCORS: true, 
-                    allowTaint: true,
+                    allowTaint: false,
+                    logging: false,
                     backgroundColor: "#0b0c10",
-                    scale: 2 // Dobra a resolução para ficar nítido e perfeito
+                    scale: 2 // Mantém nítido
                 }).then(canvas => {
                     const link = document.createElement('a');
-                    link.download = `FTF-TierList-${raridadeAtual}.png`;
+                    link.download = `FTF-Values-${raridadeAtual}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
+                    
+                    // Restaura a interface de volta
+                    document.getElementById('interface-completa').style.style = '';
+                    document.getElementById('interface-completa').style.display = 'block';
+                    if (estavaEdicao) { togglePrintMode(); }
                 }).catch(err => {
-                    alert("Erro ao gerar imagem. Tente usar o Print do celular caso seu navegador bloqueie.");
-                    console.error(err);
+                    alert("A imagem foi bloqueada pelo navegador do celular. Tire um print da tela no modo de visualização!");
+                    document.getElementById('interface-completa').style.display = 'block';
                 });
-            }, 500);
+            }, 600);
         }
 
         function criarNovoCard() {
@@ -646,7 +629,7 @@
                 <button class="btn-deletar" style="position: absolute; top: 8px; right: 8px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 13px; z-index: 5;">❌</button>
                 
                 <div class="box-img-holder" style="background-color: #0e1117; width: 100%; height: 110px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 6px; border: 1px solid #1f2533; padding: 4px;">
-                    <img src="${caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
+                    <img src="${caminhoImagem}" alt="${item.nome}" crossorigin="anonymous" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
                 </div>
 
                 <span class="txt-posicao-automatica" style="position: absolute; top: 14px; left: 14px; background: #ffa502; color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
@@ -710,18 +693,12 @@
 
             card.querySelector('.btn-subir').addEventListener('click', function() {
                 const irmaoAnterior = card.previousElementSibling;
-                if (irmaoAnterior) {
-                    containerGrid.insertBefore(card, irmaoAnterior);
-                    reordenarArrayEGuardar();
-                }
+                if (irmaoAnterior) { containerGrid.insertBefore(card, irmaoAnterior); reordenarArrayEGuardar(); }
             });
 
             card.querySelector('.btn-descer').addEventListener('click', function() {
                 const proximoIrmao = card.nextElementSibling;
-                if (proximoIrmao) {
-                    containerGrid.insertBefore(proximoIrmao, card);
-                    reordenarArrayEGuardar();
-                }
+                if (proximoIrmao) { containerGrid.insertBefore(proximoIrmao, card); reordenarArrayEGuardar(); }
             });
 
             atualizarEstiloValorDoCard(card, item);
@@ -772,7 +749,7 @@
             
             let notaNum = parseFloat(notaEstrelas) || 0;
             let estrelasHTML = '';
-            const estiloEstrela = `font-size: 13px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle; margin: 0 1px;`;
+            const estiloEstrela = `font-size: 12px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle; margin: 0 1px;`;
 
             for (let i = 1; i <= 5; i++) {
                 if (notaNum >= i) { estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`; } 
@@ -817,8 +794,7 @@
             containerMestre.innerHTML = '';
 
             if (modoPrintAtivo) {
-                // ITENS POR TIER AUMENTADO PARA 18 PARA ENCAIXAR COMPACTO POR LINHA
-                const itensPorTier = 18;
+                const itensPorTier = 18; // Capacidade perfeita por linha horizontal
                 const totalTiers = Math.ceil(itensFiltrados.length / itensPorTier);
 
                 for (let i = 0; i < totalTiers; i++) {
