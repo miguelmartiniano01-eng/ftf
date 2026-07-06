@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,7 +18,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-        <style>
+    <style>
         /* Reset e Configurações Gerais Baseadas nas Imagens */
         *, *::before, *::after {
             box-sizing: border-box;
@@ -41,6 +42,12 @@
         .hide-mode .btn-acoes-card,
         .hide-mode #btn-limpar-tudo,
         .hide-mode .btn-salvar-galeria { display: none !important; }
+
+        /* Regra para ocultar os controles do card por botão */
+        .ocultar-controles-cards .btn-acoes-card,
+        .ocultar-controles-cards .btn-deletar {
+            display: none !important;
+        }
 
         /* Título Principal */
         .main-header {
@@ -225,7 +232,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* TELA NORMAL: Mudado para exatamente 5 colunas idênticas */
+        /* TELA NORMAL: Exatamente 5 colunas idênticas */
         #container-cards {
             display: grid;
             grid-template-columns: repeat(5, 1fr); 
@@ -244,31 +251,48 @@
             gap: 8px !important;
         }
 
-        /* CORREÇÃO DOS CARDS: Força todos a respeitarem as colunas sem deformar */
+        /* CORREÇÃO DOS CARDS */
         #container-cards > div {
             min-width: 0 !important;  
             width: 100% !important;   
             box-sizing: border-box !important;
         }
 
+        /* --- MELHORIAS VISUAIS EXCLUSIVAS PARA O LAYOUT DE 5 COLUNAS (TELA NORMAL) --- */
+        body:not(.hide-mode) #container-cards h3 {
+            font-size: 14px !important;
+            margin-bottom: 4px !important;
+        }
+        body:not(.hide-mode) #container-cards .box-valor-dinamico {
+            font-size: 16px !important;
+        }
+        body:not(.hide-mode) #container-cards .txt-estabilidade {
+            font-size: 9px !important;
+            padding: 2px 6px !important;
+        }
+        body:not(.hide-mode) #container-cards .txt-demanda-estrelas {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
         /* Responsividade Inteligente da Foto do Item */
         #container-cards img { 
             width: 100% !important;      
-            max-width: 110px !important; /* Tamanho limite ideal para as marretas */           
+            max-width: 110px !important;          
             height: auto !important;     
             object-fit: contain !important;         
             margin: 0 auto;
             display: block;
         }
 
-        /* Ajuste dinâmico do container interno da imagem para acompanhar o tamanho do card */
+        /* Ajuste dinâmico do container interno da imagem */
         #container-cards > div > div:first-of-type {
             height: auto !important;
             min-height: 85px !important;
             padding: 10px !important;
         }
     </style>
-
 </head>
 <body id="capture-area">
 
@@ -280,6 +304,7 @@
     <div class="toolbar-container" id="toolbar-menu">
         <div class="toolbar-left">
             <button id="togglePrintBtn" class="ui-btn" onclick="togglePrintMode()">Modo Print</button>
+            <button id="toggleControlesBtn" class="ui-btn" style="background-color: #1c2336; color: #ff4757; border: 1px solid #2d3854;" onclick="toggleControlesCards()">Ocultar Controles</button>
             <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Salvar na Galeria</button>
         </div>
         <div class="toolbar-right">
@@ -603,9 +628,9 @@
             listaDeMarretas = BASE_PADRAO_MARRETAS.map(m => ({
                 id: m.id,
                 nome: m.nome || "Marreta",
-                valor: m.valor || '10',  /* Corrigido aqui para evitar undefined */
+                valor: m.valor || '10',  
                 raridade: m.raridade || 'legendary',
-                demanda: m.demanda || '5', /* Corrigido aqui para evitar undefined */
+                demanda: m.demanda || '5', 
                 tendencia: m.tendencia || 'none',
                 status: m.status || 'none',
                 templates: m.templates || 'Stable',
@@ -683,12 +708,26 @@
                 btn.style.background = "#1c2336";
                 btn.style.color = "#ffa502";
             }
+            carregarCardsSalvos(); 
+        }
+
+        function toggleControlesCards() {
+            document.body.classList.toggle('ocultar-controles-cards');
+            const btn = document.getElementById('toggleControlesBtn');
+            if (document.body.classList.contains('ocultar-controles-cards')) {
+                btn.innerText = "Mostrar Controles";
+                btn.style.color = "#2ed573";
+            } else {
+                btn.innerText = "Ocultar Controles";
+                btn.style.color = "#ff4757";
+            }
         }
 
         function salvarNaGaleria() {
             const jáEstavaEmPrint = document.body.classList.contains('hide-mode');
             if (!jáEstavaEmPrint) {
                 document.body.classList.add('hide-mode');
+                carregarCardsSalvos();
             }
 
             setTimeout(() => {
@@ -711,10 +750,14 @@
                         btn.innerText = "Modo Print";
                         btn.style.background = "#1c2336";
                         btn.style.color = "#ffa502";
+                        carregarCardsSalvos();
                     }
                 }).catch(err => {
                     alert("Erro ao gerar imagem. Verifique as URLs externas das imagens.");
-                    if (!jáEstavaEmPrint) document.body.classList.remove('hide-mode');
+                    if (!jáEstavaEmPrint) {
+                        document.body.classList.remove('hide-mode');
+                        carregarCardsSalvos();
+                    }
                 });
             }, 350);
         }
@@ -804,8 +847,8 @@
 
                 <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
                 
-                <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
-                <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
+                <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;" title="${item.nome}">${item.nome}</h3>
+                <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: center; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
                 
                 <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                     <div>
@@ -818,7 +861,7 @@
                     <div class="box-badge-status" style="display: flex; justify-content: flex-end; margin-top: -1px; min-height: 10px;"></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1px; border-top: 1px solid #1f2533; padding-top: 4px;">
                         <span style="color: #4b5266; font-size: 7px; font-weight: bold; letter-spacing: 0.3px;">DEMAND</span>
-                        <span class="txt-demanda-estrelas" style="font-size: 9px;"></span>
+                        <span class="txt-demanda-estrelas"></span>
                     </div>
                 </div>
 
@@ -926,46 +969,41 @@
         }
 
         function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
-    const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
-    if (!containerEstrelas) return;
-    
-    let notaNum = parseFloat(notaEstrelas) || 0;
-    let estrelasHTML = '';
-    
-    const TAMANHO_ESTRELA = '9px'; 
-    const idGradiente = 'metade-estrela-' + Math.floor(Math.random() * 1000000);
+            const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
+            if (!containerEstrelas) return;
+            
+            let notaNum = parseFloat(notaEstrelas) || 0;
+            let estrelasHTML = '';
+            
+            // Estrelas grandes na tela de 5 colunas e pequenas (9px) no modo print/16 colunas
+            const eModoPrint = document.body.classList.contains('hide-mode');
+            const TAMANHO_ESTRELA = eModoPrint ? '9px' : '14px'; 
 
-    // Estrela cheia: Totalmente amarela
-    const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-    
-    // Estrela vazia: Sem preenchimento interno, apenas a borda escura
-    const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #232a3d; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+            const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+            const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #232a3d; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
 
-    for (let i = 1; i <= 5; i++) {
-        if (notaNum >= i) {
-            estrelasHTML += svgEstrelaCheia;
+            for (let i = 1; i <= 5; i++) {
+                if (notaNum >= i) {
+                    estrelasHTML += svgEstrelaCheia;
                 } else if (notaNum > i - 1 && notaNum < i) {
-            // Duas camadas perfeitas: a base escura preenchida e a metade amarela por cima sem erros de antialiasing
-            estrelasHTML += `
-                <span style="display: inline-block; position: relative; width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; margin: 0 0.5px; vertical-align: middle; line-height: 1;">
-                    <svg viewBox="0 0 24 24" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #232a3d;">
-                        <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
-                    </svg>
-                    <span style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
-                        <svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830;">
-                            <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
-                        </svg>
-                    </span>
-                </span>
-            `;
-        } else {
-            estrelasHTML += svgEstrelaVazia;
+                    estrelasHTML += `
+                        <span style="display: inline-block; position: relative; width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; margin: 0 0.5px; vertical-align: middle; line-height: 1;">
+                            <svg viewBox="0 0 24 24" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #232a3d;">
+                                <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
+                            </svg>
+                            <span style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
+                                <svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830;">
+                                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
+                                </svg>
+                            </span>
+                        </span>
+                    `;
+                } else {
+                    estrelasHTML += svgEstrelaVazia;
+                }
+            }
+            containerEstrelas.innerHTML = estrelasHTML;
         }
-    }
-    containerEstrelas.innerHTML = estrelasHTML;
-}
-
-
 
         function ordenarEAtualizar() {
             const criterio = document.getElementById('ordenacaoLista').value;
