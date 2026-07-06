@@ -853,7 +853,7 @@
                 <button class="btn-deletar" style="position: absolute; top: 4px; right: 4px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 11px; z-index: 5;">❌</button>
                 
                 <div style="background-color: #0e1117; width: 100%; height: 65px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; border-radius: 4px; border: 1px solid #1f2533; padding: 2px;">
-                    <img src="${caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
+                    <img src="${caminhiImagem = caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
                 </div> 
 
                <span class="txt-posicao-automatica">#--</span>
@@ -884,53 +884,6 @@
                     <button class="btn-editar" style="background: #1c2336; color: #ffa502; border: 1px solid #2d3854; padding: 3px; cursor: pointer; border-radius: 3px; font-size: 9px; font-weight: bold;">✏️ Editar</button>
                 </div>
             `;
-
-          card.querySelector('.btn-editar').addEventListener('click', function() {
-                // 1. Nome, Link e Valor continuam texto livre
-                const novoNome = prompt("Mudar nome:", item.nome);
-                if (novoNome !== null) item.nome = novoNome.trim();
-
-                const novoLink = prompt("Novo Link da Imagem:", item.imgSrc || "");
-                if (novoLink !== null) item.imgSrc = novoLink.trim();
-
-                const novoValor = prompt("Novo Valor:", item.valor);
-                if (novoValor !== null) item.valor = novoValor.trim();
-                
-                // 2. Menu para Raridade
-                const menuRaridade = prompt(
-                    "Escolha a Raridade:\n\n" +
-                    "1 - 👑 Legendary\n" +
-                    "2 - ✨ Epic\n" +
-                    "3 - 💎 Rare\n" +
-                    "4 - 📦 Common", 
-                    "1"
-                );
-                if (menuRaridade === "1") item.raridade = "legendary";
-                else if (menuRaridade === "2") item.raridade = "epics";
-                else if (menuRaridade === "3") item.raridade = "rares";
-                else if (menuRaridade === "4") item.raridade = "commons";
-
-                // 3. Menu para Demanda (Estrelas)
-                const menuDemanda = prompt(
-                    "Escolha a nota de Demanda (0 a 5):\n\n" +
-                    "Opções válidas: 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0", 
-                    item.demanda
-                );
-                if (menuDemanda !== null) item.demanda = menuDemanda.trim();
-
-                // 4. Menu para Tendência (Setinha)
-                const menuTendencia = prompt(
-                    "Escolha a Tendência de Valor:\n\n" +
-                    "1 - Estável / Sem Setinha\n" +
-                    "2 - Subiu (↑ Verde)\n" +
-                    "3 - Caiu (↓ Vermelho)\n" +
-                    "4 - Corrigido (* Amarelo)", 
-                    "1"
-                );
-                if (menuTendencia === "1") item.tendencia = "none";
-                else if (menuTendencia === "2") item.tendencia = "subiu";
-                else if (menuTendencia === "3") item.tendencia = "caiu";
-                else if (menuTendencia === "4") item.tendencia = "corrigido";
 
             card.querySelector('.btn-editar').addEventListener('click', function() {
                 // 1. Textos livres (Nome, Link e Valor)
@@ -1015,7 +968,6 @@
                 carregarCardsSalvos();
             });
 
-            // DAQUI PARA BAIXO CONTINUA EXATAMENTE IGUAL AO SEU ORIGINAL:
             card.querySelector('.btn-deletar').addEventListener('click', function() {
                 if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
                     listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
@@ -1045,7 +997,6 @@
             gerarEstrelasDemanda(card, item.demanda);
             return card;
         }
-
 
         function filtrarRaridade(raridadeAlvo) {
             raridadeAtual = raridadeAlvo;
