@@ -208,7 +208,7 @@
         #btn-exportar-container { text-align: center; margin-bottom: 25px; }
         .btn-backup { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* --- GRID DOS CARDS DE ITEM --- */
+        /* --- GRID DOS CARDS DE ITEM E TIERS --- */
         #titulo-secao {
             max-width: 950px;
             margin: 0 auto 15px auto;
@@ -219,13 +219,40 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        #container-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-            gap: 14px;
+        
+        /* Estutura de Linha de Tiers */
+        .tier-row-container {
             max-width: 950px;
-            margin: 0 auto;
-            padding: 5px 0;
+            margin: 0 auto 25px auto;
+            background-color: #11141c;
+            border: 1px solid #1f2533;
+            border-radius: 8px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .tier-label-block {
+            background-color: #ffa502;
+            color: #000;
+            width: 80px;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 16px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px;
+        }
+        .tier-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+            gap: 12px;
+            width: 100%;
+            padding: 12px;
+            background-color: #14171f;
         }
     </style>
 </head>
@@ -308,7 +335,7 @@
         </div>
     </div>
 
-    <hr style="border: null; border-top: 1px solid #1a2235; margin: 30px 0;">
+    <hr style="border: none; border-top: 1px solid #1a2235; margin: 30px 0;">
 
     <div class="btn-aba-container">
         <button class="btn-aba" id="aba-legendary" onclick="filtrarRaridade('legendary')" style="background: #1c2336; color: #ffa502; border: 1px solid #ffa502;">👑 Legendaries</button>
@@ -322,7 +349,8 @@
     </div>
 
     <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
-    <div id="container-cards"></div>
+    
+    <div id="container-tiers-mestre"></div>
 
     <script>
         // O Array original gigante enviado por você foi preservado 100% intacto abaixo:
@@ -669,8 +697,7 @@
         }
 
         /* --- ATUALIZADO: RENDERIZADOR COMPLETO COM ESTILO CLUBE PREMIUM DAS FOTOS --- */
-        function renderizarCardHTML(item) {
-            const container = document.getElementById('container-cards');
+        function renderizarCardHTML(item, containerGrid) {
             const card = document.createElement("div");
 
             // Customização Exata do Card de Exibição
@@ -767,7 +794,7 @@
             card.querySelector('.btn-subir').addEventListener('click', function() {
                 const irmaoAnterior = card.previousElementSibling;
                 if (irmaoAnterior) {
-                    container.insertBefore(card, irmaoAnterior);
+                    containerGrid.insertBefore(card, irmaoAnterior);
                     reordenarArrayEGuardar();
                 }
             });
@@ -775,7 +802,7 @@
             card.querySelector('.btn-descer').addEventListener('click', function() {
                 const proximoIrmao = card.nextElementSibling;
                 if (proximoIrmao) {
-                    container.insertBefore(proximoIrmao, card);
+                    containerGrid.insertBefore(proximoIrmao, card);
                     reordenarArrayEGuardar();
                 }
             });
@@ -885,13 +912,15 @@
             carregarCardsSalvos();
         }
 
+        /* --- MECÂNICA DE RENDERS COM CAPACIDADE DINÂMICA DE TIERS HORIZONTAIS --- */
         function carregarCardsSalvos() {
-            const container = document.getElementById('container-cards');
-            if (!container) return;
+            const mestreContainer = document.getElementById('container-tiers-mestre');
+            if (!mestreContainer) return;
 
             const barra = document.getElementById('barraPesquisa');
             const termoPesquisa = barra ? barra.value.toLowerCase() : "";
 
+            // Filtra pegando rigorosamente APENAS a aba selecionada (Legendary, Epic, etc.)
             const itensFiltrados = listaDeMarretas.filter(item => {
                 const raridadeItem = (item.raridade || 'legendary').toLowerCase();
                 const bateRaridade = raridadeItem === raridadeAtual.toLowerCase();
@@ -899,15 +928,41 @@
                 return bateRaridade && bateNome;
             });
 
-            container.innerHTML = '';
-            const fragment = document.createDocumentFragment();
+            mestreContainer.innerHTML = '';
 
-            itensFiltrados.forEach(item => {
-                const card = renderizarCardHTML(item); 
-                if (card) fragment.appendChild(card);
-            });
+            // Define quantos itens você quer colocar por Tier horizontal. Ex: 10 itens por linha.
+            const itensPorTier = 10;
+            const totalTiersNecessarios = Math.ceil(itensFiltrados.length / itensPorTier);
 
-            container.appendChild(fragment);
+            // Cria dinamicamente as fileiras horizontais de Tiers do 1 até onde for necessário
+            for (let i = 0; i < totalTiersNecessarios; i++) {
+                const numTier = i + 1;
+                const inicioIndex = i * itensPorTier;
+                const fimIndex = inicioIndex + itensPorTier;
+                const blocoFatiaMarretas = itensFiltrados.slice(inicioIndex, fimIndex);
+
+                // Criando o bloco de estrutura da linha horizontal
+                const tierRow = document.createElement('div');
+                tierRow.className = 'tier-row-container';
+
+                const labelBlock = document.createElement('div');
+                labelBlock.className = 'tier-label-block';
+                labelBlock.innerText = `T ${numTier}`;
+
+                const gridCards = document.createElement('div');
+                gridCards.className = 'tier-cards-grid';
+
+                // Injeta as marretas corretas deste Tier específico
+                blocoFatiaMarretas.forEach(item => {
+                    const card = renderizarCardHTML(item, gridCards);
+                    if (card) gridCards.appendChild(card);
+                });
+
+                tierRow.appendChild(labelBlock);
+                tierRow.appendChild(gridCards);
+                mestreContainer.appendChild(tierRow);
+            }
+
             atualizarNumbersVisuais();
         }
 
@@ -915,7 +970,8 @@
             let listaLimpa = listaDeMarretas.filter(item => (item.raridade || 'legendary') !== raridadeAtual);
             let itensReordenadosDaAba = [];
 
-            const cardsNaTela = document.querySelectorAll('#container-cards > div');
+            // Captura os itens ordenados lendo os grids internos de cada Tier na tela
+            const cardsNaTela = document.querySelectorAll('.tier-cards-grid > div');
             cardsNaTela.forEach((cardHTML) => {
                 const id = parseInt(cardHTML.getAttribute('data-id'));
                 const correspondente = listaDeMarretas.find(m => m.id === id);
@@ -930,7 +986,7 @@
         }
 
         function atualizarNumbersVisuais() {
-            const cardsNaTela = document.querySelectorAll('#container-cards > div');
+            const cardsNaTela = document.querySelectorAll('.tier-cards-grid > div');
             cardsNaTela.forEach((cardHTML, index) => {
                 const caixaTextoPosicao = cardHTML.querySelector('.txt-posicao-automatica');
                 if (caixaTextoPosicao) caixaTextoPosicao.innerText = `#${index + 1}`;
