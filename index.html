@@ -224,21 +224,33 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+        /* TELA NORMAL: Exatamente 10 colunas idênticas */
         #container-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+            grid-template-columns: repeat(10, 1fr);
             gap: 8px;
             max-width: 1808px;
             margin: 0 auto;
             padding: 5px 0;
+            width: 100%;
         }
 
-        /* FORÇA EXATAMENTE 16 COLUNAS NA HORIZONTAL DURANTE A CAPTURA */
+        /* MODO PRINT: Exatamente 16 colunas idênticas */
         .hide-mode #container-cards {
             grid-template-columns: repeat(16, 1fr) !important;
             width: 1808px !important;
             max-width: 1808px !important;
+            gap: 8px !important;
         }
+
+        /* CORREÇÃO DOS CARDS: Força todos a respeitarem o tamanho da coluna do Grid */
+        #container-cards > div, 
+        .card-item { /* Use a classe real dos seus cards aqui se não for uma div direta */
+            min-width: 0 !important;  /* Impede que o conteúdo interno estufe o card */
+            width: 100% !important;   /* Força o card a preencher 100% da sua respectiva coluna */
+            box-sizing: border-box !important;
+        }
+
     </style>
 </head>
 <body id="capture-area">
