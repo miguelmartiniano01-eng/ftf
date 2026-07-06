@@ -904,31 +904,30 @@
     let estrelasHTML = '';
     
     const TAMANHO_ESTRELA = '9px'; 
-    
-    // IDs únicos para o gradiente não dar conflito entre os cards da página
     const idGradiente = 'metade-estrela-' + Math.floor(Math.random() * 1000000);
 
-    // Estruturas normais (Cheia e Vazia)
+    // Estrela cheia continua dourada
     const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-    const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #232a3d; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+    
+    // NOVA ESTRELA VAZIA: Sem preenchimento interno, com contorno escuro e uma linha levemente grossa (stroke-width: 2)
+    const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #232a3d; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
 
     for (let i = 1; i <= 5; i++) {
         if (notaNum >= i) {
             estrelasHTML += svgEstrelaCheia;
-                    } else if (notaNum > i - 1 && notaNum < i) {
-            // Ajustamos os offsets para eliminar a fresta do antialiasing
+        } else if (notaNum > i - 1 && notaNum < i) {
+            // A metade também se adapta, pintando metade cheia e metade vazia por dentro
             estrelasHTML += `
-                <svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: url(#${idGradiente}); vertical-align: middle; margin: 0 0.5px;">
+                <svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; vertical-align: middle; margin: 0 0.5px;">
                     <defs>
                         <linearGradient id="${idGradiente}" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="50%" stop-color="#ffb830" />
-                            <stop offset="49.9%" stop-color="#232a3d" />
+                            <stop offset="49.9%" stop-color="transparent" />
                         </linearGradient>
                     </defs>
-                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
+                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z" fill="none" stroke: #232a3d; stroke-width: 2;/>
+                    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z" fill="url(#${idGradiente})"/>
                 </svg>
-
-            
             `;
         } else {
             estrelasHTML += svgEstrelaVazia;
@@ -936,7 +935,6 @@
     }
     containerEstrelas.innerHTML = estrelasHTML;
 }
-
 
 
         function ordenarEAtualizar() {
