@@ -15,6 +15,8 @@
     <link rel="icon" sizes="192x192" href="https://via.placeholder.com/192">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         /* Reset e Configurações Gerais Baseadas nas Imagens */
         *, *::before, *::after {
@@ -37,7 +39,8 @@
         .hide-mode #search-container,
         .hide-mode .btn-deletar,
         .hide-mode .btn-acoes-card,
-        .hide-mode #btn-limpar-tudo { display: none !important; }
+        .hide-mode #btn-limpar-tudo,
+        .hide-mode .btn-salvar-galeria { display: none !important; }
 
         /* Título Principal */
         .main-header {
@@ -85,6 +88,8 @@
         }
         #togglePrintBtn { background-color: #1c2336; color: #ffa502; border: 1px solid #2d3854; }
         #togglePrintBtn:hover { background-color: #252f47; }
+        .btn-salvar-galeria { background-color: #2ed573; color: white; }
+        .btn-salvar-galeria:hover { background-color: #26af5f; }
         #btn-limpar-tudo { background-color: #ff4757; color: white; }
         #btn-limpar-tudo:hover { background-color: #ff6b81; }
 
@@ -229,7 +234,7 @@
         }
     </style>
 </head>
-<body>
+<body id="capture-area">
 
     <div class="main-header">
         <h1>FTF Custom Values 👑</h1>
@@ -238,7 +243,8 @@
 
     <div class="toolbar-container" id="toolbar-menu">
         <div class="toolbar-left">
-            <button id="togglePrintBtn" onclick="togglePrintMode()">Modo Print</button>
+            <button id="togglePrintBtn" class="ui-btn" onclick="togglePrintMode()">Modo Print</button>
+            <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Salvar na Galeria</button>
         </div>
         <div class="toolbar-right">
             <button id="btn-limpar-tudo" class="ui-btn" onclick="resetarParaPadraoCodigo()">⚠️ Restaurar Tudo da Lista</button>
@@ -308,7 +314,7 @@
         </div>
     </div>
 
-    <hr style="border: null; border-top: 1px solid #1a2235; margin: 30px 0;">
+    <hr style="border: none; border-top: 1px solid #1a2235; margin: 30px 0;">
 
     <div class="btn-aba-container">
         <button class="btn-aba" id="aba-legendary" onclick="filtrarRaridade('legendary')" style="background: #1c2336; color: #ffa502; border: 1px solid #ffa502;">👑 Legendaries</button>
@@ -325,7 +331,6 @@
     <div id="container-cards"></div>
 
     <script>
-        // O Array original gigante enviado por você foi preservado 100% intacto abaixo:
         const BASE_PADRAO_MARRETAS = [
             {"id":1001,"nome":"1 Billion","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
             {"id":1002,"nome":"2019","imgSrc":"https://i.postimg.cc/HkMdfvtB/2019.webp","raridade":"legendary"},
@@ -525,16 +530,16 @@
         function inicializarBancoDados() {
             let dadosLocais = null;
             try {
-                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+                dadosLocLocal = JSON.parse(localStorage.getItem('ftf_custom_v4'));
             } catch (e) {
-                dadosLocais = null;
+                dadosLocLocal = null;
             }
 
-            if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+            if (!Array.isArray(dadosLocLocal) || dadosLocLocal.length === 0) {
                 listaDeMarretas = [];
                 forçarInjecaoListaPadrao();
             } else {
-                listaDeMarretas = dadosLocais;
+                listaDeMarretas = dadosLocLocal;
             }
 
             carregarCardsSalvos();
@@ -626,6 +631,44 @@
             }
         }
 
+        /* --- NOVA FUNÇÃO: SALVAR COMO IMAGEM DIRETAMENTE NA GALERIA --- */
+        function salvarNaGaleria() {
+            // Ativa temporariamente o modo print para limpar a tela de botões indesejados
+            const jáEstavaEmPrint = document.body.classList.contains('hide-mode');
+            if (!jáEstavaEmPrint) {
+                document.body.classList.add('hide-mode');
+            }
+
+            // Pequeno delay para garantir que a renderização CSS acompanhe
+            setTimeout(() => {
+                const áreaCaptura = document.getElementById('capture-area');
+                
+                html2canvas(áreaCaptura, {
+                    backgroundColor: "#0b0c10",
+                    useCORS: true, // Permite baixar imagens de servidores externos como o Postimages
+                    scale: 2 // Aumenta a qualidade da resolução final da imagem
+                }).then(canvas => {
+                    // Transforma o resultado em um link clicável de download direto
+                    const link = document.createElement('a');
+                    link.download = `FTF-Custom-List-${raridadeAtual}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+
+                    // Se não estava no modo print antes, desativa para voltar a editar normalmente
+                    if (!jáEstavaEmPrint) {
+                        document.body.classList.remove('hide-mode');
+                        const btn = document.getElementById('togglePrintBtn');
+                        btn.innerText = "Modo Print";
+                        btn.style.background = "#1c2336";
+                        btn.style.color = "#ffa502";
+                    }
+                }).catch(err => {
+                    alert("Erro ao gerar imagem. Verifique se as imagens externas carregaram totalmente.");
+                    if (!jáEstavaEmPrint) document.body.classList.remove('hide-mode');
+                });
+            }, 300);
+        }
+
         function criarNovoCard() {
             if (!Array.isArray(listaDeMarretas)) {
                 listaDeMarretas = [];
@@ -668,12 +711,10 @@
             document.getElementById('valorItem').value = '';
         }
 
-        /* --- ATUALIZADO: RENDERIZADOR COMPLETO COM ESTILO CLUBE PREMIUM DAS FOTOS --- */
         function renderizarCardHTML(item) {
             const container = document.getElementById('container-cards');
             const card = document.createElement("div");
 
-            // Customização Exata do Card de Exibição
             card.style.backgroundColor = '#14171f';
             card.style.border = `1.5px solid #2d3545`; 
             card.style.borderRadius = '10px';
@@ -733,7 +774,6 @@
                 </div>
             `;
 
-            // Mantendo a lógica de edição intacta
             card.querySelector('.btn-editar').addEventListener('click', function() {
                 const novoNome = prompt("Mudar nome:", item.nome);
                 const novoValor = prompt("Novo Valor:", item.valor);
