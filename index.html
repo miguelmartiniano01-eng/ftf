@@ -887,20 +887,23 @@
 
             card.querySelector('.btn-editar').addEventListener('click', function() {
                 const novoNome = prompt("Mudar nome:", item.nome);
+                const novoLink = prompt("Novo Link da Imagem:", item.imgSrc || "");
                 const novoValor = prompt("Novo Valor:", item.valor);
-                const novaDemanda = prompt("Nova Demanda (0 a 5):", item.demanda);
-                const novaEstabilidade = prompt("Nova Estabilidade (Rising, Stable, Struggling...):", item.templates);
+                
+                const novaRaridade = prompt("Mudar Raridade (legendary, epics, rares, commons):", item.raridade);
+                const novaDemanda = prompt("Nova Demanda (0 a 5):\nExemplos: 5, 4.5, 3, 1.5", item.demanda);
                 const novaTendencia = prompt("Nova tendência (subiu, caiu, corrigido, none):", item.tendencia);
                 const novoStatus = prompt("Novo Status (overpaid, underpaid, niche, none):", item.status || 'none');
-                const novaRaridade = prompt("Mudar Raridade (legendary, epics, rares, commons):", item.raridade);
+                const novaEstabilidade = prompt("Nova Estabilidade:\nRising, Doing Well, Improving, Stable, Fluctuating, Struggling, Receding, Dropping", item.templates);
 
                 if (novoNome) item.nome = novoNome.trim();
+                if (novoLink) item.imgSrc = novoLink.trim();
                 if (novoValor) item.valor = novoValor.trim();
+                if (novaRaridade) item.raridade = novaRaridade.trim().toLowerCase();
                 if (novaDemanda) item.demanda = novaDemanda;
-                if (novaEstabilidade) item.templates = novaEstabilidade.trim();
                 if (novaTendencia) item.tendencia = novaTendencia.trim().toLowerCase();
                 if (novoStatus) item.status = novoStatus.trim().toLowerCase();
-                if (novaRaridade) item.raridade = novaRaridade.trim().toLowerCase();
+                if (novaEstabilidade) item.templates = novaEstabilidade.trim();
 
                 localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
                 carregarCardsSalvos();
