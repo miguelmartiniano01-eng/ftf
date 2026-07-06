@@ -210,22 +210,22 @@
             letter-spacing: 0.5px;
         }
 
-        /* Grid Normal para o Modo Edição */
+        /* Grid Normal Adaptável para Celular na Edição */
         .normal-cards-grid {
             max-width: 950px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
         }
         
-        /* ZONA DE CAPTURA - ESTILOS DE TIER LIST REAL (HORIZONTAL FIXA) */
+        /* ZONA DE CAPTURA - ESTILOS DA TIER LIST REAL */
         #capture-zone {
             background-color: #0b0c10; 
             padding: 15px; 
             border-radius: 8px;
             width: 100%;
-            overflow-x: auto; /* Permite rolar de lado se o celular for pequeno */
+            overflow-x: auto;
         }
 
         .tier-row-container {
@@ -236,13 +236,14 @@
             display: flex;
             align-items: stretch;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 100%;
         }
 
         .tier-label-block {
-            background-color: #e74c3c; /* Cor padrão Tier 1 */
+            background-color: #ff7f7f;
             color: #ffffff;
-            width: 85px;
-            min-width: 85px;
+            width: 80px;
+            min-width: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -255,74 +256,88 @@
         
         .tier-cards-grid {
             display: flex;
-            flex-wrap: wrap; /* No modo edição quebra */
+            flex-wrap: wrap; /* Permite quebrar em telas de celular na edição */
             gap: 6px;
             width: 100%;
             padding: 6px;
             background-color: #14171f;
         }
 
-        /* --- REGRAS DO MODO PRINT FORÇADO NA HORIZONTAL --- */
-        /* Quando essa classe entrar, a tier list se comporta como um bloco desktop largo de 1300px */
+        /* =========================================================
+           CRITICAL FIX: FORÇAR LAYOUT HORIZONTAL COMPACTO DE TIER 
+           ========================================================= */
+        /* Esta classe será injetada dinamicamente pelo JS no download para garantir a linha única */
         .forcar-layout-horizontal {
-            width: 1350px !important; 
-            min-width: 1350px !important;
-            max-width: 1350px !important;
+            width: 1750px !important; 
+            min-width: 1750px !important;
+            max-width: 1750px !important;
+        }
+
+        .forcar-layout-horizontal .tier-row-container {
+            width: 100% !important;
         }
 
         .forcar-layout-horizontal .tier-cards-grid {
-            flex-wrap: nowrap !important; /* FORÇA os 15-20 itens a ficarem um do lado do outro! */
+            flex-wrap: nowrap !important; /* FORÇA todos os itens a ficarem um do lado do outro! */
+            display: flex !important;
+            flex-direction: row !important;
             justify-content: flex-start !important;
+            overflow: hidden !important;
         }
 
+        /* Redimensiona os cards para caberem de 20 a 22 itens perfeitamente por tier na imagem */
         .forcar-layout-horizontal .card-marreta-item {
-            width: 72px !important;
-            min-width: 72px !important;
-            max-width: 72px !important;
+            width: 78px !important;
+            min-width: 78px !important;
+            max-width: 78px !important;
+            height: 105px !important;
             padding: 4px !important;
             border-radius: 4px !important;
-            gap: 2px !important;
+            gap: 1px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            align-items: center !important;
         }
 
         .forcar-layout-horizontal .card-marreta-item .box-img-holder {
-            height: 52px !important;
+            height: 55px !important;
+            width: 100% !important;
+            margin-bottom: 2px !important;
+            padding: 2px !important;
         }
 
         .forcar-layout-horizontal .card-marreta-item h3 {
             font-size: 9px !important;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.1 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            width: 100% !important;
         }
 
-        /* Esconde botões e detalhes no print horizontal */
+        /* Remove textos secundários e botões para a foto de download ficar idêntica à oficial */
         .forcar-layout-horizontal .card-marreta-item .txt-posicao-automatica,
         .forcar-layout-horizontal .card-marreta-item .box-badge-status,
         .forcar-layout-horizontal .card-marreta-item .txt-estabilidade,
         .forcar-layout-horizontal .card-marreta-item span[style*="uppercase"],
         .forcar-layout-horizontal .card-marreta-item .btn-acoes-card,
         .forcar-layout-horizontal .card-marreta-item .btn-deletar,
-        .forcar-layout-horizontal .card-marreta-item div[style*="letter-spacing"] {
+        .forcar-layout-horizontal .card-marreta-item .txt-demanda-estrelas,
+        .forcar-layout-horizontal .card-marreta-item div[style*="letter-spacing"],
+        .forcar-layout-horizontal .card-marreta-item div[style*="border-top"] {
             display: none !important;
         }
 
+        /* Centraliza e estiliza o valor [300] abaixo do item */
         .forcar-layout-horizontal .card-marreta-item .box-valor-dinamico {
-            font-size: 11px !important;
-            text-align: center;
-            width: 100%;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .forcar-layout-horizontal .card-marreta-item .txt-demanda-estrelas {
-            display: none !important; /* Remove estrelas no modo mini tier list */
-        }
-
-        .forcar-layout-horizontal .card-marreta-item div[style*="border-top"] {
-            border: none !important;
-            padding-top: 0 !important;
-            margin-top: 0 !important;
+            font-size: 12px !important;
+            font-weight: 900 !important;
+            text-align: center !important;
+            width: 100% !important;
+            color: #ffa502 !important;
+            margin-top: auto !important;
         }
     </style>
 </head>
@@ -448,11 +463,10 @@
         let raridadeAtual = 'legendary'; 
         let modoPrintAtivo = false; 
 
-        // Cores clássicas das linhas de Tier List (De T1 até T13)
+        // Cores clássicas das linhas de Tier List (Do Vermelho ao Azul)
         const CORES_TIERS = [
             "#ff7f7f", "#ffbf7f", "#ffdf7f", "#ffff7f", "#bfff7f", 
-            "#7fff7f", "#7fffb0", "#7fffff", "#7fbcff", "#a37fff", 
-            "#ff7fff", "#ff7fbc", "#dbdbdb"
+            "#7fff7f", "#7fffb0", "#7fffff", "#7fbcff", "#a37fff"
         ];
         
         function inicializarBancoDados() {
@@ -476,11 +490,11 @@
         }
 
         function resetarParaPadraoCodigo() {
-            if (confirm("Deseja restaurar todos os itens?")) {
+            if (confirm("Deseja restaurar todos os itens padrão?")) {
                 localStorage.removeItem('ftf_custom_v5');
                 forçarInjecaoListaPadrao();
                 carregarCardsSalvos();
-                alert("Memória limpa! 💎");
+                alert("Restaurado com sucesso! 💎");
             }
         }
 
@@ -510,8 +524,8 @@
 
             linksEncontrados.forEach((url, i) => {
                 const novoObj = { 
-                    id: Date.now() + i + Math.floor(Math.random() * 9000), nome: `Item Extra ${listaDeMarretas.length + 1}`, 
-                    valor: '10', raridade: raridadeAtual, demanda: '5', tendencia: 'none', status: 'none', templates: 'Stable', imgSrc: url.trim() 
+                    id: Date.now() + i + Math.floor(Math.random() * 9000), nome: `Marreta Extra ${listaDeMarretas.length + 1}`, 
+                    valor: '50', raridade: raridadeAtual, demanda: '5', tendencia: 'none', status: 'none', templates: 'Stable', imgSrc: url.trim() 
                 };
                 listaDeMarretas.push(novoObj);
             });
@@ -519,7 +533,7 @@
             localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
             carregarCardsSalvos();
             document.getElementById('listaLinksMassa').value = '';
-            alert('Links extras adicionados!');
+            alert('Links extras importados!');
         }
 
         function togglePrintMode() {
@@ -542,15 +556,14 @@
         }
 
         function baixarListaPrint() {
-            // Garante que o layout horizontal rígido de Tier list está ativado para a foto sair perfeita
             const alvo = document.getElementById('capture-zone');
             const estavaEdicao = !modoPrintAtivo;
             
-            if (estavaEdicao) {
-                alvo.classList.add('forcar-layout-horizontal');
-            }
+            // Ativa temporariamente o layout horizontal forçado largo antes do print
+            alvo.classList.add('forcar-layout-horizontal');
+            carregarCardsSalvos();
 
-            // Oculta tudo que não faz parte da imagem do ranking
+            // Oculta a interface de botões do site para não aparecer na foto salva
             document.getElementById('interface-completa').style.display = 'none';
             document.getElementById('titulo-secao').style.display = 'none';
             
@@ -560,26 +573,31 @@
                     allowTaint: false,
                     logging: false,
                     backgroundColor: "#0b0c10",
-                    scale: 2, // Garante que as fotos das marretas fiquem nítidas mesmo pequenas
-                    windowWidth: 1400 // Força o html2canvas a enxergar como uma tela larga de computador
+                    scale: 2, // Mantém a resolução das fotos ultra nítida
+                    windowWidth: 1800 // Força o motor do renderizador a enxergar um monitor ultra-wide desktop
                 }).then(canvas => {
                     const link = document.createElement('a');
-                    link.download = `TierList-FTF-${raridadeAtual}.png`;
+                    link.download = `TierList-${raridadeAtual}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     
-                    // Restaura a interface original após o clique
+                    // Restaura a interface de edição perfeitamente
                     document.getElementById('interface-completa').style.display = 'block';
                     document.getElementById('titulo-secao').style.display = 'block';
                     if (estavaEdicao) {
                         alvo.classList.remove('forcar-layout-horizontal');
                     }
+                    carregarCardsSalvos();
                 }).catch(err => {
-                    alert("Erro ao processar imagem automaticamente. Você também pode tirar um print da tela no 'Modo Print' horizontal!");
+                    alert("Erro ao salvar! Você também pode tirar print da tela diretamente no modo de visualização.");
                     document.getElementById('interface-completa').style.display = 'block';
                     document.getElementById('titulo-secao').style.display = 'block';
+                    if (estavaEdicao) {
+                        alvo.classList.remove('forcar-layout-horizontal');
+                    }
+                    carregarCardsSalvos();
                 });
-            }, 500);
+            }, 400);
         }
 
         function criarNovoCard() {
@@ -592,7 +610,7 @@
             const status = document.getElementById('statusItem').value;
             const estabilidade = document.getElementById('estabilidadeItem').value || 'Stable';
 
-            if (!nome) { alert('Dê um nome!'); return; }
+            if (!nome) { alert('Digite o nome do item!'); return; }
 
             const novoObj = { 
                 id: Date.now(), nome: nome, valor: valor.toString().trim(), raridade: raridade, 
@@ -616,52 +634,50 @@
             card.className = "card-marreta-item";
             card.style.backgroundColor = '#14171f';
             card.style.border = `1.5px solid #2d3545`; 
-            card.style.borderRadius = '10px';
-            card.style.padding = '12px';
+            card.style.borderRadius = '8px';
+            card.style.padding = '10px';
             card.style.width = '100%'; 
             card.style.color = '#fff';
             card.style.position = 'relative';
-            card.style.boxSizing = 'border-box';
             card.style.display = 'flex';
             card.style.flexDirection = 'column';
-            card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.4)';
             card.setAttribute('data-id', item.id);
 
             const caminhoImagem = item.imgSrc || 'https://via.placeholder.com/150';
 
             card.innerHTML = `
-                <button class="btn-deletar" style="position: absolute; top: 8px; right: 8px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 13px; z-index: 5;">❌</button>
+                <button class="btn-deletar" style="position: absolute; top: 5px; right: 5px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 11px; z-index: 5;">❌</button>
                 
-                <div class="box-img-holder" style="background-color: #0e1117; width: 100%; height: 110px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 6px; border: 1px solid #1f2533; padding: 4px;">
-                    <img src="${caminhoImagem}" alt="${item.nome}" crossorigin="anonymous" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
+                <div class="box-img-holder" style="background-color: #0e1117; width: 100%; height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border-radius: 6px; border: 1px solid #1f2533; padding: 4px;">
+                    <img src="${caminhoImagem}" alt="${item.nome}" crossorigin="anonymous" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.src='https://placehold.co/150x100/0b0f19/ffffff?text=FTF'">
                 </div>
 
-                <span class="txt-posicao-automatica" style="position: absolute; top: 14px; left: 14px; background: #ffa502; color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
+                <span class="txt-posicao-automatica" style="position: absolute; top: 10px; left: 10px; background: #ffa502; color: #000; font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 3px;">#--</span>
                 
-                <h3 style="margin: 0 0 2px 0; color: #ffffff; font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
-                <span style="color: #62697e; font-size: 9px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
+                <h3 style="margin: 0; color: #ffffff; font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align:center;">${item.nome}</h3>
+                <span style="color: #62697e; font-size: 8px; font-weight: bold; text-transform: uppercase; text-align:center;">${item.raridade || 'legendary'}</span>
                 
-                <div style="margin-top: 10px; font-size: 11px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="margin-top: 6px; font-size: 11px; display: flex; flex-direction: column; gap: 4px;">
                     <div>
-                        <div style="color: #4b5266; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">VALUE</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="box-valor-dinamico" style="font-size: 17px; font-weight: 900;"></span>
-                            <span class="txt-estabilidade" style="background: #121620; color: #8fa0c4; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #232f4b;">${item.templates || 'Stable'}</span>
+                        <div style="color: #4b5266; font-size: 8px; font-weight: bold; text-transform: uppercase; text-align: center;">VALUE</div>
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                            <span class="box-valor-dinamico" style="font-size: 15px; font-weight: 900;"></span>
+                            <span class="txt-estabilidade" style="background: #121620; color: #8fa0c4; font-size: 8px; padding: 1px 4px; border-radius: 3px; border: 1px solid #232f4b;">${item.templates || 'Stable'}</span>
                         </div>
                     </div>
-                    <div class="box-badge-status" style="display: flex; justify-content: flex-end; margin-top: -2px; min-height: 14px;"></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px; border-top: 1px solid #1f2533; padding-top: 8px;">
-                        <span style="color: #4b5266; font-size: 8px; font-weight: bold; letter-spacing: 0.5px;">DEMAND</span>
-                        <span class="txt-demanda-estrelas" style="font-size: 11px;"></span>
+                    <div class="box-badge-status" style="display: flex; justify-content: center; min-height: 12px;"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #1f2533; padding-top: 4px;">
+                        <span style="color: #4b5266; font-size: 8px; font-weight: bold;">DEMAND</span>
+                        <span class="txt-demanda-estrelas" style="font-size: 10px;"></span>
                     </div>
                 </div>
 
-                <div class="btn-acoes-card" style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #1f2533; padding-top: 8px;">
+                <div class="btn-acoes-card" style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px; border-top: 1px solid #1f2533; padding-top: 6px;">
                     <div style="display: flex; gap: 4px;">
-                        <button class="btn-subir" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 5px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold;">▲</button>
-                        <button class="btn-descer" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 5px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold;">▼</button>
+                        <button class="btn-subir" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 4px; cursor: pointer; border-radius: 4px; font-size: 9px;">▲</button>
+                        <button class="btn-descer" style="flex: 1; background: #121826; color: #fff; border: 1px solid #232f4b; padding: 4px; cursor: pointer; border-radius: 4px; font-size: 9px;">▼</button>
                     </div>
-                    <button class="btn-editar" style="background: #1c2336; color: #ffa502; border: 1px solid #2d3854; padding: 5px; cursor: pointer; border-radius: 4px; font-size: 11px; font-weight: bold;">✏️ Editar</button>
+                    <button class="btn-editar" style="background: #1c2336; color: #ffa502; border: 1px solid #2d3854; padding: 4px; cursor: pointer; border-radius: 4px; font-size: 10px; font-weight: bold;">✏️ Editar</button>
                 </div>
             `;
 
@@ -687,7 +703,7 @@
             });
 
             card.querySelector('.btn-deletar').addEventListener('click', function() {
-                if (confirm(`Excluir?`)) {
+                if (confirm(`Excluir item?`)) {
                     listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
                     card.remove();
                     localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
@@ -741,9 +757,9 @@
 
             if (containerBadge) {
                 containerBadge.innerHTML = '';
-                if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #2ed573; font-size: 8px; font-weight: bold; background: rgba(46, 213, 115, 0.1); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(46, 213, 115, 0.3);">+ Overpaid</span>`;
-                else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #ff9f43; font-size: 8px; font-weight: bold; background: rgba(255, 159, 67, 0.1); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(255, 159, 67, 0.3);">- Underpaid</span>`;
-                else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #a55eea; font-size: 8px; font-weight: bold; background: rgba(165, 94, 234, 0.1); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(165, 94, 234, 0.3);">💎 Niche</span>`;
+                if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #2ed573; font-size: 8px; font-weight: bold; background: rgba(46, 213, 115, 0.1); padding: 1px 4px; border-radius: 3px;">+ Overpaid</span>`;
+                else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #ff9f43; font-size: 8px; font-weight: bold; background: rgba(255, 159, 67, 0.1); padding: 1px 4px; border-radius: 3px;">- Underpaid</span>`;
+                else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #a55eea; font-size: 8px; font-weight: bold; background: rgba(165, 94, 234, 0.1); padding: 1px 4px; border-radius: 3px;">💎 Niche</span>`;
             }
         }
 
@@ -753,7 +769,7 @@
             
             let notaNum = parseFloat(notaEstrelas) || 0;
             let estrelasHTML = '';
-            const estiloEstrela = `font-size: 12px; display: inline-block; position: relative; font-family: sans-serif; line-height: 1; vertical-align: middle; margin: 0 1px;`;
+            const estiloEstrela = `font-size: 10px; display: inline-block; position: relative; line-height: 1; vertical-align: middle;`;
 
             for (let i = 1; i <= 5; i++) {
                 if (notaNum >= i) { estrelasHTML += `<span style="${estiloEstrela} color: #ffb830;">★</span>`; } 
@@ -797,9 +813,9 @@
 
             containerMestre.innerHTML = '';
 
+            // Se o modo horizontal estiver ativo (ou no print), divide em blocos de até 20 itens por linha
             if (modoPrintAtivo || document.getElementById('capture-zone').classList.contains('forcar-layout-horizontal')) {
-                // Modo Tier List Perfeito: Junta em fileiras horizontais de 18 a 20 marretas cada
-                const itensPorTier = 18;
+                const itensPorTier = 20; 
                 const totalTiers = Math.ceil(itensFiltrados.length / itensPorTier);
 
                 for (let i = 0; i < totalTiers; i++) {
@@ -810,10 +826,9 @@
 
                     const labelBlock = document.createElement('div');
                     labelBlock.className = 'tier-label-block';
-                    // Distribui cores do gradiente clássico de tierlists
                     labelBlock.style.backgroundColor = CORES_TIERS[i % CORES_TIERS.length];
-                    labelBlock.style.color = (i % CORES_TIERS.length === 3 || i % CORES_TIERS.length === 4) ? "#000" : "#fff";
-                    labelBlock.innerText = `Tier ${i + 1}`;
+                    labelBlock.style.color = "#000";
+                    labelBlock.innerText = `T ${i + 1}`;
 
                     const gridCards = document.createElement('div');
                     gridCards.className = 'tier-cards-grid';
@@ -828,7 +843,7 @@
                     containerMestre.appendChild(tierRow);
                 }
             } else {
-                // Modo Edição normal em grade adaptável para celular
+                // Modo de Edição normal em grade adaptável para celular
                 const normalGrid = document.createElement('div');
                 normalGrid.className = 'normal-cards-grid';
 
@@ -867,7 +882,7 @@
         }
 
         function exportarLista() {
-            navigator.clipboard.writeText(JSON.stringify(listaDeMarretas, null, 2)).then(() => { alert("Backup copiado! 📋"); });
+            navigator.clipboard.writeText(JSON.stringify(listaDeMarretas, null, 2)).then(() => { alert("Backup da lista copiado! 📋"); });
         }
 
         window.onload = inicializarBancoDados;
