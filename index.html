@@ -213,7 +213,7 @@
         #btn-exportar-container { text-align: center; margin-bottom: 25px; }
         .btn-backup { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* --- GRID DOS CARDS DE ITEM (Modificado para caber cerca de 18 por linha) --- */
+        /* --- GRID DOS CARDS DE ITEM --- */
         #titulo-secao {
             max-width: 1850px;
             margin: 0 auto 15px auto;
@@ -309,7 +309,7 @@
                 <option value="niche">Niche (💎 Raro)</option>
             </select>
 
-            <input type="text" id="estabilidadeItem" class="input-style form-input-full" placeholder="Estabilidade (Ex: Stable)">
+            <input type="text" id="estabilidadeItem" class="input-style form-input-full" placeholder="Estabilidade (Ex: Stable, Rising, Struggling)">
             <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item ✨</button>
         </div>
 
@@ -338,6 +338,26 @@
     <div id="container-cards"></div>
 
     <script>
+        // Mapeamento de cores de estabilidade fornecidas por você
+        const CORES_ESTABILIDADE = {
+            "rising": "#36D8B0",
+            "doing well": "#47CC6A",
+            "improving": "#8BCC14",
+            "stable": "#7f7f7f",
+            "fluctuating": "#F2BE24",
+            "struggling": "#E56D16",
+            "receding": "#D84146",
+            "dropping": "#A52125"
+        };
+
+        // Mapeamento de cores de raridade
+        const CORES_RARIDADE = {
+            "legendary": "#ffa502", // Amarelo
+            "epics": "#a55eea",     // Roxo
+            "rares": "#45aaf2",     // Azul
+            "commons": "#2ed573"    // Verde
+        };
+
         const BASE_PADRAO_MARRETAS = [
             {"id":1001,"nome":"1 Billion","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
             {"id":1002,"nome":"2019","imgSrc":"https://i.postimg.cc/HkMdfvtB/2019.webp","raridade":"legendary"},
@@ -542,7 +562,7 @@
                 dadosLocais = null;
             }
 
-            if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+            if (!Array.isArray(dadosLocLocal) || dadosLocais === null || dadosLocais.length === 0) {
                 listaDeMarretas = [];
                 forçarInjecaoListaPadrao();
             } else {
@@ -718,8 +738,12 @@
             const container = document.getElementById('container-cards');
             const card = document.createElement("div");
 
+            // Define a cor baseada na raridade do item
+            const raridadeKey = (item.raridade || 'legendary').toLowerCase();
+            const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
+
             card.style.backgroundColor = '#14171f';
-            card.style.border = `1.5px solid #2d3545`; 
+            card.style.border = `1.5px solid ${corRaridade}`; // Borda agora segue a raridade
             card.style.borderRadius = '6px';
             card.style.padding = '6px';
             card.style.width = '100%'; 
@@ -741,6 +765,11 @@
             const extensao = listaPNG.includes(item.nome.replace(/\s+/g, '-')) ? "png" : "webp";
             const caminhoImagem = item.imgSrc || `./imagens/${item.id}.${extensao}`;
 
+            // Pega a cor correta para a estabilidade digitada
+            const estabilidadeTexto = item.templates || 'Stable';
+            const estabilidadeKey = estabilidadeTexto.toLowerCase().trim();
+            const corEstabilidade = CORES_ESTABILIDADE[estabilidadeKey] || '#7f7f7f';
+
             card.innerHTML = `
                 <button class="btn-deletar" style="position: absolute; top: 4px; right: 4px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 11px; z-index: 5;">❌</button>
                 
@@ -750,7 +779,7 @@
 
                 <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
                 
-                <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
+                <h3 style="margin: 0 0 1px 0; color: ${corRaridade}; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
                 <span style="color: #62697e; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
                 
                 <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
@@ -758,7 +787,7 @@
                         <div style="color: #4b5266; font-size: 7px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3px;">VALUE</div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span class="box-valor-dinamico" style="font-size: 12px; font-weight: 900;"></span>
-                            <span class="txt-estabilidade" style="background: #121620; color: #8fa0c4; font-size: 7px; font-weight: bold; padding: 1px 3px; border-radius: 3px; border: 1px solid #232f4b;">${item.templates || 'Stable'}</span>
+                            <span class="txt-estabilidade" style="background: #121620; color: ${corEstabilidade}; font-size: 7px; font-weight: bold; padding: 1px 3px; border-radius: 3px; border: 1px solid #232f4b;">${estabilidadeTexto}</span>
                         </div>
                     </div>
                     <div class="box-badge-status" style="display: flex; justify-content: flex-end; margin-top: -1px; min-height: 10px;"></div>
@@ -781,7 +810,7 @@
                 const novoNome = prompt("Mudar nome:", item.nome);
                 const novoValor = prompt("Novo Valor:", item.valor);
                 const novaDemanda = prompt("Nova Demanda (0 a 5):", item.demanda);
-                const novaEstabilidade = prompt("Nova Estabilidade:", item.templates);
+                const novaEstabilidade = prompt("Nova Estabilidade (Rising, Stable, Struggling...):", item.templates);
                 const novaTendencia = prompt("Nova tendência (subiu, caiu, corrigido, none):", item.tendencia);
                 const novoStatus = prompt("Novo Status (overpaid, underpaid, niche, none):", item.status || 'none');
                 const novaRaridade = prompt("Mudar Raridade (legendary, epics, rares, commons):", item.raridade);
@@ -789,7 +818,7 @@
                 if (novoNome) item.nome = novoNome.trim();
                 if (novoValor) item.valor = novoValor.trim();
                 if (novaDemanda) item.demanda = novaDemanda;
-                if (novaEstabilidade) item.templates = novaEstabilidade;
+                if (novaEstabilidade) item.templates = novaEstabilidade.trim();
                 if (novaTendencia) item.tendencia = novaTendencia.trim().toLowerCase();
                 if (novoStatus) item.status = novoStatus.trim().toLowerCase();
                 if (novaRaridade) item.raridade = novaRaridade.trim().toLowerCase();
@@ -990,3 +1019,4 @@
     </script>
 </body>
 </html>
+
