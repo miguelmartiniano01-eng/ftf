@@ -233,7 +233,7 @@
             padding: 5px 0;
         }
 
-        /* FORÇA EXATAMENTE 18 COLUNAS NA HORIZONTAL DURANTE A CAPTURA */
+        /* FORÇA EXATAMENTE 16 COLUNAS NA HORIZONTAL DURANTE A CAPTURA */
         .hide-mode #container-cards {
             grid-template-columns: repeat(16, 1fr) !important;
             width: 1808px !important;
@@ -776,7 +776,7 @@
                 <span class="txt-posicao-automatica" style="position: absolute; top: 8px; left: 8px; background: #ffa502; color: #000; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.4);">#--</span>
                 
                 <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.nome}">${item.nome}</h3>
-                <span style="color: ${corRaridade};; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
+                <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase;">${item.raridade || 'legendary'}</span>
                 
                 <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                     <div>
@@ -907,7 +907,7 @@
     const idGradiente = 'metade-estrela-' + Math.floor(Math.random() * 1000000);
 
     // Estrela cheia: Totalmente amarela
-    const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHE_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+    const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
     
     // Estrela vazia: Sem preenchimento interno, apenas a borda escura
     const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #232a3d; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
