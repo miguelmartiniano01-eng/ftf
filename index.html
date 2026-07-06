@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -222,122 +223,145 @@
         /* ZONA DE CAPTURA - ESTILOS DA TIER LIST REAL */
         #capture-zone {
             background-color: #0b0c10; 
-            padding: 15px; 
+            padding: 10px; 
             border-radius: 8px;
             width: 100%;
-            overflow-x: auto;
         }
 
         .tier-row-container {
-            margin: 0 auto 6px auto;
-            background-color: #11141c;
-            border: 1px solid #1f2533;
-            border-radius: 4px;
+            margin-bottom: 5px;
+            background-color: #14171f;
+            border: 1px solid #232834;
             display: flex;
             align-items: stretch;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             width: 100%;
         }
 
         .tier-label-block {
-            background-color: #ff7f7f;
-            color: #ffffff;
-            width: 80px;
-            min-width: 80px;
+            width: 90px;
+            min-width: 90px;
+            max-width: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 16px;
+            font-size: 18px;
             text-align: center;
             text-transform: uppercase;
             padding: 10px;
+            color: #000000;
         }
         
         .tier-cards-grid {
             display: flex;
-            flex-wrap: wrap; /* Permite quebrar em telas de celular na edição */
-            gap: 6px;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 4px;
             width: 100%;
-            padding: 6px;
-            background-color: #14171f;
+            background-color: #0e1117;
+            align-content: center;
         }
 
         /* =========================================================
-           CRITICAL FIX: FORÇAR LAYOUT HORIZONTAL COMPACTO DE TIER 
+           SOLUÇÃO DEFINITIVA: RESOLVE CARDS ENGRRAÇADOS E TIERS SUMIDOS
            ========================================================= */
-        /* Esta classe será injetada dinamicamente pelo JS no download para garantir a linha única */
         .forcar-layout-horizontal {
-            width: 1750px !important; 
-            min-width: 1750px !important;
-            max-width: 1750px !important;
+            width: 1650px !important; 
+            min-width: 1650px !important;
+            max-width: 1650px !important;
+            overflow: visible !important;
         }
 
         .forcar-layout-horizontal .tier-row-container {
-            width: 100% !important;
+            width: 1630px !important;
+            min-width: 1630px !important;
+            max-width: 1630px !important;
+            display: flex !important;
+            flex-direction: row !important;
         }
 
         .forcar-layout-horizontal .tier-cards-grid {
-            flex-wrap: nowrap !important; /* FORÇA todos os itens a ficarem um do lado do outro! */
+            flex-wrap: nowrap !important; /* Trava em linha única horizontal perfeita */
             display: flex !important;
             flex-direction: row !important;
             justify-content: flex-start !important;
+            align-items: center !important;
             overflow: hidden !important;
+            width: 1540px !important;
+            min-width: 1540px !important;
+            max-width: 1540px !important;
         }
 
-        /* Redimensiona os cards para caberem de 20 a 22 itens perfeitamente por tier na imagem */
+        /* Transforma os itens em quadradinhos perfeitos idênticos à Tiermaker */
         .forcar-layout-horizontal .card-marreta-item {
-            width: 78px !important;
-            min-width: 78px !important;
-            max-width: 78px !important;
-            height: 105px !important;
-            padding: 4px !important;
-            border-radius: 4px !important;
-            gap: 1px !important;
+            width: 92px !important;
+            min-width: 92px !important;
+            max-width: 92px !important;
+            height: 92px !important;
+            min-height: 92px !important;
+            max-height: 92px !important;
+            padding: 0px !important;
+            margin: 0px !important;
+            border: 1px solid #232834 !important;
+            background-color: #14171f !important;
+            position: relative !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
+            justify-content: center !important;
             align-items: center !important;
+            border-radius: 0px !important;
         }
 
+        /* Força o container da foto a ocupar todo o card sem deformar */
         .forcar-layout-horizontal .card-marreta-item .box-img-holder {
-            height: 55px !important;
             width: 100% !important;
-            margin-bottom: 2px !important;
-            padding: 2px !important;
+            height: 100% !important;
+            background-color: transparent !important;
+            border: none !important;
+            padding: 6px !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
-        .forcar-layout-horizontal .card-marreta-item h3 {
-            font-size: 9px !important;
-            line-height: 1.1 !important;
+        .forcar-layout-horizontal .card-marreta-item .box-img-holder img {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+        }
+
+        /* Badge do Valor [300] centralizado no rodapé do item */
+        .forcar-layout-horizontal .card-marreta-item .box-valor-dinamico {
+            position: absolute !important;
+            bottom: 2px !important;
+            left: 0 !important;
+            width: 100% !important;
             text-align: center !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            width: 100% !important;
+            font-size: 11px !important;
+            font-weight: 900 !important;
+            color: #ffa502 !important;
+            background: rgba(0, 0, 0, 0.75) !important;
+            padding: 1px 0 !important;
+            z-index: 10 !important;
         }
 
-        /* Remove textos secundários e botões para a foto de download ficar idêntica à oficial */
+        /* Remove absolutamente todos os botões e textos extras da foto */
+        .forcar-layout-horizontal .card-marreta-item h3,
+        .forcar-layout-horizontal .card-marreta-item span:not(.box-valor-dinamico),
         .forcar-layout-horizontal .card-marreta-item .txt-posicao-automatica,
         .forcar-layout-horizontal .card-marreta-item .box-badge-status,
         .forcar-layout-horizontal .card-marreta-item .txt-estabilidade,
-        .forcar-layout-horizontal .card-marreta-item span[style*="uppercase"],
         .forcar-layout-horizontal .card-marreta-item .btn-acoes-card,
         .forcar-layout-horizontal .card-marreta-item .btn-deletar,
         .forcar-layout-horizontal .card-marreta-item .txt-demanda-estrelas,
-        .forcar-layout-horizontal .card-marreta-item div[style*="letter-spacing"],
-        .forcar-layout-horizontal .card-marreta-item div[style*="border-top"] {
+        .forcar-layout-horizontal .card-marreta-item div {
             display: none !important;
         }
 
-        /* Centraliza e estiliza o valor [300] abaixo do item */
+        /* Reativa o container de valor específico que tínhamos escondido com o seletor acima */
         .forcar-layout-horizontal .card-marreta-item .box-valor-dinamico {
-            font-size: 12px !important;
-            font-weight: 900 !important;
-            text-align: center !important;
-            width: 100% !important;
-            color: #ffa502 !important;
-            margin-top: auto !important;
+            display: block !important;
         }
     </style>
 </head>
@@ -463,7 +487,6 @@
         let raridadeAtual = 'legendary'; 
         let modoPrintAtivo = false; 
 
-        // Cores clássicas das linhas de Tier List (Do Vermelho ao Azul)
         const CORES_TIERS = [
             "#ff7f7f", "#ffbf7f", "#ffdf7f", "#ffff7f", "#bfff7f", 
             "#7fff7f", "#7fffb0", "#7fffff", "#7fbcff", "#a37fff"
@@ -573,15 +596,14 @@
                     allowTaint: false,
                     logging: false,
                     backgroundColor: "#0b0c10",
-                    scale: 2, // Mantém a resolução das fotos ultra nítida
-                    windowWidth: 1800 // Força o motor do renderizador a enxergar um monitor ultra-wide desktop
+                    scale: 2, 
+                    windowWidth: 1700
                 }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = `TierList-${raridadeAtual}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     
-                    // Restaura a interface de edição perfeitamente
                     document.getElementById('interface-completa').style.display = 'block';
                     document.getElementById('titulo-secao').style.display = 'block';
                     if (estavaEdicao) {
@@ -589,7 +611,7 @@
                     }
                     carregarCardsSalvos();
                 }).catch(err => {
-                    alert("Erro ao salvar! Você também pode tirar print da tela diretamente no modo de visualização.");
+                    alert("Erro ao salvar!");
                     document.getElementById('interface-completa').style.display = 'block';
                     document.getElementById('titulo-secao').style.display = 'block';
                     if (estavaEdicao) {
@@ -661,7 +683,7 @@
                     <div>
                         <div style="color: #4b5266; font-size: 8px; font-weight: bold; text-transform: uppercase; text-align: center;">VALUE</div>
                         <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                            <span class="box-valor-dinamico" style="font-size: 15px; font-weight: 900;"></span>
+                            <span class="box-valor-dinamico"></span>
                             <span class="txt-estabilidade" style="background: #121620; color: #8fa0c4; font-size: 8px; padding: 1px 4px; border-radius: 3px; border: 1px solid #232f4b;">${item.templates || 'Stable'}</span>
                         </div>
                     </div>
@@ -753,6 +775,8 @@
             else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #ffa502; font-weight:bold;">*</span>`; }
             
             containerValor.style.color = '#ffa502';
+            containerValor.style.fontSize = '15px';
+            containerValor.style.fontWeight = '900';
             containerValor.innerHTML = `[${valorExibido}]${badgeTendencia}`;
 
             if (containerBadge) {
@@ -813,9 +837,8 @@
 
             containerMestre.innerHTML = '';
 
-            // Se o modo horizontal estiver ativo (ou no print), divide em blocos de até 20 itens por linha
             if (modoPrintAtivo || document.getElementById('capture-zone').classList.contains('forcar-layout-horizontal')) {
-                const itensPorTier = 20; 
+                const itensPorTier = 16; 
                 const totalTiers = Math.ceil(itensFiltrados.length / itensPorTier);
 
                 for (let i = 0; i < totalTiers; i++) {
@@ -827,8 +850,7 @@
                     const labelBlock = document.createElement('div');
                     labelBlock.className = 'tier-label-block';
                     labelBlock.style.backgroundColor = CORES_TIERS[i % CORES_TIERS.length];
-                    labelBlock.style.color = "#000";
-                    labelBlock.innerText = `T ${i + 1}`;
+                    labelBlock.innerText = `TIER ${i + 1}`;
 
                     const gridCards = document.createElement('div');
                     gridCards.className = 'tier-cards-grid';
@@ -843,7 +865,6 @@
                     containerMestre.appendChild(tierRow);
                 }
             } else {
-                // Modo de Edição normal em grade adaptável para celular
                 const normalGrid = document.createElement('div');
                 normalGrid.className = 'normal-cards-grid';
 
