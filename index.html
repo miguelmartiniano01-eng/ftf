@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>FTF Custom Values - Dark Edition</title>
+    <title>FTF Custom Values - Event & Tier Edition</title>
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,7 +40,8 @@
         .hide-mode .btn-deletar,
         .hide-mode .btn-acoes-card,
         .hide-mode #btn-limpar-tudo,
-        .hide-mode .btn-salvar-galeria { display: none !important; }
+        .hide-mode .subtabs-container,
+        .hide-mode .event-filter-wrapper { display: none !important; }
 
         .ocultar-controles-cards .btn-acoes-card,
         .ocultar-controles-cards .btn-deletar {
@@ -64,6 +64,37 @@
             color: #62697e;
             font-size: 14px;
         }
+
+        /* Dashboard de Métricas e Data */
+        .dashboard-raridade {
+            max-width: 1200px;
+            margin: 0 auto 15px auto;
+            background: #14171f;
+            border-left: 4px solid #ffa502;
+            padding: 15px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .dash-info { display: flex; gap: 20px; align-items: center; }
+        .dash-stat { font-size: 14px; font-weight: bold; color: #8fa0c4; text-transform: uppercase; }
+        .dash-stat span { color: #ffa502; font-size: 16px; font-weight: 900; }
+        .dash-date-input {
+            background: #121826;
+            color: #fff;
+            border: 1px solid #232f4b;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            width: 140px;
+            transition: border-color 0.2s;
+        }
+        .dash-date-input:focus { border-color: #ffa502; }
 
         /* Toolbar */
         .toolbar-container {
@@ -185,13 +216,13 @@
         .btn-massa { background: #2ed573; color: white; }
         .btn-massa:hover { background: #26af5f; }
 
-        /* Abas de Filtro */
+        /* Abas Principais de Raridade */
         .btn-aba-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background-color: #14171f;
             padding: 10px;
             border-radius: 8px;
@@ -213,6 +244,67 @@
         }
         #btn-exportar-container { text-align: center; margin-bottom: 25px; }
         .btn-backup { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
+
+        /* Filtro de Eventos */
+        .event-filter-wrapper {
+            max-width: 1200px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #14171f;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #232834;
+        }
+        .event-filter-wrapper label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #8fa0c4;
+        }
+        .select-event {
+            background: #121826;
+            color: #fff;
+            border: 1px solid #232f4b;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        /* Sub-categories Container */
+        .subtabs-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            background: #10121a;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #1f2533;
+        }
+        .btn-subtab {
+            background: #14171f;
+            color: #8fa0c4;
+            border: 1px solid #232f4b;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-subtab:hover { background: #1c2336; color: #fff; }
+        .btn-subtab.active {
+            background: #ffa502;
+            color: #000;
+            border-color: #ffa502;
+            font-weight: bold;
+        }
 
         /* Grid de Cards */
         #titulo-secao {
@@ -348,6 +440,7 @@
             <input type="text" id="nomeItem" class="input-style form-input-full" placeholder="Nome do Item">
             <input type="text" id="linkImagem" class="input-style form-input-full" placeholder="Link da Imagem (URL)">
             <input type="text" id="valorItem" class="input-style form-input-full" placeholder="Valor em FV">
+            <input type="text" id="eventoItem" class="input-style form-input-full" placeholder="Nome do Evento (Ex: Halloween, Christmas)">
 
             <label class="form-label">Raridade do Item:</label>
             <select id="raridadeItem" class="input-style form-input-full">
@@ -355,6 +448,18 @@
                 <option value="epics">✨ Epic</option>
                 <option value="rares">💎 Rare</option>
                 <option value="commons">🍃 Common</option>
+            </select>
+
+            <label class="form-label">Sub-category (Estilo do Item):</label>
+            <select id="tipoItem" class="input-style form-input-full">
+                <option value="normal">Normal (Com Gema/Par)</option>
+                <option value="unique">Único (Sem Gema ou Sem Marreta)</option>
+            </select>
+
+            <label class="form-label">Item Recente?</label>
+            <select id="recenteItem" class="input-style form-input-full">
+                <option value="nao" selected>Não</option>
+                <option value="sim">Sim (Marreta Recente)</option>
             </select>
 
             <label class="form-label">Demanda:</label>
@@ -418,6 +523,33 @@
         <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')" style="color: #a55eea;">✨ Epics</button>
         <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')" style="color: #45aaf2;">💎 Rares</button>
         <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')" style="color: #a5b1c2;">📦 Commons</button>
+    </div>
+
+    <div class="event-filter-wrapper">
+        <label for="filtroEvento">Separar por Evento:</label>
+        <select id="filtroEvento" class="select-event" onchange="carregarCardsSalvos()">
+            <option value="todos">🌍 Todos os Eventos</option>
+        </select>
+    </div>
+
+    <div class="subtabs-container">
+        <button class="btn-subtab active" id="sub-todos" onclick="filtrarSubcategoria('todos')">Todos os Itens</button>
+        <button class="btn-subtab" id="sub-recentes" onclick="filtrarSubcategoria('recentes')">⏳ Itens Recentes</button>
+        <button class="btn-subtab" id="sub-unicos" onclick="filtrarSubcategoria('unicos')">🔓 Itens Únicos (Sem Gema/Marreta)</button>
+        <button class="btn-subtab" id="sub-high" onclick="filtrarSubcategoria('high')">🔴 High Tier (+90)</button>
+        <button class="btn-subtab" id="sub-mid" onclick="filtrarSubcategoria('mid')">🟡 Mid Tier (90-30)</button>
+        <button class="btn-subtab" id="sub-low" onclick="filtrarSubcategoria('low')">🟢 Low Tier (30-1)</button>
+    </div>
+
+    <div class="dashboard-raridade">
+        <div class="dash-info">
+            <div class="dash-stat">Total Itens: <span id="dash-qtd">0</span></div>
+            <div class="dash-stat">Valor Total: <span id="dash-valor">0</span> FV</div>
+        </div>
+        <div>
+            <label style="font-size: 13px; color: #8fa0c4; margin-right: 8px; font-weight: bold;">Atualizado em:</label>
+            <input type="text" id="input-data-att" class="dash-date-input" placeholder="Ex: 07/07/2026" oninput="salvarDataAtualizacao()">
+        </div>
     </div>
 
     <div id="btn-exportar-container">
@@ -517,6 +649,46 @@
         {"id":1068,"nome":"Elf Box","imgSrc":"https://i.postimg.cc/FznhQ28m/Elf-Box.webp","raridade":"legendary"},
         {"id":1069,"nome":"Enchanted Circus Tent","imgSrc":"https://i.postimg.cc/bNWqVf1F/Enchanted-Circus-Tent.webp","raridade":"legendary"},
         {"id":1070,"nome":"Eye of Blizzaria","imgSrc":"https://i.postimg.cc/j2jRms8H/Eye-of-Blizzaria.webp","raridade":"legendary"},
+        {"id":1071,"nome":"Fairy Tale Book","imgSrc":"https://i.postimg.cc/1XYyZL2t/Fairy-Tale-Book.webp","raridade":"legendary"},
+        {"id":1072,"nome":"Fall Harvester","imgSrc":"https://i.postimg.cc/kG57znj8/Fall-Harvester.webp","raridade":"legendary"},
+        {"id":1073,"nome":"Fall Wheelbarrow","imgSrc":"https://i.postimg.cc/MHGzNWsV/Fall-Wheelbarrow.webp","raridade":"legendary"},
+        {"id":1074,"nome":"Festive Candelabra","imgSrc":"https://i.postimg.cc/Gp1drP7R/Festive-Candelabra.webp","raridade":"legendary"},
+        {"id":1075,"nome":"Festive Fruitcake","imgSrc":"https://i.postimg.cc/QCMjwX6k/Festive-Fruitcake.webp","raridade":"legendary"},
+        {"id":1076,"nome":"Festive Pinecone","imgSrc":"https://i.postimg.cc/kMjJ8bGP/Festive-Pinecone.webp","raridade":"legendary"},
+        {"id":1077,"nome":"Festive Train","imgSrc":"https://i.postimg.cc/ncCH1hjy/Festive-Train.webp","raridade":"legendary"},
+        {"id":1078,"nome":"Fiery Phoenix","imgSrc":"https://i.postimg.cc/CKVSYCPL/Fiery-Phoenix.webp","raridade":"legendary"},
+        {"id":1079,"nome":"Fish Tank","imgSrc":"https://i.postimg.cc/nhmp6S1g/Fish-Tank.webp","raridade":"legendary"},
+        {"id":1080,"nome":"Flourished Fountain","imgSrc":"https://i.postimg.cc/tCYXz4nR/Flourished-Fountain.webp","raridade":"legendary"},
+        {"id":1081,"nome":"Fortune House","imgSrc":"https://i.postimg.cc/vZnbp2zR/Fortune-House.webp","raridade":"legendary"},
+        {"id":1082,"nome":"Frost Engine","imgSrc":"https://i.postimg.cc/gkQGtb3K/Frost-Engine.webp","raridade":"legendary"},
+        {"id":1083,"nome":"Frostbite","imgSrc":"https://i.postimg.cc/8cnTVq9P/Frostbite.webp","raridade":"legendary"},
+        {"id":1084,"nome":"Frosted Frequency","imgSrc":"https://i.postimg.cc/C56wVWXS/Frosted-Frequency.webp","raridade":"legendary"},
+        {"id":1085,"nome":"Frozen Fortress","imgSrc":"https://i.postimg.cc/yxr7zwtV/Frozen-Fortress.webp","raridade":"legendary"},
+        {"id":1086,"nome":"Fudge Bunny","imgSrc":"https://i.postimg.cc/ZYfb3dRs/Fudge-Bunny.webp","raridade":"legendary"},
+        {"id":1087,"nome":"Fungal Thumper","imgSrc":"https://i.postimg.cc/Kc9GLMzD/Fungal-Thumper.webp","raridade":"legendary"},
+        {"id":1088,"nome":"Gingerbread House","imgSrc":"https://i.postimg.cc/02b8CyKx/Gingerbread-House.webp","raridade":"legendary"},
+        {"id":1089,"nome":"Golden Firework","imgSrc":"https://i.postimg.cc/yYt7pC00/Golden-Firework.webp","raridade":"legendary"},
+        {"id":1090,"nome":"Gothic Bouquet","imgSrc":"https://i.postimg.cc/gJzpLzPz/Gothic-Bouquet.webp","raridade":"legendary"},
+        {"id":1091,"nome":"Grandfather Clock","imgSrc":"https://i.postimg.cc/nLtpZKR7/Grandfather-Clock.webp","raridade":"legendary"},
+        {"id":1092,"nome":"Grape Barrel","imgSrc":"https://i.postimg.cc/vTmGkQP7/Grape-Barrel.webp","raridade":"legendary"},
+        {"id":1093,"nome":"Grim Galleon","imgSrc":"https://i.postimg.cc/5tMb157y/Grim-Galleon.webp","raridade":"legendary"},
+        {"id":1094,"nome":"Haunted Circus Tent","imgSrc":"https://i.postimg.cc/hP6KZRVy/Haunted-Circus-Tent.webp","raridade":"legendary"},
+        {"id":1095,"nome":"Holiday Hotline","imgSrc":"https://i.postimg.cc/QxwjYZcp/Holiday-Hotline.webp","raridade":"legendary"},
+        {"id":1096,"nome":"Hollow Scythe","imgSrc":"https://i.postimg.cc/cJMZJK22/Hollow-Scythe.webp","raridade":"legendary"},
+        {"id":1097,"nome":"Honey Cheesecake","imgSrc":"https://i.postimg.cc/wMB9Z6Wn/Honey-Cheesecake.png","raridade":"legendary"},
+        {"id":1098,"nome":"Honey Hive Tree","imgSrc":"https://i.postimg.cc/152y71DN/Honey-Hive-Tree.webp","raridade":"legendary"},
+        {"id":1099,"nome":"Ice Sleigh","imgSrc":"https://i.postimg.cc/c4rscLtN/Ice-Sleigh.webp","raridade":"legendary"},
+        {"id":1100,"nome":"Icecream Mix","imgSrc":"https://i.postimg.cc/4dfGHfRj/Icecream-Mix.webp","raridade":"legendary"},
+        {"id":1101,"nome":"Irish Harp","imgSrc":"https://i.postimg.cc/C56wVWX5/Irish-Harp.webp","raridade":"legendary"},
+        {"id":1102,"nome":"Jade Viper","imgSrc":"https://i.postimg.cc/GmDdZgQh/Jade-Viper.webp","raridade":"legendary"},
+        {"id":1103,"nome":"Jello Dessert","imgSrc":"https://i.postimg.cc/VNcm19GJ/Jello-Dessert.webp","raridade":"legendary"},
+        {"id":1104,"nome":"Jingle Bells","imgSrc":"https://i.postimg.cc/kMjJ8bGd/Jingle-Bells.webp","raridade":"legendary"},
+        {"id":1105,"nome":"Jollyday Batter","imgSrc":"https://i.postimg.cc/9fjCVP8y/Jollyday-Batter.webp","raridade":"legendary"},
+        {"id":1106,"nome":"Krampus Chimney","imgSrc":"https://i.postimg.cc/yYkVT8g5/Krampus-Chimney.webp","raridade":"legendary"},
+        {"id":1107,"nome":"Leprechaun Boot","imgSrc":"https://i.postimg.cc/7hLqdxBf/Leprechaun-Boot.webp","raridade":"legendary"},
+        {"id":1108,"nome":"Light Bone Crusher","imgSrc":"https://i.postimg.cc/1zcPzg2g/Light-Bone-Crusher.webp","raridade":"legendary"},
+        {"id":1109,"nome":"Lil Tree","imgSrc":"https://i.postimg.cc/Dy82cw4W/Lil-Tree.webp","raridade":"legendary"},
+        {"id":1110,"nome":"Lilium Bush","imgSrc":"https://i.postimg.cc/GmDdZgjW/Lilium-Bush.webp","raridade":"legendary"},
         {"id":1111,"nome":"Lily of The Valley","imgSrc":"https://i.postimg.cc/MHGzNWsd/Lily-of-The-Valley.png","raridade":"legendary"},
         {"id":1112,"nome":"Lonely Date","imgSrc":"https://i.postimg.cc/hvGK6SCs/Lonely-Date.png","raridade":"legendary"},
         {"id":1113,"nome":"Lovely Heart","imgSrc":"https://i.postimg.cc/tgtyg1wm/Lovely-Heart.webp","raridade":"legendary"},
@@ -525,7 +697,7 @@
         {"id":1116,"nome":"Lunar Scepter","imgSrc":"https://i.postimg.cc/0NdxN6F7/Lunar-Scepter.webp","raridade":"legendary"},
         {"id":1117,"nome":"Lunar Witch Broom","imgSrc":"https://i.postimg.cc/YCFMJDxz/Lunar-Witch-Broom.webp","raridade":"legendary"},
         {"id":1118,"nome":"Luxury Projector","imgSrc":"https://i.postimg.cc/TPXfGjkz/Luxury-Projector.webp","raridade":"legendary"},
-        {"id":1119,"nome":"Magical Portal","imgSrc":"https://i.postimg.cc/rmVTRV23/Magical-Portal.webp","raridade":"legendary"},
+        {"id":1119,"nome":"Magical Portal","imgSrc":"https://i.postimg.cc/rmVTRVL2/Magical-Portal.webp","raridade":"legendary"},
         {"id":1120,"nome":"Marching Drums","imgSrc":"https://i.postimg.cc/65gBbxCZ/Marching-Drums.webp","raridade":"legendary"},
         {"id":1121,"nome":"Marine Anchor","imgSrc":"https://i.postimg.cc/k5F95VzL/Marine-Anchor.webp","raridade":"legendary"},
         {"id":1122,"nome":"Merry Music Box","imgSrc":"https://i.postimg.cc/504JQ4WK/Merry-Music-Box.webp","raridade":"legendary"},
@@ -599,24 +771,50 @@
         {"id":1190,"nome":"Zombie Hand","imgSrc":"https://i.postimg.cc/zvfq6Jdh/Zombie-Hand.webp","raridade":"legendary"}
     ];
 
+
     let listaDeMarretas = [];
     let raridadeAtual = 'legendary'; 
+    let subcategoriaAtual = 'todos';
     
     function inicializarBancoDados() {
         let dadosLocais = null;
         try {
-            dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+            dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5'));
+            if (!dadosLocais) {
+                // Tenta puxar da versão antiga (v4) se existir
+                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+            }
         } catch (e) {
             dadosLocais = null;
         }
 
-        if (!Array.isArray(dadosLocais) || dadosLocais === null || dadosLocais.length === 0) {
+        if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
             listaDeMarretas = [];
             forçarInjecaoListaPadrao();
         } else {
-            listaDeMarretas = dadosLocais;
+            // Mapeia garantindo as propriedades novas para itens antigos
+            listaDeMarretas = dadosLocais.map(item => ({
+                id: item.id,
+                nome: item.nome || "Marreta",
+                valor: item.valor || '10',  
+                raridade: item.raridade || 'legendary',
+                demanda: item.demanda || '5', 
+                tendencia: item.tendencia || 'none',
+                status: item.status || 'none',
+                templates: item.templates || 'Stable',
+                imgSrc: item.imgSrc,
+                evento: item.evento || mapearEventoAutomatico(item.nome),
+                tipo: item.tipo || 'normal',
+                recente: item.recente || 'nao'
+            }));
         }
 
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        
+        let datasSalvas = JSON.parse(localStorage.getItem('ftf_datas_att')) || {};
+        document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "";
+
+        atualizarFiltroEventosMenu();
         carregarCardsSalvos();
     }
 
@@ -630,18 +828,50 @@
             tendencia: m.tendencia || 'none',
             status: m.status || 'none',
             templates: m.templates || 'Stable',
-            imgSrc: m.imgSrc
+            imgSrc: m.imgSrc,
+            evento: mapearEventoAutomatico(m.nome),
+            tipo: 'normal',
+            recente: 'nao'
         }));
-        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+    }
+
+    function mapearEventoAutomatico(nome) {
+        const n = (nome || "").toLowerCase();
+        if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th')) return 'Anniversary';
+        if (n.includes('halloween') || n.includes('spook') || n.includes('witch') || n.includes('zombie') || n.includes('pumpkin') || n.includes('coffin') || n.includes('tombstone') || n.includes('batwing')) return 'Halloween';
+        if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('cocoa') || n.includes('eggnog') || n.includes('presents') || n.includes('snow') || n.includes('yule')) return 'Christmas';
+        if (n.includes('autumn') || n.includes('crops') || n.includes('scarecrow') || n.includes('cornucopia')) return 'Autumn';
+        if (n.includes('easter') || n.includes('bunny') || n.includes('chick')) return 'Easter';
+        if (n.includes('billion')) return 'Milestones';
+        return 'Geral';
     }
 
     function resetarParaPadraoCodigo() {
         if (confirm("Deseja realmente restaurar todos os itens padrões de fábrica?")) {
-            localStorage.removeItem('ftf_custom_v4');
+            localStorage.removeItem('ftf_custom_v5');
+            localStorage.removeItem('ftf_datas_att');
             forçarInjecaoListaPadrao();
-            carregarCardsSalvos();
-            alert("Memória limpa! Todas as marretas foram carregadas do zero! 💎");
+            inicializarBancoDados();
+            alert("Memória limpa! Todas as marretas foram restauradas com sucesso! 💎");
         }
+    }
+
+    function salvarDataAtualizacao() {
+        let datasSalvas = JSON.parse(localStorage.getItem('ftf_datas_att')) || {};
+        datasSalvas[raridadeAtual] = document.getElementById('input-data-att').value;
+        localStorage.setItem('ftf_datas_att', JSON.stringify(datasSalvas));
+    }
+
+    function atualizarFiltroEventosMenu() {
+        const select = document.getElementById('filtroEvento');
+        if (!select) return;
+        const eventosUnicos = [...new Set(listaDeMarretas.map(item => item.evento || "Geral"))];
+        
+        select.innerHTML = '<option value="todos">🌍 Todos os Eventos</option>';
+        eventosUnicos.sort().forEach(ev => {
+            select.innerHTML += `<option value="${ev}">${ev}</option>`;
+        });
     }
 
     function mudarAbaForm(aba) {
@@ -681,15 +911,26 @@
                 tendencia: 'none', 
                 status: 'none', 
                 templates: 'Stable', 
-                imgSrc: url.trim() 
+                imgSrc: url.trim(),
+                evento: 'Geral',
+                tipo: 'normal',
+                recente: 'nao'
             };
             listaDeMarretas.push(novoObj);
         });
 
-        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        atualizarFiltroEventosMenu();
         carregarCardsSalvos();
         document.getElementById('listaLinksMassa').value = '';
         alert('Links extras adicionados!');
+    }
+
+    function filtrarSubcategoria(sub) {
+        subcategoriaAtual = sub;
+        document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('sub-' + sub).classList.add('active');
+        carregarCardsSalvos();
     }
 
     function togglePrintMode() {
@@ -759,9 +1000,6 @@
     }
 
     function criarNovoCard() {
-        if (!Array.isArray(listaDeMarretas)) {
-            listaDeMarretas = [];
-        }
         const nome = document.getElementById('nomeItem').value;
         const urlImagem = document.getElementById('linkImagem').value || 'https://via.placeholder.com/150';
         let valor = document.getElementById('valorItem').value || '10';
@@ -770,6 +1008,9 @@
         const tendencia = document.getElementById('tendenciaValor').value;
         const status = document.getElementById('statusItem').value;
         const estabilidade = document.getElementById('estabilidadeItem').value;
+        const evento = document.getElementById('eventoItem').value || 'Geral';
+        const tipo = document.getElementById('tipoItem').value;
+        const recente = document.getElementById('recenteItem').value;
 
         if (!nome) {
             alert('Por favor, dê um nome!');
@@ -785,19 +1026,24 @@
             tendencia: tendencia, 
             status: status, 
             templates: estabilidade, 
-            imgSrc: urlImagem 
+            imgSrc: urlImagem,
+            evento: evento,
+            tipo: tipo,
+            recente: recente
         };
         
         listaDeMarretas.push(novoObj);
-        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
         
         raridadeAtual = raridade;
         definirAbaAtivaVisual(raridade);
+        atualizarFiltroEventosMenu();
         carregarCardsSalvos();
 
         document.getElementById('nomeItem').value = '';
         document.getElementById('linkImagem').value = '';
         document.getElementById('valorItem').value = '';
+        document.getElementById('eventoItem').value = '';
     }
 
     function renderizarCardHTML(item) {
@@ -820,15 +1066,7 @@
         card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.4)';
         card.setAttribute('data-id', item.id);
 
-        const listaPNG = [
-            "Bundle-Of-Harmony", "Bundle-Of-Longevity", "Honey-Cheesecake", 
-            "Lily-of-The-Valley", "Lonely-Date", "Sakura-Parasol", 
-            "Strawberry-Fields", "Sweethearts-Store", "Veridian-Greenhouse", 
-            "Woodland-Staff", "Year-Of-The-Horse"
-        ];
-        
-        const extensao = listaPNG.includes(item.nome.replace(/\s+/g, '-')) ? "png" : "webp";
-        const caminhoImagem = item.imgSrc || `./imagens/${item.id}.${extensao}`;
+        const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto';
 
         const estabilidadeTexto = item.templates || 'Stable';
         const estabilidadeKey = estabilidadeTexto.toLowerCase().trim();
@@ -845,6 +1083,7 @@
 
             <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;" title="${item.nome}">${item.nome}</h3>
             <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: center; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
+            <span style="color: #62697e; font-size: 7px; text-align: center; display: block; margin-bottom: 2px;">🎉 ${item.evento || 'Geral'}</span>
             
             <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                 <div>
@@ -879,77 +1118,18 @@
 
             const novoValor = prompt("Novo Valor:", item.valor);
             if (novoValor !== null) item.valor = novoValor.trim();
+
+            const novoEvento = prompt("Nome do Evento:", item.evento || "Geral");
+            if (novoEvento !== null) item.evento = novoEvento.trim();
+
+            const novoTipo = prompt("É item único? (Digite 'unique' para Único ou 'normal' para Comum):", item.tipo || "normal");
+            if (novoTipo !== null) item.tipo = novoTipo.trim().toLowerCase();
+
+            const novoRecente = prompt("É item recente? (Digite 'sim' ou 'nao'):", item.recente || "nao");
+            if (novoRecente !== null) item.recente = novoRecente.trim().toLowerCase();
             
-            let raridadePadrao = "1";
-            if (item.raridade === "epics") raridadePadrao = "2";
-            else if (item.raridade === "rares") raridadePadrao = "3";
-            else if (item.raridade === "commons") raridadePadrao = "4";
-
-            const menuRaridade = prompt(
-                "Escolha a Raridade:\n\n" +
-                "1 - 👑 Legendary\n" +
-                "2 - ✨ Epic\n" +
-                "3 - 💎 Rare\n" +
-                "4 - 📦 Common", 
-                raridadePadrao
-            );
-
-            if (menuRaridade === "1") item.raridade = "legendary";
-            else if (menuRaridade === "2") item.raridade = "epics";
-            else if (menuRaridade === "3") item.raridade = "rares";
-            else if (menuRaridade === "4") item.raridade = "commons";
-
-            const menuDemanda = prompt(
-                "Escolha a nota de Demanda (0 a 5):\n\n" +
-                "Opções válidas: 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0", 
-                item.demanda
-            );
-            if (menuDemanda !== null) item.demanda = menuDemanda.trim();
-
-            const menuTendencia = prompt(
-                "Escolha a Tendência de Valor:\n\n" +
-                "1 - Estável / Sem Setinha\n" +
-                "2 - Subiu (↑ Verde)\n" +
-                "3 - Caiu (↓ Vermelho)\n" +
-                "4 - Corrigido (* Amarelo)", 
-                "1"
-            );
-            if (menuTendencia === "1") item.tendencia = "none";
-            else if (menuTendencia === "2") item.tendencia = "subiu";
-            else if (menuTendencia === "3") item.tendencia = "caiu";
-            else if (menuTendencia === "4") item.tendencia = "corrigido";
-
-            const menuStatus = prompt(
-                "Escolha o Status Especial:\n\n" +
-                "1 - Nenhum\n" +
-                "2 - Overpaid For (📈)\n" +
-                "3 - Underpaid For (📉)\n" +
-                "4 - Niche (💎 Raro)", 
-                "1"
-            );
-            if (menuStatus === "1") item.status = "none";
-            else if (menuStatus === "2") item.status = "overpaid";
-            else if (menuStatus === "3") item.status = "underpaid";
-            else if (menuStatus === "4") item.status = "niche";
-
-            const menuEstabilidade = prompt(
-                "Escolha a Estabilidade:\n\n" +
-                "1 - Rising\n" +
-                "2 - Doing Well\n" +
-                "3 - Improving\n" +
-                "4 - Stable\n" +
-                "5 - Fluctuating\n" +
-                "6 - Struggling\n" +
-                "7 - Receding\n" +
-                "8 - Dropping", 
-                "4"
-            );
-            const opcoesEstabilidade = ["Rising", "Doing Well", "Improving", "Stable", "Fluctuating", "Struggling", "Receding", "Dropping"];
-            if (menuEstabilidade >= 1 && menuEstabilidade <= 8) {
-                item.templates = opcoesEstabilidade[menuEstabilidade - 1];
-            }
-
-            localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+            atualizarFiltroEventosMenu();
             carregarCardsSalvos();
         });
 
@@ -957,8 +1137,8 @@
             if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
                 listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
                 card.remove();
-                localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
-                atualizarNumbersVisuais();
+                localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+                carregarCardsSalvos();
             }
         });
 
@@ -986,6 +1166,10 @@
     function filtrarRaridade(raridadeAlvo) {
         raridadeAtual = raridadeAlvo;
         definirAbaAtivaVisual(raridadeAlvo);
+
+        let datasSalvas = JSON.parse(localStorage.getItem('ftf_datas_att')) || {};
+        document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "";
+
         carregarCardsSalvos();
     }
 
@@ -1086,14 +1270,13 @@
             });
         } 
         else if (criterio === 'padrao') {
-            const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
+            const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5'));
             if (Array.isArray(dadosLocais)) {
                 listaDeMarretas = dadosLocais;
             }
         }
 
-        // Salva o novo arranjo ordenado para não quebrar o script das setas após filtragem
-        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
         carregarCardsSalvos();
     }
 
@@ -1103,13 +1286,34 @@
 
         const barra = document.getElementById('barraPesquisa');
         const termoPesquisa = barra ? barra.value.toLowerCase() : "";
+        const eventoSelecionado = document.getElementById('filtroEvento').value;
 
         const itensFiltrados = listaDeMarretas.filter(item => {
             const raridadeItem = (item.raridade || 'legendary').toLowerCase();
             const bateRaridade = raridadeItem === raridadeAtual.toLowerCase();
             const bateNome = (item.nome || "").toLowerCase().includes(termoPesquisa);
-            return bateRaridade && bateNome;
+            const bateEvento = eventoSelecionado === 'todos' || item.evento === eventoSelecionado;
+            
+            if (!bateRaridade || !bateNome || !bateEvento) return false;
+
+            // Filtros de Sub-categories
+            const valorNum = parseFloat((item.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+            if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
+            if (subcategoriaAtual === 'unicos' && item.tipo !== 'unique') return false;
+            if (subcategoriaAtual === 'high' && valorNum < 90) return false;
+            if (subcategoriaAtual === 'mid' && (valorNum < 30 || valorNum >= 90)) return false;
+            if (subcategoriaAtual === 'low' && (valorNum < 1 || valorNum >= 30)) return false;
+
+            return true;
         });
+
+        // Atualizar contadores do Dashboard
+        document.getElementById('dash-qtd').innerText = itensFiltrados.length;
+        const totalValorCalculado = itensFiltrados.reduce((acc, obj) => {
+            const v = parseFloat((obj.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+            return acc + v;
+        }, 0);
+        document.getElementById('dash-valor').innerText = totalValorCalculado;
 
         container.innerHTML = '';
         const fragment = document.createDocumentFragment();
@@ -1137,7 +1341,7 @@
         });
         
         listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
-        localStorage.setItem('ftf_custom_v4', JSON.stringify(listaDeMarretas));
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
         atualizarNumbersVisuais();
     }
 
