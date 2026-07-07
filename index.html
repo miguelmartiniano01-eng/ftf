@@ -896,14 +896,21 @@
                 const novoValor = prompt("Novo Valor:", item.valor);
                 if (novoValor !== null) item.valor = novoValor.trim();
                 
-                // 2. Menu numérico para Raridade
-                const menuRaridade = prompt(
-                    "Escolha a Raridade:\n\n" +
-                    "1 - 👑 Legendary\n" +
-                    "2 - ✨ Epic\n" +
-                    "3 - 💎 Rare\n" +
-                    "4 - 📦 Common", 
-                    "1"
+               // 2. Menu numérico para Raridade (Mantendo a raridade atual salva)
+let raridadePadrao = "1";
+if (item.raridade === "epics") raridadePadrao = "2";
+else if (item.raridade === "rares") raridadePadrao = "3";
+else if (item.raridade === "commons") raridadePadrao = "4";
+
+const menuRaridade = prompt(
+    "Escolha a Raridade:\n\n" +
+    "1 - 👑 Legendary\n" +
+    "2 - ✨ Epic\n" +
+    "3 - 💎 Rare\n" +
+    "4 - 📦 Common", 
+    raridadePadrao
+);
+
                 );
                 if (menuRaridade === "1") item.raridade = "legendary";
                 else if (menuRaridade === "2") item.raridade = "epics";
