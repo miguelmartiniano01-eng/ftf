@@ -358,6 +358,19 @@
             min-width: 32px;
         }
 
+        .txt-estabilidade{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+}
+
+.txt-estabilidade svg{
+    width:12px;
+    height:12px;
+    flex:none;
+}
+
         body:not(.hide-mode) #container-cards h3 {
             font-size: 14px !important;
             margin-bottom: 4px !important;
@@ -579,51 +592,52 @@
     };
 
         const SVG_ESTABILIDADE = {
-  Rising: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M6 16L12 10L16 14L20 8" stroke="#2ed573" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`,
 
-  "Doing Well": `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M4 15L8 11L12 13L16 8L20 10" stroke="#27d980" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  </svg>`,
+Rising: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#28d17c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M5 16L11 10L15 14L19 8"/>
+<path d="M16 8H19V11"/>
+</svg>`,
 
-  Improving: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M8 12h8M12 8v8" stroke="#9BE22D" stroke-width="2.4"/>
-    <rect x="4" y="4" width="16" height="16" rx="4" stroke="#9BE22D" fill="none"/>
-  </svg>`,
+"Doing Well": `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M4 15L9 10L13 13L20 6"/>
+</svg>`,
 
-  Stable: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M6 12H18" stroke="#AAB3C5" stroke-width="2.6" stroke-linecap="round"/>
-  </svg>`,
+Improving: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#9be22d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7 13l4 4L21 7"/>
+<path d="M3 12l4 4"/>
+</svg>`,
 
-  Fluctuating: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M3 12C6 5 9 19 12 12C15 5 18 19 21 12"
-      stroke="#F6C026"
-      stroke-width="2.4"
-      fill="none"
-      stroke-linecap="round"/>
-  </svg>`,
+Stable: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#b8bcc6" stroke-width="3" stroke-linecap="round">
+<path d="M5 12H19"/>
+</svg>`,
 
-  Struggling: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M6 8H18V12H14V18H10V12H6Z"
-      stroke="#D98A32"
-      stroke-width="2"
-      fill="none"/>
-  </svg>`,
+Fluctuating: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffc933" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M3 13C5 13 5 8 8 8S11 16 14 16S17 10 21 10"/>
+</svg>`,
 
-  Receding: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M4 9L8 13L12 11L16 16L20 13"
-      stroke="#DD5C73"
-      stroke-width="2.5"
-      fill="none"/>
-  </svg>`,
+Struggling: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f2994a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M7 7H17"/>
+<path d="M12 7V18"/>
+<path d="M8 18H16"/>
+</svg>`,
 
-  Dropping: `<svg viewBox="0 0 24 24" width="13" height="13">
-    <path d="M12 4V18M8 14L12 18L16 14"
-      stroke="#F05353"
-      stroke-width="2.6"
-      fill="none"/>
-  </svg>`
+Receding: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ff6b81" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M5 8L11 14L15 10L19 16"/>
+</svg>`,
+
+Dropping: `
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ff4d4f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 5V19"/>
+<path d="M7 14L12 19L17 14"/>
+</svg>`
+
 };
 
         const SVG_STATUS = {
