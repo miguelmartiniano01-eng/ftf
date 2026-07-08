@@ -1525,18 +1525,31 @@
         document.getElementById('titulo-secao').innerText = `${raridadeAlvo.toUpperCase()} ITEMS`;
     }
 
-    function atualizarEstiloValorDoCard(cardHTML, item) {
+        function atualizarEstiloValorDoCard(cardHTML, item) {
         const containerValor = cardHTML.querySelector('.box-valor-dinamico');
         const containerBadge = cardHTML.querySelector('.box-badge-status');
         if (!containerValor) return;
 
         let badgeTendencia = '';
         let valorExibido = item.valor || "10";
+        let corDinamica = '#ffb830'; // Cor padrão amarela do FTF
 
-        if (item.tendencia === 'subiu') { badgeTendencia = ` <span style="color: #47cc6a; font-size:12px;">↑</span>`; }
-        else if (item.tendencia === 'caiu') { badgeTendencia = ` <span style="color: #ff4d4f; font-size:12px;">↓</span>`; }
-        else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #f2be24; font-size:12px;">*</span>`; }
+        // Define a mesma cor para o valor e para a seta com base na tendência
+        if (item.tendencia === 'subiu') { 
+            corDinamica = '#47cc6a'; // Verde
+            badgeTendencia = ` <span>↑</span>`; 
+        }
+        else if (item.tendencia === 'caiu') { 
+            corDinamica = '#ff4d4f'; // Vermelho
+            badgeTendencia = ` <span>↓</span>`; 
+        }
+        else if (item.tendencia === 'corrigido') { 
+            corDinamica = '#f2be24'; // Amarelo de correção
+            badgeTendencia = ` <span>*</span>`; 
+        }
         
+        // Aplica a cor diretamente no container que junta valor + seta
+        containerValor.style.color = corDinamica;
         containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
 
         if (containerBadge) {
@@ -1546,6 +1559,7 @@
             else if (item.status === 'niche') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #45aaf2; background: rgba(69,170,242,0.1); border: 1px solid rgba(69,170,242,0.2);">Niche</span>`;
         }
     }
+
 
     function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
         const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
