@@ -536,9 +536,9 @@
         <button class="btn-subtab active" id="sub-todos" onclick="filtrarSubcategoria('todos')">Todos os Itens</button>
         <button class="btn-subtab" id="sub-recentes" onclick="filtrarSubcategoria('recentes')">⏳ Itens Recentes</button>
         <button class="btn-subtab" id="sub-unicos" onclick="filtrarSubcategoria('unicos')">🔓 Itens Únicos (Sem Gema/Marreta)</button>
-        <button class="btn-subtab" id="sub-high" onclick="filtrarSubcategoria('high')">🔴 High Tier (+90)</button>
-        <button class="btn-subtab" id="sub-mid" onclick="filtrarSubcategoria('mid')">🟡 Mid Tier (90-30)</button>
-        <button class="btn-subtab" id="sub-low" onclick="filtrarSubcategoria('low')">🟢 Low Tier (30-1)</button>
+        <button class="btn-subtab" id="sub-high" onclick="filtrarSubcategoria('high')"> High Tier (+90)</button>
+        <button class="btn-subtab" id="sub-mid" onclick="filtrarSubcategoria('mid')"> Mid Tier (90-30)</button>
+        <button class="btn-subtab" id="sub-low" onclick="filtrarSubcategoria('low')"> Low Tier (30-1)</button>
     </div>
 
     <div class="dashboard-raridade">
@@ -558,7 +558,7 @@
 
     <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
     <div id="container-cards"></div>
-    
+
     <script>
     const CORES_ESTABILIDADE = {
         "rising": "#36D8B0",
@@ -771,7 +771,6 @@
         {"id":1190,"nome":"Zombie Hand","imgSrc":"https://i.postimg.cc/zvfq6Jdh/Zombie-Hand.webp","raridade":"legendary"}
     ];
 
-
     let listaDeMarretas = [];
     let raridadeAtual = 'legendary'; 
     let subcategoriaAtual = 'todos';
@@ -781,7 +780,6 @@
         try {
             dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5'));
             if (!dadosLocais) {
-                // Tenta puxar da versão antiga (v4) se existir
                 dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
             }
         } catch (e) {
@@ -792,7 +790,6 @@
             listaDeMarretas = [];
             forçarInjecaoListaPadrao();
         } else {
-            // Mapeia garantindo as propriedades novas para itens antigos
             listaDeMarretas = dadosLocais.map(item => ({
                 id: item.id,
                 nome: item.nome || "Marreta",
@@ -1007,7 +1004,7 @@
         const demanda = document.getElementById('demandaNota').value;
         const tendencia = document.getElementById('tendenciaValor').value;
         const status = document.getElementById('statusItem').value;
-        const estabilidade = document.getElementById('estabilidadeItem').value;
+        const稳定性 = document.getElementById('estabilidadeItem').value;
         const evento = document.getElementById('eventoItem').value || 'Geral';
         const tipo = document.getElementById('tipoItem').value;
         const recente = document.getElementById('recenteItem').value;
@@ -1044,6 +1041,111 @@
         document.getElementById('linkImagem').value = '';
         document.getElementById('valorItem').value = '';
         document.getElementById('eventoItem').value = '';
+    }
+
+    function abrirModalEdicaoCompleta(item) {
+        // Remove qualquer modal antigo se houver pendente
+        const antigo = document.getElementById('modal-edicao-ftf');
+        if (antigo) antigo.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'modal-edicao-ftf';
+        modal.style = `
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
+            z-index: 99999; font-family: sans-serif; box-sizing: border-box;
+        `;
+
+        modal.innerHTML = `
+            <div style="background: #14171f; border: 2px solid #ffa502; border-radius: 12px; width: 90%; max-width: 450px; padding: 20px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-height: 90vh; overflow-y: auto;">
+                <h3 style="color: #ffa502; margin-bottom: 15px; font-size: 18px; text-align: center;">✏️ Editar Item</h3>
+                
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Nome do Item:</label>
+                <input type="text" id="edit-nome" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.nome || ''}">
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Link da Imagem:</label>
+                <input type="text" id="edit-img" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.imgSrc || ''}">
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Valor em FV:</label>
+                <input type="text" id="edit-valor" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.valor || ''}">
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Evento:</label>
+                <input type="text" id="edit-evento" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.evento || 'Geral'}">
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Raridade:</label>
+                <select id="edit-raridade" class="input-style" style="width:100%; margin-bottom:10px;">
+                    <option value="legendary" ${item.raridade === 'legendary'?'selected':''}>👑 Legendary</option>
+                    <option value="epics" ${item.raridade === 'epics'?'selected':''}>✨ Epic</option>
+                    <option value="rares" ${item.raridade === 'rares'?'selected':''}>💎 Rare</option>
+                    <option value="commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
+                </select>
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Estilo do Item (Sub-category):</label>
+                <select id="edit-tipo" class="input-style" style="width:100%; margin-bottom:10px;">
+                    <option value="normal" ${item.tipo === 'normal'?'selected':''}>Normal (Com Gema/Par)</option>
+                    <option value="unique" ${item.tipo === 'unique'?'selected':''}>Único (Sem Gema ou Sem Marreta)</option>
+                </select>
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Item Recente?</label>
+                <select id="edit-recente" class="input-style" style="width:100%; margin-bottom:10px;">
+                    <option value="nao" ${item.recente === 'nao'?'selected':''}>Não</option>
+                    <option value="sim" ${item.recente === 'sim'?'selected':''}>Sim (Marreta Recente)</option>
+                </select>
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Demanda (Estrelas):</label>
+                <select id="edit-demanda" class="input-style" style="width:100%; margin-bottom:10px;">
+                    ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0].map(v => `<option value="${v}" ${parseFloat(item.demanda) === v ? 'selected':''}>${v} ${'⭐'.repeat(Math.floor(v))}</option>`).join('')}
+                </select>
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Tendência de Valor:</label>
+                <select id="edit-tendencia" class="input-style" style="width:100%; margin-bottom:10px;">
+                    <option value="none" ${item.tendencia === 'none'?'selected':''}>Estável / Sem Setinha</option>
+                    <option value="subiu" ${item.tendencia === 'subiu'?'selected':''}>Subiu (↑ Verde)</option>
+                    <option value="caiu" ${item.tendencia === 'caiu'?'selected':''}>Caiu (↓ Vermelho)</option>
+                    <option value="corrigido" ${item.tendencia === 'corrigido'?'selected':''}>Corrigido (* Amarelo)</option>
+                </select>
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Status Especial:</label>
+                <select id="edit-status" class="input-style" style="width:100%; margin-bottom:10px;">
+                    <option value="none" ${item.status === 'none'?'selected':''}>Nenhum</option>
+                    <option value="overpaid" ${item.status === 'overpaid'?'selected':''}>Overpaid For (📈)</option>
+                    <option value="underpaid" ${item.status === 'underpaid'?'selected':''}>Underpaid For (📉)</option>
+                    <option value="niche" ${item.status === 'niche'?'selected':''}>Niche (💎 Raro)</option>
+                </select>
+
+                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Estabilidade:</label>
+                <select id="edit-estabilidade" class="input-style" style="width:100%; margin-bottom:15px;">
+                    ${["Rising","Doing Well","Improving","Stable","Fluctuating","Struggling","Receding","Dropping"].map(est => `<option value="${est}" ${item.templates === est ? 'selected':''}>${est}</option>`).join('')}
+                </select>
+
+                <div style="display: flex; gap: 10px;">
+                    <button id="modal-cancelar" style="flex:1; padding:10px; background:#ff4757; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Cancelar</button>
+                    <button id="modal-salvar" style="flex:1; padding:10px; background:#2ed573; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Salvar Alterações</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById('modal-cancelar').onclick = () => modal.remove();
+        document.getElementById('modal-salvar').onclick = () => {
+            item.nome = document.getElementById('edit-nome').value.trim() || item.nome;
+            item.imgSrc = document.getElementById('edit-img').value.trim();
+            item.valor = document.getElementById('edit-valor').value.trim();
+            item.evento = document.getElementById('edit-evento').value.trim() || 'Geral';
+            item.raridade = document.getElementById('edit-raridade').value;
+            item.tipo = document.getElementById('edit-tipo').value;
+            item.recente = document.getElementById('edit-recente').value;
+            item.demanda = document.getElementById('edit-demanda').value;
+            item.tendencia = document.getElementById('edit-tendencia').value;
+            item.status = document.getElementById('edit-status').value;
+            item.templates = document.getElementById('edit-estabilidade').value;
+
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+            atualizarFiltroEventosMenu();
+            carregarCardsSalvos();
+            modal.remove();
+        };
     }
 
     function renderizarCardHTML(item) {
@@ -1110,27 +1212,7 @@
         `;
 
         card.querySelector('.btn-editar').addEventListener('click', function() {
-            const novoNome = prompt("Mudar nome:", item.nome);
-            if (novoNome !== null) item.nome = novoNome.trim();
-
-            const novoLink = prompt("Novo Link da Imagem:", item.imgSrc || "");
-            if (novoLink !== null) item.imgSrc = novoLink.trim();
-
-            const novoValor = prompt("Novo Valor:", item.valor);
-            if (novoValor !== null) item.valor = novoValor.trim();
-
-            const novoEvento = prompt("Nome do Evento:", item.evento || "Geral");
-            if (novoEvento !== null) item.evento = novoEvento.trim();
-
-            const novoTipo = prompt("É item único? (Digite 'unique' para Único ou 'normal' para Comum):", item.tipo || "normal");
-            if (novoTipo !== null) item.tipo = novoTipo.trim().toLowerCase();
-
-            const novoRecente = prompt("É item recente? (Digite 'sim' ou 'nao'):", item.recente || "nao");
-            if (novoRecente !== null) item.recente = novoRecente.trim().toLowerCase();
-            
-            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-            atualizarFiltroEventosMenu();
-            carregarCardsSalvos();
+            abrirModalEdicaoCompleta(item);
         });
 
         card.querySelector('.btn-deletar').addEventListener('click', function() {
@@ -1296,7 +1378,6 @@
             
             if (!bateRaridade || !bateNome || !bateEvento) return false;
 
-            // Filtros de Sub-categories
             const valorNum = parseFloat((item.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
             if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
             if (subcategoriaAtual === 'unicos' && item.tipo !== 'unique') return false;
@@ -1307,7 +1388,6 @@
             return true;
         });
 
-        // Atualizar contadores do Dashboard
         document.getElementById('dash-qtd').innerText = itensFiltrados.length;
         const totalValorCalculado = itensFiltrados.reduce((acc, obj) => {
             const v = parseFloat((obj.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
@@ -1361,5 +1441,4 @@
 
     window.onload = inicializarBancoDados;
 </script>
-</body>
-</html>
+    
