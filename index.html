@@ -973,7 +973,7 @@
         if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
             // Gerando rigorosamente 190 itens com links sequenciais e compatíveis
             for (let i = 1001; i <= 1190; i++) {
-                let nameIndex = (i - 1001) % PRESET_MOCK_NAMES.length;
+                let nameIndex = (i - 1001) % PRESENT_MOCK_NAMES.length;
                 let nomeFinal = PRESET_MOCK_NAMES[nameIndex] + (i > 1045 ? ` Vol.${Math.floor(i/45)}` : "");
                 let isBundle = (i === 1040 || i === 1041 || i > 1180);
                 
