@@ -3,14 +3,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>FTF Custom Values - Event & Tier Edition</title>
+    <title>FTF Values - Custom Edition</title>
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="FTF Values">
     <meta name="apple-mobile-web-app-title" content="FTF Values">
-    <meta name="theme-color" content="#060913">
-    <meta name="msapplication-navbutton-color" content="#060913">
+    <meta name="theme-color" content="#0f1117">
+    <meta name="msapplication-navbutton-color" content="#0f1117">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link rel="icon" sizes="192x192" href="https://via.placeholder.com/192">
@@ -19,7 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        /* Reset e Configurações Gerais */
+        /* Base & Colors Reset */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -27,13 +27,580 @@
         }
 
         body {
-            background-color: #0b0c10;
+            background-color: #0f1117;
             color: #ffffff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding: 20px;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 12px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Classes de Controle do Modo Print */
+        /* Top Header Navigation style FTF */
+        .ftf-header {
+            max-width: 1300px;
+            margin: 0 auto 12px auto;
+            background: #161920;
+            border-bottom: 1px solid #232836;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 6px;
+        }
+
+        .ftf-header-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ftf-header-logo h1 {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        .ftf-header-logo span {
+            color: #ffb830;
+        }
+
+        .ftf-nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .ftf-nav-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-transform: uppercase;
+        }
+
+        .ftf-nav-item.active {
+            color: #ffb830;
+        }
+
+        /* Controls Toggle Area */
+        .toolbar-container {
+            max-width: 1300px;
+            margin: 0 auto 12px auto;
+            background: #161920;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            border: 1px solid #1e222b;
+        }
+
+        .ui-btn {
+            background: #222733;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #2d3445;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ui-btn:hover {
+            background: #2d3445;
+            color: #fff;
+        }
+
+        .btn-salvar-galeria {
+            background: #ffb830;
+            color: #000;
+            border: none;
+        }
+
+        .btn-salvar-galeria:hover {
+            background: #e6a422;
+            color: #000;
+        }
+
+        /* Dashboard Overview Area style FTF */
+        .ftf-dashboard {
+            max-width: 1300px;
+            margin: 0 auto 12px auto;
+            background: #161920;
+            border-radius: 6px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #1e222b;
+        }
+
+        .ftf-dash-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .ftf-dash-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ftf-dash-label {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .ftf-dash-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .ftf-dash-value span {
+            color: #ffb830;
+        }
+
+        .dash-date-input {
+            background: #0f1117;
+            color: #94a3b8;
+            border: 1px solid #232836;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            outline: none;
+            width: 120px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Main Search & Sorting Inputs Row */
+        .search-wrapper {
+            max-width: 1300px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .input-style {
+            background: #161920;
+            color: #fff;
+            border: 1px solid #232836;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-style:focus {
+            border-color: #ffb830;
+        }
+
+        #barraPesquisa {
+            flex: 1;
+        }
+
+        #ordenacaoLista {
+            width: 200px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        /* Filter Tab Buttons Style */
+        .btn-aba-container, .event-filter-wrapper, .subtabs-container {
+            max-width: 1300px;
+            margin: 0 auto 8px auto;
+            background: #161920;
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+            border: 1px solid #1e222b;
+        }
+
+        .btn-aba, .btn-subtab {
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .btn-aba:hover, .btn-subtab:hover {
+            color: #fff;
+            background: #202633;
+        }
+
+        .btn-aba.active, .btn-subtab.active {
+            background: #ffb830;
+            color: #000 !important;
+            font-weight: 700;
+        }
+
+        .event-filter-wrapper label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            padding-left: 6px;
+        }
+
+        .select-event {
+            background: #0f1117;
+            color: #fff;
+            border: 1px solid #232836;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Item Creator Layout Panel Form */
+        #criador-form {
+            background-color: #161920;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid #232836;
+            max-width: 1300px;
+            margin: 0 auto 12px auto;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #232836;
+            padding-bottom: 6px;
+        }
+
+        .form-tab-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        .form-tab-btn.active {
+            background: #222733;
+            color: #ffb830;
+        }
+
+        .form-section h3 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            color: #64748b;
+            font-size: 11px;
+            margin-bottom: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .form-input-full {
+            width: 100%;
+        }
+
+        .btn-submit {
+            grid-column: 1 / -1;
+            padding: 10px;
+            background: #ffb830;
+            color: black;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            margin-top: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #e6a422;
+        }
+
+        /* Section Category Title Header Layout */
+        #titulo-secao {
+            max-width: 1300px;
+            margin: 16px auto 10px auto;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #titulo-secao::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 14px;
+            background: #ffb830;
+            border-radius: 2px;
+        }
+
+        /* Strict FTF Cards Container System Grid */
+        #container-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Strict Official FTF Card UI Style Concept */
+        .ftf-item-card {
+            background-color: #14171f;
+            border: 1px solid #1f2430;
+            border-radius: 5px;
+            padding: 5px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: transform 0.15s;
+            overflow: hidden;
+        }
+
+        /* 60% Card Height Image Container Slot */
+        .ftf-card-img-wrapper {
+            height: 120px;
+            background: #0f1117;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #1a1e26;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .ftf-card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .txt-posicao-automatica {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: rgba(15, 17, 23, 0.85);
+            color: #64748b;
+            font-weight: 800;
+            border-radius: 3px;
+            font-size: 9px;
+            padding: 1px 4px;
+            border: 1px solid #232836;
+            z-index: 2;
+        }
+
+        .ftf-card-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            padding: 1px 2px;
+        }
+
+        .ftf-item-name {
+            margin: 0;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .ftf-item-rarity {
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 1px;
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Core Values Layout Elements Split */
+        .ftf-value-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 4px;
+        }
+
+        .ftf-value-label {
+            font-size: 7px;
+            color: #475569;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .box-valor-dinamico {
+            font-size: 16px;
+            font-weight: 900;
+            color: #ffb830;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .txt-estabilidade {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 8px;
+            font-weight: 700;
+            background: #161a24;
+            border: 1px solid #222938;
+            height: 16px;
+        }
+
+        .txt-estabilidade svg {
+            width: 10px;
+            height: 10px;
+            flex: none;
+        }
+
+        /* Status & Demand Rows */
+        .box-badge-status {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 4px;
+            min-height: 12px;
+        }
+
+        .ftf-badge {
+            font-size: 7px;
+            font-weight: 800;
+            padding: 1px 4px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .ftf-demand-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #1a1e26;
+            padding-top: 4px;
+            margin-top: 2px;
+        }
+
+        .txt-demanda-estrelas {
+            display: flex;
+            gap: 0.5px;
+            align-items: center;
+        }
+
+        /* Action Configuration Controls Layer */
+        .btn-acoes-card {
+            margin-top: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            border-top: 1px dashed #232836;
+            padding-top: 4px;
+        }
+
+        .btn-acoes-card-row {
+            display: flex;
+            gap: 3px;
+        }
+
+        .btn-acoes-card button {
+            background: #1c202b;
+            color: #94a3b8;
+            border: 1px solid #282f40;
+            font-size: 9px;
+            padding: 3px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-acoes-card button:hover {
+            background: #282f40;
+            color: #fff;
+        }
+
+        .btn-deletar {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(15,17,23,0.8);
+            border: 1px solid #232836;
+            color: #ef4444;
+            font-size: 8px;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* High Compact Print Mode (Forced 16 Col Grid View) */
+        .hide-mode .ftf-header,
         .hide-mode #criador-form,
         .hide-mode .btn-aba-container,
         .hide-mode #btn-exportar-container,
@@ -42,535 +609,254 @@
         .hide-mode .btn-acoes-card,
         .hide-mode #btn-limpar-tudo,
         .hide-mode .subtabs-container,
-        .hide-mode .event-filter-wrapper { display: none !important; }
+        .hide-mode .event-filter-wrapper,
+        .hide-mode .toolbar-container { display: none !important; }
+
+        .hide-mode #container-cards {
+            grid-template-columns: repeat(16, 1fr) !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            gap: 4px !important;
+        }
+
+        .hide-mode .ftf-item-card {
+            padding: 3px !important;
+        }
+
+        .hide-mode .ftf-card-img-wrapper {
+            height: 75px !important;
+        }
+
+        .hide-mode .ftf-item-name {
+            font-size: 9px !important;
+        }
+
+        .hide-mode .box-valor-dinamico {
+            font-size: 12px !important;
+        }
+
+        .hide-mode .txt-estabilidade {
+            font-size: 6.5px !important;
+            padding: 1px 2px !important;
+            height: 12px !important;
+        }
 
         .ocultar-controles-cards .btn-acoes-card,
         .ocultar-controles-cards .btn-deletar {
             display: none !important;
         }
 
-        /* Título Principal */
-        .main-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .main-header h1 {
-            color: #ffa502;
-            font-size: 36px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .main-header p {
-            color: #62697e;
-            font-size: 14px;
+        /* Utilities */
+        hr {
+            display: none;
         }
 
-        /* Dashboard de Métricas e Data */
-        .dashboard-raridade {
-            max-width: 1200px;
-            margin: 0 auto 15px auto;
-            background: #14171f;
-            border-left: 4px solid #ffa502;
-            padding: 15px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .dash-info { display: flex; gap: 20px; align-items: center; }
-        .dash-stat { font-size: 14px; font-weight: bold; color: #8fa0c4; text-transform: uppercase; }
-        .dash-stat span { color: #ffa502; font-size: 16px; font-weight: 900; }
-        .dash-date-input {
-            background: #121826;
-            color: #fff;
-            border: 1px solid #232f4b;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            outline: none;
-            width: 140px;
-            transition: border-color 0.2s;
-        }
-        .dash-date-input:focus { border-color: #ffa502; }
-
-        /* Toolbar */
-        .toolbar-container {
-            max-width: 1650px;
-            margin: 0 auto 20px auto;
-            background-color: #14171f;
-            border-bottom: 2px solid #ffa502;
-            padding: 10px 16px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .toolbar-left, .toolbar-right {
-            display: flex;
-            gap: 10px;
-        }
-        .ui-btn {
-            padding: 10px 18px;
-            font-size: 14px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            color: #ffffff;
-            transition: background 0.2s;
-        }
-        #togglePrintBtn { background-color: #1c2336; color: #ffa502; border: 1px solid #2d3854; }
-        #togglePrintBtn:hover { background-color: #252f47; }
-        .btn-salvar-galeria { background-color: #2ed573; color: white; }
-        .btn-salvar-galeria:hover { background-color: #26af5f; }
-        #btn-limpar-tudo { background-color: #ff4757; color: white; }
-        #btn-limpar-tudo:hover { background-color: #ff6b81; }
-
-        /* Inputs */
-        .search-wrapper {
-            max-width: 500px;
-            margin: 0 auto 25px auto;
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-        .input-style {
-            background: #121826;
-            color: #fff;
-            border: 1px solid #232f4b;
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-style:focus { border-color: #ffa502; }
-        #barraPesquisa { flex: 2; }
-        #ordenacaoLista { flex: 1; font-weight: bold; cursor: pointer; }
-
-        /* Formulário */
-        #criador-form {
-            background-color: #14171f;
-            padding: 20px;
-            border-radius: 12px;
-            border: 2px solid #282e3d;
-            max-width: 480px;
-            margin: 0 auto 35px auto;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        }
-        .form-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid #232834;
-            padding-bottom: 10px;
-        }
-        .form-tab-btn {
-            background: transparent;
-            color: #62697e;
-            border: none;
-            padding: 8px 14px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        .form-tab-btn.active {
-            background: #1c2336;
-            color: #ffa502;
-            border: 1px solid #2d3854;
-        }
-        .form-section h3 {
-            color: #ffa502;
-            font-size: 16px;
-            margin-bottom: 14px;
-        }
-        .form-label {
-            color: #8fa0c4;
-            font-size: 13px;
-            display: block;
-            margin-bottom: 5px;
-            margin-top: 10px;
-            font-weight: 600;
-        }
-        .form-input-full { width: 100%; margin-bottom: 12px; }
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: #ffa502;
-            color: black;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 15px;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover { background: #ffb830; }
-        .btn-massa { background: #2ed573; color: white; }
-        .btn-massa:hover { background: #26af5f; }
-
-        /* Abas Principais de Raridade */
-        .btn-aba-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-            background-color: #14171f;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #232834;
-            max-width: 1650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .btn-aba {
-            background: transparent;
-            color: #62697e;
-            border: 1px solid transparent;
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        #btn-exportar-container { text-align: center; margin-bottom: 25px; }
-        .btn-backup { background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; }
-
-        /* Filtro de Eventos */
-        .event-filter-wrapper {
-            max-width: 1200px;
-            margin: 0 auto 15px auto;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #14171f;
-            padding: 10px 14px;
-            border-radius: 6px;
-            border: 1px solid #232834;
-        }
-        .event-filter-wrapper label {
-            font-size: 13px;
-            font-weight: bold;
-            color: #8fa0c4;
-        }
-        .select-event {
-            background: #121826;
-            color: #fff;
-            border: 1px solid #232f4b;
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 13px;
-            outline: none;
-            cursor: pointer;
-            min-width: 200px;
+        #btn-exportar-container {
+            max-width: 1300px;
+            margin: 0 auto 12px auto;
+            text-align: right;
         }
 
-        /* Sub-categories Container */
-        .subtabs-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 6px;
-            max-width: 1200px;
-            margin: 0 auto 20px auto;
-            background: #10121a;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #1f2533;
-        }
-        .btn-subtab {
-            background: #14171f;
-            color: #8fa0c4;
-            border: 1px solid #232f4b;
-            padding: 8px 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-subtab:hover { background: #1c2336; color: #fff; }
-        .btn-subtab.active {
-            background: #ffa502;
-            color: #000;
-            border-color: #ffa502;
-            font-weight: bold;
-        }
-
-        /* Grid de Cards */
-        #titulo-secao {
-            max-width: 1200px;
-            margin: 0 auto 15px auto;
-            color: #fff;
-            font-size: 20px;
-            border-left: 4px solid #ffa502;
-            padding-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        #container-cards {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 12px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 5px 0;
-            width: 100%;
-        }
-
-        /* Modo Print: Força 16 colunas compactas */
-        .hide-mode #container-cards {
-            grid-template-columns: repeat(16, 1fr) !important;
-            width: 1808px !important;
-            max-width: 1808px !important;
-            gap: 8px !important;
-        }
-
-        #container-cards > div {
-            min-width: 0 !important;  
-            width: 100% !important;   
-            box-sizing: border-box !important;
-        }
-
-        .txt-posicao-automatica {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: #ffa502;
-            color: #000;
-            font-weight: bold;
-            text-align: center;
-            border-radius: 3px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-            z-index: 4;
-            font-size: 11px;
-            padding: 2px 8px;
-            min-width: 32px;
-        }
-
-        .txt-estabilidade{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-}
-
-.txt-estabilidade svg{
-    width:12px;
-    height:12px;
-    flex:none;
-}
-
-        body:not(.hide-mode) #container-cards h3 {
-            font-size: 14px !important;
-            margin-bottom: 4px !important;
-        }
-        body:not(.hide-mode) #container-cards .box-valor-dinamico {
-            font-size: 16px !important;
-        }
-        body:not(.hide-mode) #container-cards .txt-estabilidade {
-            font-size: 9px !important;
-            padding: 2px 6px !important;
-        }
-        body:not(.hide-mode) #container-cards .txt-demanda-estrelas {
-            display: flex;
-            gap: 2px;
-            align-items: center;
-        }
-
-        #container-cards img { 
-            width: 100% !important;      
-            max-width: 110px !important;          
-            height: auto !important;     
-            object-fit: contain !important;         
-            margin: 0 auto;
-            display: block;
-        }
-
-        #container-cards > div > div:first-of-type {
-            height: auto !important;
-            min-height: 85px !important;
-            padding: 10px !important;
-        }
-
-        .hide-mode #container-cards .txt-posicao-automatica {
-            font-size: 8px !important;
-            padding: 1px 4px !important;
-            min-width: 20px !important;
-            top: 6px !important;
-            left: 6px !important;
+        /* Mobile Optimization Rules */
+        @media (max-width: 640px) {
+            #container-cards {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 4px;
+            }
+            .ftf-header-logo h1 { font-size: 14px; }
+            .ftf-nav-links { gap: 8px; }
+            .ftf-nav-item { font-size: 11px; }
+            .ftf-card-img-wrapper { height: 95px; }
         }
     </style>
 </head>
 <body id="capture-area">
 
-    <div class="main-header">
-        <h1>FTF Custom Values 👑</h1>
-        <p>O seu ranking personalizado, justo e sem manipulação</p>
+    <div class="ftf-header">
+        <div class="ftf-header-logo">
+            <h1>FTF <span>VALUES</span></h1>
+        </div>
+        <div class="ftf-nav-links">
+            <div class="ftf-nav-item" onclick="filtrarRaridade('legendary')">Marretas</div>
+            <div class="ftf-nav-item" onclick="filtrarSubcategoria('bundles')">Bundles</div>
+            <div class="ftf-nav-item active">Custom List</div>
+        </div>
     </div>
 
     <div class="toolbar-container" id="toolbar-menu">
-        <div class="toolbar-left">
+        <div>
             <button id="togglePrintBtn" class="ui-btn" onclick="togglePrintMode()">Modo Print</button>
-            <button id="toggleControlesBtn" class="ui-btn" style="background-color: #1c2336; color: #ff4757; border: 1px solid #2d3854;" onclick="toggleControlesCards()">Ocultar Controles</button>
-            <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Salvar na Galeria</button>
+            <button id="toggleControlesBtn" class="ui-btn" onclick="toggleControlesCards()">Ocultar Controles</button>
+            <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Exportar Imagem</button>
         </div>
-        <div class="toolbar-right">
-            <button id="btn-limpar-tudo" class="ui-btn" onclick="resetarParaPadraoCodigo()">⚠️ Restaurar Tudo da Lista</button>
+        <div>
+            <button id="btn-limpar-tudo" class="ui-btn" style="border-color: #ef4444; color: #ef4444;" onclick="resetarParaPadraoCodigo()">Restaurar Valores Padrão</button>
         </div>
     </div>
 
     <div class="search-wrapper" id="search-container">
-        <input type="text" id="barraPesquisa" class="input-style" placeholder="🔍 Pesquisar marreta pelo nome..." oninput="carregarCardsSalvos()">
-        
+        <input type="text" id="barraPesquisa" class="input-style" placeholder="Search items..." oninput="carregarCardsSalvos()">
         <select id="ordenacaoLista" class="input-style" onchange="ordenarEAtualizar()">
             <option value="padrao">🔢 Ordem Padrão</option>
-            <option value="nome-az">🔤 Nome (A-Z)</option>
-            <option value="nome-za">🔤 Nome (Z-A)</option>
-            <option value="valor-alto">📈 Valor (Maior-Menor)</option>
-            <option value="valor-baixo">📉 Valor (Menor-Maior)</option>
+            <option value="valor-alto">📈 Value (High to Low)</option>
+            <option value="valor-baixo">📉 Value (Low to High)</option>
+            <option value="nome-az">🔤 Name (A-Z)</option>
+            <option value="nome-za">🔤 Name (Z-A)</option>
         </select>
     </div>
 
     <div id="criador-form">
         <div class="form-tabs">
-            <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual</button>
-            <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Vários Links Extra 🚀</button>
+            <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual Card</button>
+            <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Links Extra (Massa)</button>
         </div>
 
         <div id="form-individual" class="form-section">
-            <h3>Adicionar Novo Item Avulso</h3>
-            <input type="text" id="nomeItem" class="input-style form-input-full" placeholder="Nome do Item">
-            <input type="text" id="linkImagem" class="input-style form-input-full" placeholder="Link da Imagem (URL)">
-            <input type="text" id="valorItem" class="input-style form-input-full" placeholder="Valor em FV">
-            <input type="text" id="eventoItem" class="input-style form-input-full" placeholder="Nome do Evento (Ex: Halloween, Christmas)">
-
-            <label class="form-label">Raridade do Item:</label>
-            <select id="raridadeItem" class="input-style form-input-full">
-                <option value="legendary">👑 Legendary</option>
-                <option value="epics">✨ Epic</option>
-                <option value="rares">💎 Rare</option>
-                <option value="commons">🍃 Common</option>
-            </select>
-
-            <label class="form-label">Sub-category (Estilo do Item):</label>
-            <select id="tipoItem" class="input-style form-input-full">
-                <option value="normal">Normal (Com Gema/Par)</option>
-                <option value="unique">Único (Sem Gema ou Sem Marreta)</option>
-            </select>
-
-            <label class="form-label">Item Recente?</label>
-            <select id="recenteItem" class="input-style form-input-full">
-                <option value="nao" selected>Não</option>
-                <option value="sim">Sim (Marreta Recente)</option>
-            </select>
-
-            <label class="form-label">Demanda:</label>
-            <select id="demandaNota" class="input-style form-input-full">
-                <option value="5">5 ⭐⭐⭐⭐⭐</option>
-                <option value="4.5">4.5</option>
-                <option value="4">4</option>
-                <option value="3.5">3.5</option>
-                <option value="3">3</option>
-                <option value="2.5">2.5</option>
-                <option value="2">2</option>
-                <option value="1.5">1.5</option>
-                <option value="1">1</option>
-                <option value="0.5">0.5</option>
-                <option value="0">0</option>
-            </select>
-
-            <label class="form-label">Tendência de Valor:</label>
-            <select id="tendenciaValor" class="input-style form-input-full">
-                <option value="none">Estável / Sem Setinha</option>
-                <option value="subiu">Subiu (↑ Verde)</option>
-                <option value="caiu">Caiu (↓ Vermelho)</option>
-                <option value="corrigido">Corrigido (* Amarelo)</option>
-            </select>
-
-            <label class="form-label">Status Especial:</label>
-            <select id="statusItem" class="input-style form-input-full">
-                <option value="none">Nenhum</option>
-                <option value="overpaid">Overpaid For (📈)</option>
-                <option value="underpaid">Underpaid For (📉)</option>
-                <option value="niche">Niche (💎 Raro)</option>
-            </select>
-
-            <label class="form-label">Estabilidade:</label>
-            <select id="estabilidadeItem" class="input-style form-input-full">
-                <option value="Rising">Rising</option>
-                <option value="Doing Well">Doing Well</option>
-                <option value="Improving">Improving</option>
-                <option value="Stable" selected>Stable</option>
-                <option value="Fluctuating">Fluctuating</option>
-                <option value="Struggling">Struggling</option>
-                <option value="Receding">Receding</option>
-                <option value="Dropping">Dropping</option>
-            </select>
-            
-            <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item ✨</button>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Nome do Item</label>
+                    <input type="text" id="nomeItem" class="input-style" placeholder="Ex: Cookie Mallet">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Link da Imagem URL</label>
+                    <input type="text" id="linkImagem" class="input-style" placeholder="https://i.postimg.cc/...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Valor (FV)</label>
+                    <input type="text" id="valorItem" class="input-style" placeholder="Ex: 45">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Evento</label>
+                    <input type="text" id="eventoItem" class="input-style" placeholder="Ex: Halloween, Christmas">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Raridade</label>
+                    <select id="raridadeItem" class="input-style">
+                        <option value="legendary">👑 Legendary</option>
+                        <option value="epics">✨ Epic</option>
+                        <option value="rares">💎 Rare</option>
+                        <option value="commons">🍃 Common</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sub-Category Tier Tipo</label>
+                    <select id="tipoItem" class="input-style">
+                        <option value="normal">Normal (Com Gema/Par)</option>
+                        <option value="unique">Unique (Sem Gema ou Sem Marreta)</option>
+                        <option value="bundles">Bundles (Duplas, Trios, Sub-marretas)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Item Novo (Update Store)</label>
+                    <select id="recenteItem" class="input-style">
+                        <option value="nao" selected>Não</option>
+                        <option value="sim">Sim (New Items)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Demanda (Stars)</label>
+                    <select id="demandaNota" class="input-style">
+                        <option value="5">5 ⭐️⭐️⭐️⭐️⭐️</option>
+                        <option value="4.5">4.5</option>
+                        <option value="4">4</option>
+                        <option value="3.5">3.5</option>
+                        <option value="3">3</option>
+                        <option value="2.5">2.5</option>
+                        <option value="2">2</option>
+                        <option value="1.5">1.5</option>
+                        <option value="1">1</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0">0</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Change in Value (Tendência)</label>
+                    <select id="tendenciaValor" class="input-style">
+                        <option value="none">Estável</option>
+                        <option value="subiu">Rising (↑ Verde)</option>
+                        <option value="caiu">Dropping (↓ Vermelho)</option>
+                        <option value="corrigido">Corrigido (* Amarelo)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status Item Badge</label>
+                    <select id="statusItem" class="input-style">
+                        <option value="none">Nenhum</option>
+                        <option value="overpaid">Overpaid For</option>
+                        <option value="underpaid">Underpaid For</option>
+                        <option value="niche">Niche</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Item Stability</label>
+                    <select id="estabilidadeItem" class="input-style">
+                        <option value="Rising">Rising</option>
+                        <option value="Doing Well">Doing Well</option>
+                        <option value="Improving">Improving</option>
+                        <option value="Stable" selected>Stable</option>
+                        <option value="Fluctuating">Fluctuating</option>
+                        <option value="Struggling">Struggling</option>
+                        <option value="Receding">Receding</option>
+                        <option value="Dropping">Dropping</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item Customizado ✨</button>
         </div>
 
         <div id="form-massa" class="form-section" style="display: none;">
-            <h3>Importador Extra</h3>
-            <p style="color: #62697e; font-size: 12px; margin-bottom: 15px;">Quer adicionar mais links no futuro? Cole aqui:</p>
-            <textarea id="listaLinksMassa" class="input-style form-input-full" rows="8" placeholder="Cole os links extras aqui..." style="resize: vertical; font-family: monospace; font-size: 12px;"></textarea>
-            <button type="button" class="btn-submit btn-massa" onclick="importarLinksEmMassa()">Adicionar à Lista 🚀</button>
+            <h3>Importação em Bloco</h3>
+            <textarea id="listaLinksMassa" class="input-style form-input-full" rows="6" placeholder="Cole uma lista de URLs separadas por quebra de linha..." style="resize: vertical; font-family: monospace; font-size: 11px;"></textarea>
+            <button type="button" class="btn-submit" style="background: #2ed573; color: #fff;" onclick="importarLinksEmMassa()">Injetar Links Extra 🚀</button>
         </div>
     </div>
 
-    <hr style="border: none; border-top: 1px solid #1a2235; margin: 30px 0;">
-
     <div class="btn-aba-container">
-        <button class="btn-aba" id="aba-legendary" onclick="filtrarRaridade('legendary')" style="background: #1c2336; color: #ffa502; border: 1px solid #ffa502;">👑 Legendaries</button>
-        <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')" style="color: #a55eea;">✨ Epics</button>
-        <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')" style="color: #45aaf2;">💎 Rares</button>
-        <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')" style="color: #a5b1c2;">📦 Commons</button>
+        <button class="btn-aba active" id="aba-legendary" onclick="filtrarRaridade('legendary')">Legendary Items</button>
+        <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')">Epic Items</button>
+        <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')">Rare Items</button>
+        <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')">Common Items</button>
+    </div>
+
+    <div class="subtabs-container">
+        <button class="btn-subtab active" id="sub-todos" onclick="filtrarSubcategoria('todos')">All</button>
+        <button class="btn-subtab" id="sub-recentes" onclick="filtrarSubcategoria('recentes')">New Items</button>
+        <button class="btn-subtab" id="sub-unicos" onclick="filtrarSubcategoria('unicos')">Unique</button>
+        <button class="btn-subtab" id="sub-bundles" onclick="filtrarSubcategoria('bundles')">Bundles</button>
+        <button class="btn-subtab" id="sub-high" onclick="filtrarSubcategoria('high')">High Tier (+90)</button>
+        <button class="btn-subtab" id="sub-mid" onclick="filtrarSubcategoria('mid')">Mid Tier (90-30)</button>
+        <button class="btn-subtab" id="sub-low" onclick="filtrarSubcategoria('low')">Low Tier (30-1)</button>
     </div>
 
     <div class="event-filter-wrapper">
-        <label for="filtroEvento">Separar por Evento:</label>
+        <label for="filtroEvento">All Events Filter:</label>
         <select id="filtroEvento" class="select-event" onchange="carregarCardsSalvos()">
             <option value="todos">🌍 Todos os Eventos</option>
         </select>
     </div>
 
-    <div class="subtabs-container">
-        <button class="btn-subtab active" id="sub-todos" onclick="filtrarSubcategoria('todos')">Todos os Itens</button>
-        <button class="btn-subtab" id="sub-recentes" onclick="filtrarSubcategoria('recentes')">⏳ Itens Recentes</button>
-        <button class="btn-subtab" id="sub-unicos" onclick="filtrarSubcategoria('unicos')">🔓 Itens Únicos (Sem Gema/Marreta)</button>
-        <button class="btn-subtab" id="sub-high" onclick="filtrarSubcategoria('high')"> High Tier (+90)</button>
-        <button class="btn-subtab" id="sub-mid" onclick="filtrarSubcategoria('mid')"> Mid Tier (90-30)</button>
-        <button class="btn-subtab" id="sub-low" onclick="filtrarSubcategoria('low')"> Low Tier (30-1)</button>
-    </div>
-
-    <div class="dashboard-raridade">
-        <div class="dash-info">
-            <div class="dash-stat">Total Itens: <span id="dash-qtd">0</span></div>
-            <div class="dash-stat">Valor Total: <span id="dash-valor">0</span> FV</div>
+    <div class="ftf-dashboard">
+        <div class="ftf-dash-left">
+            <div class="ftf-dash-block">
+                <span class="ftf-dash-label">Items Count</span>
+                <span class="ftf-dash-value" id="dash-qtd">0</span>
+            </div>
+            <div class="ftf-dash-block">
+                <span class="ftf-dash-label">Total Value</span>
+                <span class="ftf-dash-value"><span id="dash-valor">0</span></span>
+            </div>
         </div>
-        <div>
-            <label style="font-size: 13px; color: #8fa0c4; margin-right: 8px; font-weight: bold;">Atualizado em:</label>
-            <input type="text" id="input-data-att" class="dash-date-input" placeholder="Ex: 07/07/2026" oninput="salvarDataAtualizacao()">
+        <div class="ftf-dash-block" style="align-items: flex-end;">
+            <span class="ftf-dash-label">Last Updated</span>
+            <input type="text" id="input-data-att" class="dash-date-input" placeholder="July 4th, 2026" oninput="salvarDataAtualizacao()">
         </div>
     </div>
 
     <div id="btn-exportar-container">
-        <button type="button" class="btn-backup" onclick="exportarLista()">Copiar Backup da Lista 📋</button>
+        <button type="button" class="ui-btn" onclick="exportarLista()">Copiar código de Backup 📋</button>
     </div>
 
-    <h2 id="titulo-secao">📋 LISTA DE ITENS: LEGENDARY</h2>
+    <h2 id="titulo-secao">LEGENDARY ITEMS</h2>
     <div id="container-cards"></div>
 
     <script>
@@ -578,91 +864,30 @@
         "rising": "#36D8B0",
         "doing well": "#47CC6A",
         "improving": "#8BCC14",
-        "stable": "#7f7f7f",
+        "stable": "#94a3b8",
         "fluctuating": "#F2BE24",
         "struggling": "#E56D16",
         "receding": "#D84146",
-        "dropping": "#A52125"
+        "dropping": "#ff4d4f"
     };
 
     const CORES_RARIDADE = {
-        "legendary": "#F2BE24", 
-        "epics": "#C523F2",     
-        "rares": "#23CFF2",     
-        "commons": "#8BCC14"    
+        "legendary": "#ffa502", 
+        "epics": "#a55eea",     
+        "rares": "#45aaf2",     
+        "commons": "#a5b1c2"    
     };
 
-        const SVG_ESTABILIDADE = {
-
-Rising: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#28d17c" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M5 16L11 10L15 14L19 8"/>
-<path d="M16 8H19V11"/>
-</svg>`,
-
-"Doing Well": `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M4 15L9 10L13 13L20 6"/>
-</svg>`,
-
-Improving: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#9be22d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-<path d="M7 13l4 4L21 7"/>
-<path d="M3 12l4 4"/>
-</svg>`,
-
-Stable: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#b8bcc6" stroke-width="3" stroke-linecap="round">
-<path d="M5 12H19"/>
-</svg>`,
-
-Fluctuating: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffc933" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M3 13C5 13 5 8 8 8S11 16 14 16S17 10 21 10"/>
-</svg>`,
-
-Struggling: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f2994a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M7 7H17"/>
-<path d="M12 7V18"/>
-<path d="M8 18H16"/>
-</svg>`,
-
-Receding: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ff6b81" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M5 8L11 14L15 10L19 16"/>
-</svg>`,
-
-Dropping: `
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ff4d4f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-<path d="M12 5V19"/>
-<path d="M7 14L12 19L17 14"/>
-</svg>`
-
-};
-
-        const SVG_STATUS = {
-  overpaid: `<svg viewBox="0 0 24 24" width="13" height="13">
-      <path d="M12 5V19M5 12H19"
-      stroke="#2ed573"
-      stroke-width="2.6"
-      stroke-linecap="round"/>
-  </svg>`,
-
-  underpaid: `<svg viewBox="0 0 24 24" width="13" height="13">
-      <path d="M5 12H19"
-      stroke="#F05A6B"
-      stroke-width="2.6"
-      stroke-linecap="round"/>
-  </svg>`,
-
-  niche: `<svg viewBox="0 0 24 24" width="13" height="13">
-      <path d="M12 3L14.6 8.3L20 9L16 13L17 19L12 16L7 19L8 13L4 9L9.4 8.3Z"
-      stroke="#23D6FF"
-      fill="none"
-      stroke-width="2"/>
-  </svg>`
-};
+    const SVG_ESTABILIDADE = {
+        Rising: `<svg viewBox="0 0 24 24" fill="none" stroke="#36D8B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+        "Doing Well": `<svg viewBox="0 0 24 24" fill="none" stroke="#47CC6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 11.5 2 18"></polyline></svg>`,
+        Improving: `<svg viewBox="0 0 24 24" fill="none" stroke="#8BCC14" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+        Stable: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+        Fluctuating: `<svg viewBox="0 0 24 24" fill="none" stroke="#F2BE24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-9 6 18 3-9h3"></path></svg>`,
+        Struggling: `<svg viewBox="0 0 24 24" fill="none" stroke="#E56D16" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+        Receding: `<svg viewBox="0 0 24 24" fill="none" stroke="#D84146" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`,
+        Dropping: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 10.5 15.5 15.5 11.5 22 18"></polyline><polyline points="16 18 22 18 22 12"></polyline></svg>`
+    };
 
     const BASE_PADRAO_MARRETAS = [
         {"id":1001,"nome":"1 Billion","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
@@ -704,8 +929,8 @@ Dropping: `
         {"id":1037,"nome":"Blue Nutcracker","imgSrc":"https://i.postimg.cc/gknYK2LL/Blue-Nutcracker.webp","raridade":"legendary"},
         {"id":1038,"nome":"Blueberry Jam Basket","imgSrc":"https://i.postimg.cc/7LMDLCdV/Blueberry-Jam-Basket.webp","raridade":"legendary"},
         {"id":1039,"nome":"Book of Fortunes","imgSrc":"https://i.postimg.cc/fTpMqQYL/Book-of-Fortunes.webp","raridade":"legendary"},
-        {"id":1040,"nome":"Bundle Of Harmony","imgSrc":"https://i.postimg.cc/mrNRrcJn/Bundle-Of-Harmony.png","raridade":"legendary"},
-        {"id":1041,"nome":"Bundle Of Longevity","imgSrc":"https://i.postimg.cc/4y3XqJ8w/Bundle-Of-Longevity.png","raridade":"legendary"},
+        {"id":1040,"nome":"Bundle Of Harmony","imgSrc":"https://i.postimg.cc/mrNRrcJn/Bundle-Of-Harmony.png","raridade":"legendary", "tipo":"bundles"},
+        {"id":1041,"nome":"Bundle Of Longevity","imgSrc":"https://i.postimg.cc/4y3XqJ8w/Bundle-Of-Longevity.png","raridade":"legendary", "tipo":"bundles"},
         {"id":1042,"nome":"Candy Cane Jar","imgSrc":"https://i.postimg.cc/htmcHZrn/Candy-Cane-Jar.webp","raridade":"legendary"},
         {"id":1043,"nome":"Celestial Witch Broom","imgSrc":"https://i.postimg.cc/NjXBWCx7/Celestial-Witch-Broom.webp","raridade":"legendary"},
         {"id":1044,"nome":"Cherry Blossom Tree","imgSrc":"https://i.postimg.cc/KzGb3GyZ/Cherry-Blossom-Tree.webp","raridade":"legendary"},
@@ -865,9 +1090,6 @@ Dropping: `
         let dadosLocais = null;
         try {
             dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5'));
-            if (!dadosLocais) {
-                dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v4'));
-            }
         } catch (e) {
             dadosLocais = null;
         }
@@ -895,7 +1117,7 @@ Dropping: `
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
         
         let datasSalvas = JSON.parse(localStorage.getItem('ftf_datas_att')) || {};
-        document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "";
+        document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
 
         atualizarFiltroEventosMenu();
         carregarCardsSalvos();
@@ -913,7 +1135,7 @@ Dropping: `
             templates: m.templates || 'Stable',
             imgSrc: m.imgSrc,
             evento: mapearEventoAutomatico(m.nome),
-            tipo: 'normal',
+            tipo: m.tipo || 'normal',
             recente: 'nao'
         }));
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
@@ -921,22 +1143,21 @@ Dropping: `
 
     function mapearEventoAutomatico(nome) {
         const n = (nome || "").toLowerCase();
-        if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th')) return 'Anniversary';
+        if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th')) return 'Aniversário do jogo';
         if (n.includes('halloween') || n.includes('spook') || n.includes('witch') || n.includes('zombie') || n.includes('pumpkin') || n.includes('coffin') || n.includes('tombstone') || n.includes('batwing')) return 'Halloween';
-        if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('cocoa') || n.includes('eggnog') || n.includes('presents') || n.includes('snow') || n.includes('yule')) return 'Christmas';
-        if (n.includes('autumn') || n.includes('crops') || n.includes('scarecrow') || n.includes('cornucopia')) return 'Autumn';
-        if (n.includes('easter') || n.includes('bunny') || n.includes('chick')) return 'Easter';
-        if (n.includes('billion')) return 'Milestones';
+        if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('cocoa') || n.includes('eggnog') || n.includes('presents') || n.includes('snow') || n.includes('yule')) return 'Natal';
+        if (n.includes('autumn') || n.includes('crops') || n.includes('scarecrow') || n.includes('cornucopia')) return 'Outono';
+        if (n.includes('easter') || n.includes('bunny') || n.includes('chick')) return 'Páscoa';
+        if (n.includes('valentine') || n.includes('heart') || n.includes('love')) return 'Dias Dos Namorados';
         return 'Geral';
     }
 
     function resetarParaPadraoCodigo() {
-        if (confirm("Deseja realmente restaurar todos os itens padrões de fábrica?")) {
+        if (confirm("Deseja realmente restaurar todos os valores oficiais padrão do FTF Values?")) {
             localStorage.removeItem('ftf_custom_v5');
             localStorage.removeItem('ftf_datas_att');
             forçarInjecaoListaPadrao();
             inicializarBancoDados();
-            alert("Memória limpa! Todas as marretas foram restauradas com sucesso! 💎");
         }
     }
 
@@ -979,15 +1200,12 @@ Dropping: `
         const regexLinks = /(https?:\/\/[^\s]+)/g;
         const linksEncontrados = campoTexto.match(regexLinks);
 
-        if(!linksEncontrados) {
-            alert('Nenhum link extra válido detectado.');
-            return;
-        }
+        if(!linksEncontrados) return;
 
         linksEncontrados.forEach((url, i) => {
             const novoObj = { 
                 id: Date.now() + i + Math.floor(Math.random() * 9000), 
-                nome: `Item Extra ${listaDeMarretas.length + 1}`, 
+                nome: `Imported Item ${listaDeMarretas.length + 1}`, 
                 valor: '10', 
                 raridade: raridadeAtual, 
                 demanda: '5', 
@@ -1006,13 +1224,13 @@ Dropping: `
         atualizarFiltroEventosMenu();
         carregarCardsSalvos();
         document.getElementById('listaLinksMassa').value = '';
-        alert('Links extras adicionados!');
     }
 
     function filtrarSubcategoria(sub) {
         subcategoriaAtual = sub;
         document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('sub-' + sub).classList.add('active');
+        const btnAlvo = document.getElementById('sub-' + sub);
+        if(btnAlvo) btnAlvo.classList.add('active');
         carregarCardsSalvos();
     }
 
@@ -1021,12 +1239,8 @@ Dropping: `
         const btn = document.getElementById('togglePrintBtn');
         if (document.body.classList.contains('hide-mode')) {
             btn.innerText = "Modo Edição";
-            btn.style.background = "#ffa502";
-            btn.style.color = "#000";
         } else {
             btn.innerText = "Modo Print";
-            btn.style.background = "#1c2336";
-            btn.style.color = "#ffa502";
         }
         carregarCardsSalvos(); 
     }
@@ -1036,10 +1250,8 @@ Dropping: `
         const btn = document.getElementById('toggleControlesBtn');
         if (document.body.classList.contains('ocultar-controles-cards')) {
             btn.innerText = "Mostrar Controles";
-            btn.style.color = "#2ed573";
         } else {
             btn.innerText = "Ocultar Controles";
-            btn.style.color = "#ff4757";
         }
     }
 
@@ -1052,34 +1264,28 @@ Dropping: `
 
         setTimeout(() => {
             const areaCaptura = document.getElementById('capture-area');
-            
             html2canvas(areaCaptura, {
-                backgroundColor: "#0b0c10",
+                backgroundColor: "#0f1117",
                 useCORS: true, 
-                scale: 1.5,
-                windowWidth: 1850
+                scale: 2,
+                windowWidth: 1400
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `FTF-Custom-List-${raridadeAtual}.png`;
+                link.download = `FTF-Values-${raridadeAtual}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
 
                 if (!jaEstavaEmPrint) {
                     document.body.classList.remove('hide-mode');
-                    const btn = document.getElementById('togglePrintBtn');
-                    btn.innerText = "Modo Print";
-                    btn.style.background = "#1c2336";
-                    btn.style.color = "#ffa502";
                     carregarCardsSalvos();
                 }
             }).catch(err => {
-                alert("Erro ao gerar imagem. Verifique as URLs externas das imagens.");
                 if (!jaEstavaEmPrint) {
                     document.body.classList.remove('hide-mode');
                     carregarCardsSalvos();
                 }
             });
-        }, 350);
+        }, 400);
     }
 
     function criarNovoCard() {
@@ -1090,15 +1296,12 @@ Dropping: `
         const demanda = document.getElementById('demandaNota').value;
         const tendencia = document.getElementById('tendenciaValor').value;
         const status = document.getElementById('statusItem').value;
-        const稳定性 = document.getElementById('estabilidadeItem').value;
+        const estabilidade = document.getElementById('estabilidadeItem').value;
         const evento = document.getElementById('eventoItem').value || 'Geral';
         const tipo = document.getElementById('tipoItem').value;
         const recente = document.getElementById('recenteItem').value;
 
-        if (!nome) {
-            alert('Por favor, dê um nome!');
-            return;
-        }
+        if (!nome) return;
 
         const novoObj = { 
             id: Date.now(), 
@@ -1130,89 +1333,84 @@ Dropping: `
     }
 
     function abrirModalEdicaoCompleta(item) {
-        // Remove qualquer modal antigo se houver pendente
         const antigo = document.getElementById('modal-edicao-ftf');
         if (antigo) antigo.remove();
 
         const modal = document.createElement('div');
         modal.id = 'modal-edicao-ftf';
-        modal.style = `
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
-            z-index: 99999; font-family: sans-serif; box-sizing: border-box;
-        `;
+        modal.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999;";
 
         modal.innerHTML = `
-            <div style="background: #14171f; border: 2px solid #ffa502; border-radius: 12px; width: 90%; max-width: 450px; padding: 20px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-height: 90vh; overflow-y: auto;">
-                <h3 style="color: #ffa502; margin-bottom: 15px; font-size: 18px; text-align: center;">✏️ Editar Item</h3>
+            <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 440px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
+                <h3 style="color:#ffb830; margin-bottom:12px; font-size:14px; font-weight:700; text-transform:uppercase;">✏️ Edit Item Parameters</h3>
                 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Nome do Item:</label>
-                <input type="text" id="edit-nome" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.nome || ''}">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">ITEM NAME:</label>
+                <input type="text" id="edit-nome" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.nome || ''}">
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Link da Imagem:</label>
-                <input type="text" id="edit-img" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.imgSrc || ''}">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">IMAGE URL:</label>
+                <input type="text" id="edit-img" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.imgSrc || ''}">
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Valor em FV:</label>
-                <input type="text" id="edit-valor" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.valor || ''}">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">VALUE (FV):</label>
+                <input type="text" id="edit-valor" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.valor || ''}">
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Evento:</label>
-                <input type="text" id="edit-evento" class="input-style" style="width:100%; margin-bottom:10px;" value="${item.evento || 'Geral'}">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">EVENT CATEGORY:</label>
+                <input type="text" id="edit-evento" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.evento || 'Geral'}">
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Raridade:</label>
-                <select id="edit-raridade" class="input-style" style="width:100%; margin-bottom:10px;">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">RARITY TIER:</label>
+                <select id="edit-raridade" class="input-style" style="width:100%; margin-bottom:8px;">
                     <option value="legendary" ${item.raridade === 'legendary'?'selected':''}>👑 Legendary</option>
                     <option value="epics" ${item.raridade === 'epics'?'selected':''}>✨ Epic</option>
                     <option value="rares" ${item.raridade === 'rares'?'selected':''}>💎 Rare</option>
                     <option value="commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
                 </select>
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Estilo do Item (Sub-category):</label>
-                <select id="edit-tipo" class="input-style" style="width:100%; margin-bottom:10px;">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">SUB-CATEGORY TYPE:</label>
+                <select id="edit-tipo" class="input-style" style="width:100%; margin-bottom:8px;">
                     <option value="normal" ${item.tipo === 'normal'?'selected':''}>Normal (Com Gema/Par)</option>
-                    <option value="unique" ${item.tipo === 'unique'?'selected':''}>Único (Sem Gema ou Sem Marreta)</option>
+                    <option value="unique" ${item.tipo === 'unique'?'selected':''}>Unique (Sem Gema ou Sem Marreta)</option>
+                    <option value="bundles" ${item.tipo === 'bundles'?'selected':''}>Bundles</option>
                 </select>
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Item Recente?</label>
-                <select id="edit-recente" class="input-style" style="width:100%; margin-bottom:10px;">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">NEW ITEMS LISTING?</label>
+                <select id="edit-recente" class="input-style" style="width:100%; margin-bottom:8px;">
                     <option value="nao" ${item.recente === 'nao'?'selected':''}>Não</option>
-                    <option value="sim" ${item.recente === 'sim'?'selected':''}>Sim (Marreta Recente)</option>
+                    <option value="sim" ${item.recente === 'sim'?'selected':''}>Sim (New Items)</option>
                 </select>
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Demanda (Estrelas):</label>
-                <select id="edit-demanda" class="input-style" style="width:100%; margin-bottom:10px;">
-                    ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0].map(v => `<option value="${v}" ${parseFloat(item.demanda) === v ? 'selected':''}>${v} ${'⭐'.repeat(Math.floor(v))}</option>`).join('')}
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">DEMAND RATE:</label>
+                <select id="edit-demanda" class="input-style" style="width:100%; margin-bottom:8px;">
+                    ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0].map(v => `<option value="${v}" ${parseFloat(item.demanda) === v ? 'selected':''}>${v}</option>`).join('')}
                 </select>
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Tendência de Valor:</label>
-                <select id="edit-tendencia" class="input-style" style="width:100%; margin-bottom:10px;">
-                    <option value="none" ${item.tendencia === 'none'?'selected':''}>Estável / Sem Setinha</option>
-                    <option value="subiu" ${item.tendencia === 'subiu'?'selected':''}>Subiu (↑ Verde)</option>
-                    <option value="caiu" ${item.tendencia === 'caiu'?'selected':''}>Caiu (↓ Vermelho)</option>
-                    <option value="corrigido" ${item.tendencia === 'corrigido'?'selected':''}>Corrigido (* Amarelo)</option>
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">CHANGE VALUE ARROW:</label>
+                <select id="edit-tendencia" class="input-style" style="width:100%; margin-bottom:8px;">
+                    <option value="none" ${item.tendencia === 'none'?'selected':''}>Estável</option>
+                    <option value="subiu" ${item.tendencia === 'subiu'?'selected':''}>Rising (↑)</option>
+                    <option value="caiu" ${item.tendencia === 'caiu'?'selected':''}>Dropping (↓)</option>
+                    <option value="corrigido" ${item.tendencia === 'corrigido'?'selected':''}>Corrigido (*)</option>
                 </select>
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Status Especial:</label>
-                <select id="edit-status" class="input-style" style="width:100%; margin-bottom:10px;">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">MARKET STATUS BADGE:</label>
+                <select id="edit-status" class="input-style" style="width:100%; margin-bottom:8px;">
                     <option value="none" ${item.status === 'none'?'selected':''}>Nenhum</option>
-                    <option value="overpaid" ${item.status === 'overpaid'?'selected':''}>Overpaid For (📈)</option>
-                    <option value="underpaid" ${item.status === 'underpaid'?'selected':''}>Underpaid For (📉)</option>
-                    <option value="niche" ${item.status === 'niche'?'selected':''}>Niche (💎 Raro)</option>
+                    <option value="overpaid" ${item.status === 'overpaid'?'selected':''}>Overpaid For</option>
+                    <option value="underpaid" ${item.status === 'underpaid'?'selected':''}>Underpaid For</option>
+                    <option value="niche" ${item.status === 'niche'?'selected':''}>Niche</option>
                 </select>
 
-                <label style="color:#8fa0c4; font-size:12px; font-weight:600; display:block; margin: 8px 0 3px 0;">Estabilidade:</label>
-                <select id="edit-estabilidade" class="input-style" style="width:100%; margin-bottom:15px;">
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">STABILITY STATUS:</label>
+                <select id="edit-estabilidade" class="input-style" style="width:100%; margin-bottom:12px;">
                     ${["Rising","Doing Well","Improving","Stable","Fluctuating","Struggling","Receding","Dropping"].map(est => `<option value="${est}" ${item.templates === est ? 'selected':''}>${est}</option>`).join('')}
                 </select>
 
-                <div style="display: flex; gap: 10px;">
-                    <button id="modal-cancelar" style="flex:1; padding:10px; background:#ff4757; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Cancelar</button>
-                    <button id="modal-salvar" style="flex:1; padding:10px; background:#2ed573; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Salvar Alterações</button>
+                <div style="display: flex; gap: 8px;">
+                    <button id="modal-cancelar" style="flex:1; padding:8px; background:#222733; color:#fff; border:1px solid #2d3445; border-radius:4px; font-weight:600; cursor:pointer;">Cancel</button>
+                    <button id="modal-salvar" style="flex:1; padding:8px; background:#ffb830; color:#000; border:none; border-radius:4px; font-weight:700; cursor:pointer;">Save Changes</button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(modal);
-
         document.getElementById('modal-cancelar').onclick = () => modal.remove();
         document.getElementById('modal-salvar').onclick = () => {
             item.nome = document.getElementById('edit-nome').value.trim() || item.nome;
@@ -1237,217 +1435,57 @@ Dropping: `
     function renderizarCardHTML(item) {
         const container = document.getElementById('container-cards');
         const card = document.createElement("div");
+        card.className = "ftf-item-card";
 
         const raridadeKey = (item.raridade || 'legendary').toLowerCase();
         const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
-
-        card.style.backgroundColor = '#14171f';
-        card.style.border = `1.5px solid ${corRaridade}`; 
-        card.style.borderRadius = '6px';
-        card.style.padding = '6px';
-        card.style.width = '100%'; 
-        card.style.color = '#fff';
-        card.style.position = 'relative';
-        card.style.boxSizing = 'border-box';
-        card.style.display = 'flex';
-        card.style.flexDirection = 'column';
-        card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.4)';
         card.setAttribute('data-id', item.id);
 
-        const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto';
-
+        const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
         const estabilidadeTexto = item.templates || 'Stable';
-        const estabilidadeKey = estabilidadeTexto.toLowerCase().trim();
-        const corEstabilidade = CORES_ESTABILIDADE[estabilidadeKey] || '#7f7f7f';
+        const corEstabilidade = CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
 
         card.innerHTML = `
-<button class="btn-deletar"
-style="
-position:absolute;
-top:6px;
-right:6px;
-background:none;
-border:none;
-color:#7d879a;
-font-size:12px;
-cursor:pointer;
-z-index:20;">
-✕
-</button>
+            <button class="btn-deletar">✕</button>
+            <div class="ftf-card-img-wrapper">
+                <span class="txt-posicao-automatica">#--</span>
+                <img src="${caminhoImagem}" loading="lazy" alt="${item.nome}" onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
+            </div>
+            <div class="ftf-card-info">
+                <h3 class="ftf-item-name">${item.nome}</h3>
+                <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
+                
+                <div class="ftf-value-row">
+                    <div>
+                        <div class="ftf-value-label">Value</div>
+                        <span class="box-valor-dinamico"></span>
+                    </div>
+                    <span class="txt-estabilidade" style="color: ${corEstabilidade};">
+                        ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
+                        <span>${estabilidadeTexto}</span>
+                    </span>
+                </div>
 
-<div style="
-height:125px;
-background:#10141d;
-border-radius:6px;
-display:flex;
-align-items:center;
-justify-content:center;
-overflow:hidden;
-border:1px solid #232b3d;
-margin-bottom:8px;
-">
+                <div class="box-badge-status"></div>
 
-<img
-src="${caminhoImagem}"
-loading="lazy"
-alt="${item.nome}"
-style="
-width:92%;
-height:92%;
-object-fit:contain;
-"
-onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
+                <div class="ftf-demand-row">
+                    <span class="ftf-value-label">Demand</span>
+                    <span class="txt-demanda-estrelas"></span>
+                </div>
 
-</div>
+                <div class="btn-acoes-card">
+                    <div class="btn-acoes-card-row">
+                        <button class="btn-subir" style="flex:1;">▲</button>
+                        <button class="btn-descer" style="flex:1;">▼</button>
+                    </div>
+                    <button class="btn-editar">✏️ Edit Parameters</button>
+                </div>
+            </div>
+        `;
 
-<span class="txt-posicao-automatica"
-style="
-font-size:10px;
-color:#8a94a8;
-font-weight:bold;
-margin-bottom:3px;
-">
-#--
-</span>
-
-<h3
-style="
-margin:0;
-font-size:12px;
-font-weight:700;
-text-align:left;
-overflow:hidden;
-white-space:nowrap;
-text-overflow:ellipsis;
-">
-${item.nome}
-</h3>
-
-<span
-style="
-margin-top:2px;
-margin-bottom:6px;
-font-size:8px;
-font-weight:bold;
-color:${corRaridade};
-text-transform:uppercase;
-">
-${item.raridade}
-</span>
-
-<div
-style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:4px;
-">
-
-<div>
-
-<div
-style="
-font-size:7px;
-color:#64748b;
-font-weight:700;
-">
-VALUE
-</div>
-
-<span
-class="box-valor-dinamico"
-style="
-font-size:15px;
-font-weight:900;
-">
-</span>
-
-</div>
-
-<span class="txt-estabilidade"
-style="
-display:flex;
-align-items:center;
-gap:3px;
-padding:2px 5px;
-border-radius:4px;
-font-size:7px;
-font-weight:bold;
-background:#171d28;
-border:1px solid #2d3850;
-color:${corEstabilidade};
-">
-
-${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
-
-${estabilidadeTexto}
-
-</span>
-
-</div>
-
-<div
-class="box-badge-status"
-style="
-display:flex;
-justify-content:flex-end;
-margin-bottom:4px;
-min-height:14px;
-">
-</div>
-
-<div
-style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-top:1px solid #20293a;
-padding-top:5px;
-">
-
-<span
-style="
-font-size:7px;
-color:#64748b;
-font-weight:bold;
-">
-DEMAND
-</span>
-
-<span class="txt-demanda-estrelas"></span>
-
-</div>
-
-<div
-class="btn-acoes-card"
-style="
-margin-top:7px;
-display:flex;
-flex-direction:column;
-gap:4px;
-">
-
-<div style="display:flex;gap:3px;">
-
-<button class="btn-subir" style="flex:1;">▲</button>
-
-<button class="btn-descer" style="flex:1;">▼</button>
-
-</div>
-
-<button class="btn-editar">
-✏️ Editar
-</button>
-
-</div>
-`;
-
-        card.querySelector('.btn-editar').addEventListener('click', function() {
-            abrirModalEdicaoCompleta(item);
-        });
-
-        card.querySelector('.btn-deletar').addEventListener('click', function() {
-            if (confirm(`Tem certeza que deseja excluir a marreta "${item.nome}"?`)) {
+        card.querySelector('.btn-editar').addEventListener('click', () => abrirModalEdicaoCompleta(item));
+        card.querySelector('.btn-deletar').addEventListener('click', () => {
+            if (confirm(`Excluir item "${item.nome}"?`)) {
                 listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
                 card.remove();
                 localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
@@ -1455,20 +1493,14 @@ gap:4px;
             }
         });
 
-        card.querySelector('.btn-subir').addEventListener('click', function() {
-            const irmaoAnterior = card.previousElementSibling;
-            if (irmaoAnterior) {
-                container.insertBefore(card, irmaoAnterior);
-                reordenarArrayEGuardar();
-            }
+        card.querySelector('.btn-subir').addEventListener('click', () => {
+            const ant = card.previousElementSibling;
+            if (ant) { container.insertBefore(card, ant); reordenarArrayEGuardar(); }
         });
 
-        card.querySelector('.btn-descer').addEventListener('click', function() {
-            const proximoIrmao = card.nextElementSibling;
-            if (proximoIrmao) {
-                container.insertBefore(proximoIrmao, card);
-                reordenarArrayEGuardar();
-            }
+        card.querySelector('.btn-descer').addEventListener('click', () => {
+            const prox = card.nextElementSibling;
+            if (prox) { container.insertBefore(prox, card); reordenarArrayEGuardar(); }
         });
 
         atualizarEstiloValorDoCard(card, item);
@@ -1481,23 +1513,16 @@ gap:4px;
         definirAbaAtivaVisual(raridadeAlvo);
 
         let datasSalvas = JSON.parse(localStorage.getItem('ftf_datas_att')) || {};
-        document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "";
+        document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
 
         carregarCardsSalvos();
     }
 
     function definirAbaAtivaVisual(raridadeAlvo) {
-        const botoes = document.querySelectorAll('.btn-aba');
-        botoes.forEach(btn => {
-            btn.style.background = 'transparent';
-            btn.style.borderColor = 'transparent';
-        });
+        document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
         const botaoAtivo = document.getElementById('aba-' + raridadeAlvo);
-        if (botaoAtivo) {
-            botaoAtivo.style.background = '#1c2336';
-            botaoAtivo.style.borderColor = '#ffa502';
-        }
-        document.getElementById('titulo-secao').innerText = `📋 LISTA DE ITENS: ${raridadeAlvo.toUpperCase()}`;
+        if (botaoAtivo) botaoAtivo.classList.add('active');
+        document.getElementById('titulo-secao').innerText = `${raridadeAlvo.toUpperCase()} ITEMS`;
     }
 
     function atualizarEstiloValorDoCard(cardHTML, item) {
@@ -1508,18 +1533,17 @@ gap:4px;
         let badgeTendencia = '';
         let valorExibido = item.valor || "10";
 
-        if (item.tendencia === 'subiu') { badgeTendencia = ` <span style="color: #47cc6a; font-weight:bold;">↑</span>`; }
-        else if (item.tendencia === 'caiu') { badgeTendencia = ` <span style="color: #d84146; font-weight:bold;">↓</span>`; }
-        else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #f2be24; font-weight:bold;">*</span>`; }
+        if (item.tendencia === 'subiu') { badgeTendencia = ` <span style="color: #47cc6a; font-size:12px;">↑</span>`; }
+        else if (item.tendencia === 'caiu') { badgeTendencia = ` <span style="color: #ff4d4f; font-size:12px;">↓</span>`; }
+        else if (item.tendencia === 'corrigido') { badgeTendencia = ` <span style="color: #f2be24; font-size:12px;">*</span>`; }
         
-        containerValor.style.color = '#ffa502';
         containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
 
         if (containerBadge) {
             containerBadge.innerHTML = '';
-            if (item.status === 'overpaid') containerBadge.innerHTML = `<span style="color: #47cc6a; font-size: 6px; font-weight: bold; background: rgba(71, 204, 106, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(46, 213, 115, 0.3);">+ OP</span>`;
-            else if (item.status === 'underpaid') containerBadge.innerHTML = `<span style="color: #d84146; font-size: 6px; font-weight: bold; background: rgba(216, 65, 70, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(255, 159, 67, 0.3);">- UP</span>`;
-            else if (item.status === 'niche') containerBadge.innerHTML = `<span style="color: #23cff2; font-size: 6px; font-weight: bold; background: rgba(35, 207, 242, 0.1); padding: 1px 3px; border-radius: 3px; border: 1px solid rgba(165, 94, 234, 0.3);">💎 Niche</span>`;
+            if (item.status === 'overpaid') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #47cc6a; background: rgba(71,204,106,0.1); border: 1px solid rgba(71,204,106,0.2);">Overpaid For</span>`;
+            else if (item.status === 'underpaid') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #ff4d4f; background: rgba(255,77,79,0.1); border: 1px solid rgba(255,77,79,0.2);">Underpaid For</span>`;
+            else if (item.status === 'niche') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #45aaf2; background: rgba(69,170,242,0.1); border: 1px solid rgba(69,170,242,0.2);">Niche</span>`;
         }
     }
 
@@ -1529,26 +1553,20 @@ gap:4px;
         
         let notaNum = parseFloat(notaEstrelas) || 0;
         let estrelasHTML = '';
-        
-        const eModoPrint = document.body.classList.contains('hide-mode');
-        const TAMANHO_ESTRELA = eModoPrint ? '10px' : '16px'; 
+        const TAMANHO_ESTRELA = '9px'; 
 
-        const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #343449; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+        const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:3;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
 
         for (let i = 1; i <= 5; i++) {
             if (notaNum >= i) {
                 estrelasHTML += svgEstrelaCheia;
             } else if (notaNum > i - 1 && notaNum < i) {
                 estrelasHTML += `
-                    <span style="display: inline-block; position: relative; width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; margin: 0 0.5px; vertical-align: middle; line-height: 1;">
-                        <svg viewBox="0 0 24 24" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; fill: #5B5B66;">
-                            <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
-                        </svg>
-                        <span style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden;">
-                            <svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830;">
-                                <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/>
-                            </svg>
+                    <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA};">
+                        <svg viewBox="0 0 24 24" style="position:absolute; width:100%; height:100%; fill:#334155;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
+                        <span style="position:absolute; width:50%; height:100%; overflow:hidden;">
+                            <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
                         </span>
                     </span>
                 `;
@@ -1583,10 +1601,8 @@ gap:4px;
             });
         } 
         else if (criterio === 'padrao') {
-            const dadosLocais = JSON.parse(localStorage.getItem('ftf_custom_v5'));
-            if (Array.isArray(dadosLocais)) {
-                listaDeMarretas = dadosLocais;
-            }
+            inicializarBancoDados();
+            return;
         }
 
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
@@ -1597,8 +1613,7 @@ gap:4px;
         const container = document.getElementById('container-cards');
         if (!container) return;
 
-        const barra = document.getElementById('barraPesquisa');
-        const termoPesquisa = barra ? barra.value.toLowerCase() : "";
+        const termoPesquisa = document.getElementById('barraPesquisa').value.toLowerCase();
         const eventoSelecionado = document.getElementById('filtroEvento').value;
 
         const itensFiltrados = listaDeMarretas.filter(item => {
@@ -1612,6 +1627,7 @@ gap:4px;
             const valorNum = parseFloat((item.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
             if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
             if (subcategoriaAtual === 'unicos' && item.tipo !== 'unique') return false;
+            if (subcategoriaAtual === 'bundles' && item.tipo !== 'bundles') return false;
             if (subcategoriaAtual === 'high' && valorNum < 90) return false;
             if (subcategoriaAtual === 'mid' && (valorNum < 30 || valorNum >= 90)) return false;
             if (subcategoriaAtual === 'low' && (valorNum < 1 || valorNum >= 30)) return false;
@@ -1642,13 +1658,10 @@ gap:4px;
         let listaLimpa = listaDeMarretas.filter(item => (item.raridade || 'legendary') !== raridadeAtual);
         let itensReordenadosDaAba = [];
 
-        const cardsNaTela = document.querySelectorAll('#container-cards > div');
-        cardsNaTela.forEach((cardHTML) => {
+        document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML) => {
             const id = parseInt(cardHTML.getAttribute('data-id'));
             const correspondente = listaDeMarretas.find(m => m.id === id);
-            if (correspondente) {
-                itensReordenadosDaAba.push(correspondente);
-            }
+            if (correspondente) itensReordenadosDaAba.push(correspondente);
         });
         
         listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
@@ -1657,8 +1670,7 @@ gap:4px;
     }
 
     function atualizarNumbersVisuais() {
-        const cardsNaTela = document.querySelectorAll('#container-cards > div');
-        cardsNaTela.forEach((cardHTML, index) => {
+        document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML, index) => {
             const caixaTextoPosicao = cardHTML.querySelector('.txt-posicao-automatica');
             if (caixaTextoPosicao) caixaTextoPosicao.innerText = `#${index + 1}`;
         });
@@ -1666,10 +1678,11 @@ gap:4px;
 
     function exportarLista() {
         navigator.clipboard.writeText(JSON.stringify(listaDeMarretas, null, 2)).then(() => {
-            alert("Backup copiado com sucesso! 📋");
+            alert("Backup copiado!");
         });
     }
 
     window.onload = inicializarBancoDados;
 </script>
-    
+</body>
+</html>
