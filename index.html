@@ -1177,15 +1177,15 @@
         card.innerHTML = `
             <button class="btn-deletar" style="position: absolute; top: 4px; right: 4px; background: transparent; border: none; color: #62697e; font-weight: bold; cursor: pointer; font-size: 11px; z-index: 5;">❌</button>
             
-            <div style="background-color: #0e1117; width: 100%; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; border-radius: 4px; border: 1px solid #1f2533; padding: 8px;">
+            <div style="background-color: #0e1117; width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; border-radius: 4px; border: 1px solid #1f2533; padding: 8px;">
                 <img src="${caminhoImagem}" alt="${item.nome}" loading="lazy" style="max-width: 95%; max-height: 95%; object-fit: contain;" onerror="this.src='https://placehold.co/150x110/0b0f19/ffffff?text=Sem+Foto'">
             </div> 
 
            <span class="txt-posicao-automatica">#--</span>
 
-            <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;" title="${item.nome}">${item.nome}</h3>
-            <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: center; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
-            <span style="color: #62697e; font-size: 7px; text-align: center; display: block; margin-bottom: 2px;">🎉 ${item.evento || 'Geral'}</span>
+            <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; padding-left: 4px; " title="${item.nome}">${item.nome}</h3>
+            <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: left; padding-left: 4px; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
+            <span style="color: #62697e; font-size: 7px; text-align: left; display: block; margin-bottom: 2px;">🎉 ${item.evento || 'Geral'}</span>
             
             <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                 <div>
@@ -1300,7 +1300,7 @@
         let estrelasHTML = '';
         
         const eModoPrint = document.body.classList.contains('hide-mode');
-        const TAMANHO_ESTRELA = eModoPrint ? '9px' : '14px'; 
+        const TAMANHO_ESTRELA = eModoPrint ? '10px' : '16px'; 
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: #ffb830; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
         const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width: ${TAMANHO_ESTRELA}; height: ${TAMANHO_ESTRELA}; fill: none; stroke: #343449; stroke-width: 2; vertical-align: middle; margin: 0 0.5px;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
