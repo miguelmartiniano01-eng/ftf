@@ -1571,26 +1571,26 @@
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
         const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:3;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-
-        for (let i = 1; i <= 5; i++) {
-            if (notaNum >= i) {
-                estrelasHTML += svgEstrelaCheia;
-            } else if (notaNum > i - 1 && notaNum < i) {
-                estrelasHTML += `
-                    <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA};">
-                        <svg viewBox="0 0 24 24" style="position:absolute; width:100%; height:100%; fill:#334155;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
-                        <span style="position:absolute; width:50%; height:100%; overflow:hidden;">
-                            <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
-                        </span>
-                    </span>
-                `;
-            } else {
-                estrelasHTML += svgEstrelaVazia;
-            }
-        }
-        containerEstrelas.innerHTML = estrelasHTML;
+for (let i = 1; i <= 5; i++) {
+    if (notaNum >= i) {
+        estrelasHTML += svgEstrelaCheia;
+    } else if (notaNum > i - 1 && notaNum < i) {
+        estrelasHTML += `
+            <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
+                <svg viewBox="0 0 24 24" style="position:absolute; top:0; left:0; width:100%; height:100%; fill:#334155;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
+                
+                <span style="position:absolute; top:0; left:0; width:50%; height:100%; overflow:hidden;">
+                    <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830; display:block;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
+                </span>
+            </span>
+        `;
+    } else {
+        estrelasHTML += svgEstrelaVazia;
     }
+}
+containerEstrelas.innerHTML = estrelasHTML;
 
+        
     function ordenarEAtualizar() {
         const criterio = document.getElementById('ordenacaoLista').value;
 
