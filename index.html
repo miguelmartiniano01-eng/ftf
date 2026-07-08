@@ -1152,16 +1152,23 @@
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
     }
 
-    function mapearEventoAutomatico(nome) {
-        const n = (nome || "").toLowerCase();
-        if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th')) return 'Aniversário do jogo';
-        if (n.includes('halloween') || n.includes('spook') || n.includes('witch') || n.includes('zombie') || n.includes('pumpkin') || n.includes('coffin') || n.includes('tombstone') || n.includes('batwing')) return 'Halloween';
-        if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('cocoa') || n.includes('eggnog') || n.includes('presents') || n.includes('snow') || n.includes('yule')) return 'Natal';
-        if (n.includes('autumn') || n.includes('crops') || n.includes('scarecrow') || n.includes('cornucopia')) return 'Outono';
-        if (n.includes('easter') || n.includes('bunny') || n.includes('chick')) return 'Páscoa';
-        if (n.includes('valentine') || n.includes('heart') || n.includes('love')) return 'Dias Dos Namorados';
-        return 'Geral';
-    }
+        function mapearEventoAutomatico(nome) {
+    const n = (nome || "").toLowerCase();
+    
+    if (n.includes('lunar') || n.includes('ox') || n.includes('tiger') || n.includes('rat')) return 'Lunar New Year';
+    if (n.includes('valentine') || n.includes('heart') || n.includes('love') || n.includes('cupid')) return 'Valentines';
+    if (n.includes('patrick') || n.includes('clover') || n.includes('shamrock') || n.includes('leprechaun')) return 'Saint Patrick';
+    if (n.includes('spring') || n.includes('pegasus') || n.includes('bloom')) return 'Spring';
+    if (n.includes('easter') || n.includes('bunny') || n.includes('chick') || n.includes('egg')) return 'Easter';
+    if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th') || n.includes('balloons')) return 'Anniversary';
+    if (n.includes('summer') || n.includes('beach') || n.includes('sundae') || n.includes('anchor')) return 'Summer';
+    if (n.includes('autumn') || n.includes('fall') || n.includes('crops') || n.includes('maple')) return 'Fall';
+    if (n.includes('halloween') || n.includes('spook') || n.includes('witch') || n.includes('zombie') || n.includes('pumpkin')) return 'Halloween';
+    if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('snow') || n.includes('ice')) return 'Winter';
+    
+    return 'Geral';
+}
+
 
     function resetarParaPadraoCodigo() {
         if (confirm("Deseja realmente restaurar todos os valores oficiais padrão do FTF Values?")) {
