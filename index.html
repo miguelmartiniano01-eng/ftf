@@ -578,6 +578,77 @@
         "commons": "#8BCC14"    
     };
 
+        const SVG_ESTABILIDADE = {
+  Rising: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M6 16L12 10L16 14L20 8" stroke="#2ed573" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`,
+
+  "Doing Well": `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M4 15L8 11L12 13L16 8L20 10" stroke="#27d980" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </svg>`,
+
+  Improving: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M8 12h8M12 8v8" stroke="#9BE22D" stroke-width="2.4"/>
+    <rect x="4" y="4" width="16" height="16" rx="4" stroke="#9BE22D" fill="none"/>
+  </svg>`,
+
+  Stable: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M6 12H18" stroke="#AAB3C5" stroke-width="2.6" stroke-linecap="round"/>
+  </svg>`,
+
+  Fluctuating: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M3 12C6 5 9 19 12 12C15 5 18 19 21 12"
+      stroke="#F6C026"
+      stroke-width="2.4"
+      fill="none"
+      stroke-linecap="round"/>
+  </svg>`,
+
+  Struggling: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M6 8H18V12H14V18H10V12H6Z"
+      stroke="#D98A32"
+      stroke-width="2"
+      fill="none"/>
+  </svg>`,
+
+  Receding: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M4 9L8 13L12 11L16 16L20 13"
+      stroke="#DD5C73"
+      stroke-width="2.5"
+      fill="none"/>
+  </svg>`,
+
+  Dropping: `<svg viewBox="0 0 24 24" width="13" height="13">
+    <path d="M12 4V18M8 14L12 18L16 14"
+      stroke="#F05353"
+      stroke-width="2.6"
+      fill="none"/>
+  </svg>`
+};
+
+        const SVG_STATUS = {
+  overpaid: `<svg viewBox="0 0 24 24" width="13" height="13">
+      <path d="M12 5V19M5 12H19"
+      stroke="#2ed573"
+      stroke-width="2.6"
+      stroke-linecap="round"/>
+  </svg>`,
+
+  underpaid: `<svg viewBox="0 0 24 24" width="13" height="13">
+      <path d="M5 12H19"
+      stroke="#F05A6B"
+      stroke-width="2.6"
+      stroke-linecap="round"/>
+  </svg>`,
+
+  niche: `<svg viewBox="0 0 24 24" width="13" height="13">
+      <path d="M12 3L14.6 8.3L20 9L16 13L17 19L12 16L7 19L8 13L4 9L9.4 8.3Z"
+      stroke="#23D6FF"
+      fill="none"
+      stroke-width="2"/>
+  </svg>`
+};
+
     const BASE_PADRAO_MARRETAS = [
         {"id":1001,"nome":"1 Billion","imgSrc":"https://i.postimg.cc/RZt4jpTP/1-Billion.webp","raridade":"legendary"},
         {"id":1002,"nome":"2019","imgSrc":"https://i.postimg.cc/HkMdfvtB/2019.webp","raridade":"legendary"},
@@ -1186,13 +1257,15 @@
             <h3 style="margin: 0 0 1px 0; color: #ffffff; font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; padding-left: 4px; " title="${item.nome}">${item.nome}</h3>
             <span style="color: ${corRaridade}; font-size: 7px; font-weight: bold; text-transform: uppercase; text-align: left; padding-left: 4px; display: block; margin-bottom: 2px;">${item.raridade || 'legendary'}</span>
             <span style="color: #62697e; font-size: 7px; text-align: left; display: block; margin-bottom: 2px;">🎉 ${item.evento || 'Geral'}</span>
-            
+            <span class="txt-estabilidade" style="background:#121620; color:${corEstabilidade}; font-size:7px; font-weight:bold; padding:2px 5px; border-radius:4px; border:1px solid #232f4b; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+    ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
+    ${estabilidadeTexto}
+</span>
             <div style="margin-top: 4px; font-size: 9px; display: flex; flex-direction: column; gap: 3px;">
                 <div>
                     <div style="color: #4b5266; font-size: 7px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.3px;">VALUE</div>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="box-valor-dinamico" style="font-size: 12px; font-weight: 900;"></span>
-                        <span class="txt-estabilidade" style="background: #121620; color: ${corEstabilidade}; font-size: 7px; font-weight: bold; padding: 1px 3px; border-radius: 3px; border: 1px solid #232f4b;">${estabilidadeTexto}</span>
                     </div>
                 </div>
                 <div class="box-badge-status" style="display: flex; justify-content: flex-end; margin-top: -1px; min-height: 10px;"></div>
