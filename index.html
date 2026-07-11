@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -320,6 +321,94 @@
             border-color: #ffb830;
             color: #000;
             font-weight: 700;
+        }
+
+        /* Bundle action bar (só aparece na sub-aba Bundles) */
+        #bundle-actions-bar {
+            max-width: 1300px;
+            margin: 0 auto 8px auto;
+        }
+
+        /* Bundle "Includes" grid dentro do card */
+        .bundle-includes-label {
+            font-size: 8px;
+            color: #64748b;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 4px;
+            margin-bottom: 3px;
+        }
+
+        .bundle-includes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .bundle-include-item {
+            background: #0f1117;
+            border: 1px solid #1a1e26;
+            border-radius: 4px;
+            padding: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .bundle-include-item img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+
+        .bundle-include-item .binc-nome {
+            font-size: 6.5px;
+            color: #cbd5e1;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .bundle-include-item .binc-valor {
+            font-size: 7.5px;
+            color: #ffb830;
+            font-weight: 800;
+        }
+
+        /* Modal de criação de bundle */
+        #modal-bundle-lista {
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid #232836;
+            border-radius: 4px;
+            padding: 6px;
+            margin-bottom: 8px;
+            background: #0f1117;
+        }
+
+        .bundle-check-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 4px;
+            font-size: 11px;
+            color: #cbd5e1;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .bundle-check-item:hover {
+            background: #1c202b;
+        }
+
+        .bundle-check-item input {
+            cursor: pointer;
         }
 
         /* Item Creator Layout Panel Form */
@@ -658,6 +747,7 @@
         .hide-mode .subtabs-container,
         .hide-mode .event-filter-wrapper,
         .hide-mode .event-filter-container,
+        .hide-mode #bundle-actions-bar,
         .hide-mode .toolbar-container { display: none !important; }
 
         /* Botão de voltar que SÓ aparece no modo print */
@@ -898,7 +988,7 @@
         <button class="btn-aba active" id="aba-legendary" onclick="filtrarRaridade('legendary')">Legendary Items</button>
         <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')">Epic Items</button>
         <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')">Rare Items</button>
-        <button class="btn-aba" id="aba-common" onclick="filtrarRaridade('common')">Common Items</button>
+        <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')">Common Items</button>
     </div>
 
     <div class="subtabs-container">
@@ -909,6 +999,10 @@
         <button class="btn-subtab" id="sub-high" onclick="filtrarSubcategoria('high')">High Tier (+90)</button>
         <button class="btn-subtab" id="sub-mid" onclick="filtrarSubcategoria('mid')">Mid Tier (90-30)</button>
         <button class="btn-subtab" id="sub-low" onclick="filtrarSubcategoria('low')">Low Tier (30-1)</button>
+    </div>
+
+    <div id="bundle-actions-bar" style="display:none;">
+        <button class="ui-btn btn-salvar-galeria" onclick="abrirModalCriarBundle()">➕ Criar Bundle</button>
     </div>
 
     <div class="event-filter-container">
@@ -1201,7 +1295,8 @@
                 imgSrc: item.imgSrc,
                 evento: item.evento || mapearEventoAutomatico(item.nome),
                 tipo: item.tipo || 'normal',
-                recente: item.recente || 'nao'
+                recente: item.recente || 'nao',
+                componentes: item.componentes || null
             }));
         }
 
@@ -1227,7 +1322,8 @@
             imgSrc: m.imgSrc,
             evento: mapearEventoAutomatico(m.nome),
             tipo: m.tipo || 'normal',
-            recente: 'nao'
+            recente: 'nao',
+            componentes: null
         }));
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
     }
@@ -1314,7 +1410,8 @@
                 imgSrc: url.trim(),
                 evento: 'Geral',
                 tipo: 'normal',
-                recente: 'nao'
+                recente: 'nao',
+                componentes: null
             };
             listaDeMarretas.push(novoObj);
         });
@@ -1329,6 +1426,10 @@
         document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
         const btnAlvo = document.getElementById('sub-' + sub);
         if(btnAlvo) btnAlvo.classList.add('active');
+
+        const barraBundle = document.getElementById('bundle-actions-bar');
+        if (barraBundle) barraBundle.style.display = (sub === 'bundles') ? 'block' : 'none';
+
         carregarCardsSalvos();
     }
 
@@ -1413,7 +1514,8 @@
             imgSrc: urlImagem,
             evento: evento,
             tipo: tipo,
-            recente: recente
+            recente: recente,
+            componentes: null
         };
         
         listaDeMarretas.push(novoObj);
@@ -1426,8 +1528,144 @@
         document.getElementById('nomeItem').value = '';
         document.getElementById('linkImagem').value = '';
         document.getElementById('valorItem').value = '';
-        document.getElementById('eventoItem').value = 'Geral'; // Corrigido aqui
+        document.getElementById('eventoItem').value = 'Geral';
     }
+
+    // ====== NOVA FUNÇÃO: Criar Bundle ======
+    function abrirModalCriarBundle() {
+        const antigo = document.getElementById('modal-criar-bundle');
+        if (antigo) antigo.remove();
+
+        // Candidatos: qualquer marreta que NÃO seja ela mesma um bundle
+        const candidatos = listaDeMarretas.filter(m => m.tipo !== 'bundles');
+
+        const modal = document.createElement('div');
+        modal.id = 'modal-criar-bundle';
+        modal.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999;";
+
+        modal.innerHTML = `
+            <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 460px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
+                <h3 style="color:#ffb830; margin-bottom:12px; font-size:14px; font-weight:700; text-transform:uppercase;">📦 Criar Novo Bundle</h3>
+
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">NOME DO BUNDLE:</label>
+                <input type="text" id="bundle-nome" class="input-style" style="width:100%; margin-bottom:8px;" placeholder="Ex: Summer Sundae Bundle">
+
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">RARIDADE DO BUNDLE:</label>
+                <select id="bundle-raridade" class="input-style" style="width:100%; margin-bottom:8px;">
+                    <option value="legendary">👑 Legendary</option>
+                    <option value="epics">✨ Epic</option>
+                    <option value="rares">💎 Rare</option>
+                    <option value="commons">🍃 Common</option>
+                </select>
+
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">MARRETAS INCLUÍDAS:</label>
+                <input type="text" id="bundle-busca" class="input-style" style="width:100%; margin-bottom:6px;" placeholder="Buscar marreta...">
+                <div id="modal-bundle-lista">
+                    ${candidatos.length === 0 ? '<p style="color:#64748b; font-size:11px;">Nenhuma marreta disponível ainda. Crie itens normais primeiro.</p>' : candidatos.map(it => `
+                        <label class="bundle-check-item" data-nome="${(it.nome||'').toLowerCase()}">
+                            <input type="checkbox" class="bundle-check-input" data-id="${it.id}">
+                            <span>${it.nome} <span style="color:#ffb830; font-weight:700;">(${it.valor})</span></span>
+                        </label>
+                    `).join('')}
+                </div>
+
+                <div style="display:flex; justify-content:space-between; background:#0f1117; border:1px solid #232836; border-radius:4px; padding:8px; margin-bottom:12px; font-size:12px;">
+                    <span>Valor Total: <b id="bundle-valor-total" style="color:#ffb830;">0</b></span>
+                    <span>Demanda Média: <b id="bundle-demanda-media" style="color:#ffb830;">0</b> ⭐</span>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button id="bundle-cancelar" style="flex:1; padding:8px; background:#222733; color:#fff; border:1px solid #2d3445; border-radius:4px; font-weight:600; cursor:pointer;">Cancel</button>
+                    <button id="bundle-salvar" style="flex:1; padding:8px; background:#ffb830; color:#000; border:none; border-radius:4px; font-weight:700; cursor:pointer;">Criar Bundle</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        function recalcularTotais() {
+            const marcados = Array.from(modal.querySelectorAll('.bundle-check-input:checked'));
+            let total = 0;
+            let somaDemanda = 0;
+            marcados.forEach(chk => {
+                const id = parseInt(chk.getAttribute('data-id'));
+                const item = listaDeMarretas.find(m => m.id === id);
+                if (item) {
+                    total += parseFloat((item.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+                    somaDemanda += parseFloat(item.demanda) || 0;
+                }
+            });
+            const media = marcados.length ? (somaDemanda / marcados.length) : 0;
+            document.getElementById('bundle-valor-total').innerText = total;
+            document.getElementById('bundle-demanda-media').innerText = (Math.round(media * 2) / 2).toFixed(1);
+        }
+
+        modal.querySelectorAll('.bundle-check-input').forEach(chk => {
+            chk.addEventListener('change', recalcularTotais);
+        });
+
+        const buscaInput = document.getElementById('bundle-busca');
+        if (buscaInput) {
+            buscaInput.addEventListener('input', (e) => {
+                const termo = e.target.value.toLowerCase();
+                modal.querySelectorAll('.bundle-check-item').forEach(lbl => {
+                    lbl.style.display = lbl.getAttribute('data-nome').includes(termo) ? 'flex' : 'none';
+                });
+            });
+        }
+
+        document.getElementById('bundle-cancelar').onclick = () => modal.remove();
+
+        document.getElementById('bundle-salvar').onclick = () => {
+            const nome = document.getElementById('bundle-nome').value.trim();
+            if (!nome) { alert('Digite um nome para o bundle!'); return; }
+
+            const marcados = Array.from(modal.querySelectorAll('.bundle-check-input:checked'));
+            if (marcados.length === 0) { alert('Selecione pelo menos uma marreta para o bundle!'); return; }
+
+            const raridade = document.getElementById('bundle-raridade').value;
+            let valorTotal = 0;
+            let somaDemanda = 0;
+            const componentes = [];
+
+            marcados.forEach(chk => {
+                const id = parseInt(chk.getAttribute('data-id'));
+                const item = listaDeMarretas.find(m => m.id === id);
+                if (item) {
+                    valorTotal += parseFloat((item.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+                    somaDemanda += parseFloat(item.demanda) || 0;
+                    componentes.push({ nome: item.nome, imgSrc: item.imgSrc, valor: item.valor });
+                }
+            });
+
+            const demandaMedia = Math.round((somaDemanda / marcados.length) * 2) / 2;
+
+            const novoBundle = {
+                id: Date.now(),
+                nome: nome,
+                valor: valorTotal.toString(),
+                raridade: raridade,
+                demanda: demandaMedia.toString(),
+                tendencia: 'none',
+                status: 'none',
+                templates: 'Stable',
+                imgSrc: componentes[0] ? componentes[0].imgSrc : '',
+                evento: 'Geral',
+                tipo: 'bundles',
+                recente: 'nao',
+                componentes: componentes
+            };
+
+            listaDeMarretas.push(novoBundle);
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+
+            raridadeAtual = raridade;
+            definirAbaAtivaVisual(raridade);
+            modal.remove();
+            filtrarSubcategoria('bundles');
+        };
+    }
+    // ====== FIM NOVA FUNÇÃO ======
 
     function abrirModalEdicaoCompleta(item) {
         const antigo = document.getElementById('modal-edicao-ftf');
@@ -1437,7 +1675,6 @@
         modal.id = 'modal-edicao-ftf';
         modal.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999;";
 
-        // Mapeamento dos eventos para gerar o select dinamicamente
         const eventosDisponiveis = [
             { val: "Geral", txt: "🌍 Geral" },
             { val: "Lunar New Year", txt: "🏮 Lunar New Year" },
@@ -1475,7 +1712,7 @@
                     <option value="legendary" ${item.raridade === 'legendary'?'selected':''}>👑 Legendary</option>
                     <option value="epics" ${item.raridade === 'epics'?'selected':''}>✨ Epic</option>
                     <option value="rares" ${item.raridade === 'rares'?'selected':''}>💎 Rare</option>
-                    <option value="#commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
+                    <option value="commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
                 </select>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">SUB-CATEGORY TYPE:</label>
@@ -1530,100 +1767,129 @@
             item.nome = document.getElementById('edit-nome').value.trim() || item.nome;
             item.imgSrc = document.getElementById('edit-img').value.trim();
             item.valor = document.getElementById('edit-valor').value.trim();
-            item.evento = document.getElementById('edit-evento').value; // Coleta o valor do select novo
+            item.evento = document.getElementById('edit-evento').value;
             item.raridade = document.getElementById('edit-raridade').value;
             item.tipo = document.getElementById('edit-tipo').value;
-            item.recente = document.getElementById('edit-recente').value; // Coleta o "New Items" do select novo
+            item.recente = document.getElementById('edit-recente').value;
             item.demanda = document.getElementById('edit-demanda').value;
             item.tendencia = document.getElementById('edit-tendencia').value;
             item.status = document.getElementById('edit-status').value;
             item.templates = document.getElementById('edit-estabilidade').value;
 
             localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-            carregarCardsSalvos();
             modal.remove();
+
+            // FIX: se a raridade mudou, a aba muda junto pra acompanhar o item
+            // em vez dele simplesmente sumir da tela sem explicação.
+            if (item.raridade !== raridadeAtual) {
+                filtrarRaridade(item.raridade);
+            } else {
+                carregarCardsSalvos();
+            }
         };
     }
 
-function renderizarCardHTML(item) {
-    const container = document.getElementById('container-cards');
-    const card = document.createElement("div");
-    card.className = "ftf-item-card";
+    function renderizarCardHTML(item) {
+        const container = document.getElementById('container-cards');
+        const card = document.createElement("div");
+        card.className = "ftf-item-card";
 
-    const raridadeKey = (item.raridade || 'legendary').toLowerCase();
-    const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
-    card.setAttribute('data-id', item.id);
+        const raridadeKey = (item.raridade || 'legendary').toLowerCase();
+        const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
+        card.setAttribute('data-id', item.id);
+        card.style.border = `1px solid ${corRaridade}`;
 
-    // Aplica a borda colorida baseada na raridade diretamente no card principal
-    card.style.border = `1px solid ${corRaridade}`;
+        const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
+        const estabilidadeTexto = item.templates || 'Stable';
+        const corEstabilidade = CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
+        const isBundle = item.tipo === 'bundles' && Array.isArray(item.componentes) && item.componentes.length > 0;
 
-    const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
-    const estabilidadeTexto = item.templates || 'Stable';
-    const corEstabilidade = CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
+        const imagemHeaderHTML = isBundle ? `
+            <div class="ftf-card-img-wrapper" style="border-color: ${corRaridade}80; background:#161a24;">
+                <span class="txt-posicao-automatica">#--</span>
+                <span style="font-size:30px;">📦</span>
+            </div>
+        ` : `
+            <div class="ftf-card-img-wrapper" style="border-color: ${corRaridade}80;">
+                <span class="txt-posicao-automatica">#--</span>
+                <img src="${caminhoImagem}" loading="lazy" alt="${item.nome}" onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
+            </div>
+        `;
 
-    card.innerHTML = `
-        <button class="btn-deletar">✕</button>
-        <div class="ftf-card-img-wrapper" style="border-color: ${corRaridade}80;">
-            <span class="txt-posicao-automatica">#--</span>
-            <img src="${caminhoImagem}" loading="lazy" alt="${item.nome}" onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
-        </div>
-        <div class="ftf-card-info">
-            <h3 class="ftf-item-name">${item.nome}</h3>
-            <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
-            
-            <div class="ftf-value-row">
-                <div>
-                    <div class="ftf-value-label">Value</div>
-                    <span class="box-valor-dinamico"></span>
+        const includesHTML = isBundle ? `
+            <div class="bundle-includes-label">Includes:</div>
+            <div class="bundle-includes-grid">
+                ${item.componentes.map(c => `
+                    <div class="bundle-include-item">
+                        <img src="${c.imgSrc || 'https://placehold.co/60x60/0f1117/ffffff?text=%3F'}" alt="${c.nome}" onerror="this.src='https://placehold.co/60x60/0f1117/ffffff?text=%3F'">
+                        <span class="binc-nome">${c.nome}</span>
+                        <span class="binc-valor">${c.valor}</span>
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
+
+        card.innerHTML = `
+            <button class="btn-deletar">✕</button>
+            ${imagemHeaderHTML}
+            <div class="ftf-card-info">
+                <h3 class="ftf-item-name">${item.nome}</h3>
+                <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
+                
+                <div class="ftf-value-row">
+                    <div>
+                        <div class="ftf-value-label">Value</div>
+                        <span class="box-valor-dinamico"></span>
+                    </div>
+                    <span class="txt-estabilidade" style="color: ${corEstabilidade};">
+                        ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
+                        <span>${estabilidadeTexto}</span>
+                    </span>
                 </div>
-                <span class="txt-estabilidade" style="color: ${corEstabilidade};">
-                    ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
-                    <span>${estabilidadeTexto}</span>
-                </span>
-            </div>
 
-            <div class="box-badge-status"></div>
+                <div class="box-badge-status"></div>
 
-            <div class="ftf-demand-row">
-                <span class="ftf-value-label">Demand</span>
-                <span class="txt-demanda-estrelas"></span>
-            </div>
-
-            <div class="btn-acoes-card">
-                <div class="btn-acoes-card-row">
-                    <button class="btn-subir" style="flex:1;">▲</button>
-                    <button class="btn-descer" style="flex:1;">▼</button>
+                <div class="ftf-demand-row">
+                    <span class="ftf-value-label">Demand</span>
+                    <span class="txt-demanda-estrelas"></span>
                 </div>
-                <button class="btn-editar">✏️ Edit Parameters</button>
+
+                ${includesHTML}
+
+                <div class="btn-acoes-card">
+                    <div class="btn-acoes-card-row">
+                        <button class="btn-subir" style="flex:1;">▲</button>
+                        <button class="btn-descer" style="flex:1;">▼</button>
+                    </div>
+                    <button class="btn-editar">✏️ Edit Parameters</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
 
-    card.querySelector('.btn-editar').addEventListener('click', () => abrirModalEdicaoCompleta(item));
-    card.querySelector('.btn-deletar').addEventListener('click', () => {
-        if (confirm(`Excluir item "${item.nome}"?`)) {
-            listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
-            card.remove();
-            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-            carregarCardsSalvos();
-        }
-    });
+        card.querySelector('.btn-editar').addEventListener('click', () => abrirModalEdicaoCompleta(item));
+        card.querySelector('.btn-deletar').addEventListener('click', () => {
+            if (confirm(`Excluir item "${item.nome}"?`)) {
+                listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
+                card.remove();
+                localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+                carregarCardsSalvos();
+            }
+        });
 
-    card.querySelector('.btn-subir').addEventListener('click', () => {
-        const ant = card.previousElementSibling;
-        if (ant) { container.insertBefore(card, ant); reordenarArrayEGuardar(); }
-    });
+        card.querySelector('.btn-subir').addEventListener('click', () => {
+            const ant = card.previousElementSibling;
+            if (ant) { container.insertBefore(card, ant); reordenarArrayEGuardar(); }
+        });
 
-    card.querySelector('.btn-descer').addEventListener('click', () => {
-        const prox = card.nextElementSibling;
-        if (prox) { container.insertBefore(prox, card); reordenarArrayEGuardar(); }
-    });
+        card.querySelector('.btn-descer').addEventListener('click', () => {
+            const prox = card.nextElementSibling;
+            if (prox) { container.insertBefore(prox, card); reordenarArrayEGuardar(); }
+        });
 
-    atualizarEstiloValorDoCard(card, item);
-    gerarEstrelasDemanda(card, item.demanda);
-    return card;
-}
-
+        atualizarEstiloValorDoCard(card, item);
+        gerarEstrelasDemanda(card, item.demanda);
+        return card;
+    }
 
     function filtrarRaridade(raridadeAlvo) {
         raridadeAtual = raridadeAlvo;
@@ -1754,61 +2020,4 @@ function renderizarCardHTML(item) {
             if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
             if (subcategoriaAtual === 'unicos' && item.tipo !== 'unique') return false;
             if (subcategoriaAtual === 'bundles' && item.tipo !== 'bundles') return false;
-            if (subcategoriaAtual === 'high' && valorNum < 90) return false;
-            if (subcategoriaAtual === 'mid' && (valorNum < 30 || valorNum >= 90)) return false;
-            if (subcategoriaAtual === 'low' && (valorNum < 1 || valorNum >= 30)) return false;
-
-            return true;
-        });
-
-        document.getElementById('dash-qtd').innerText = itensFiltrados.length;
-        const totalValorCalculado = itensFiltrados.reduce((acc, obj) => {
-            const v = parseFloat((obj.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
-            return acc + v;
-        }, 0);
-        document.getElementById('dash-valor').innerText = totalValorCalculado;
-
-        container.innerHTML = '';
-        const fragment = document.createDocumentFragment();
-
-        itensFiltrados.forEach(item => {
-            const card = renderizarCardHTML(item); 
-            if (card) fragment.appendChild(card);
-        });
-
-        container.appendChild(fragment);
-        atualizarNumbersVisuais();
-    }
-
-    function reordenarArrayEGuardar() {
-        let listaLimpa = listaDeMarretas.filter(item => (item.raridade || 'legendary') !== raridadeAtual);
-        let itensReordenadosDaAba = [];
-
-        document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML) => {
-            const id = parseInt(cardHTML.getAttribute('data-id'));
-            const correspondente = listaDeMarretas.find(m => m.id === id);
-            if (correspondente) itensReordenadosDaAba.push(correspondente);
-        });
-        
-        listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
-        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-        atualizarNumbersVisuais();
-    }
-
-    function atualizarNumbersVisuais() {
-        document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML, index) => {
-            const caixaTextoPosicao = cardHTML.querySelector('.txt-posicao-automatica');
-            if (caixaTextoPosicao) caixaTextoPosicao.innerText = `#${index + 1}`;
-        });
-    }
-
-    function exportarLista() {
-        navigator.clipboard.writeText(JSON.stringify(listaDeMarretas, null, 2)).then(() => {
-            alert("Backup copiado!");
-        });
-    }
-
-    window.onload = inicializarBancoDados;
-</script>
-</body>
-</html>
+            if (subcategoriaAtual === 'high' &
