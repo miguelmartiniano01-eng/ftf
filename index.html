@@ -1437,6 +1437,21 @@
         modal.id = 'modal-edicao-ftf';
         modal.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999;";
 
+        // Mapeamento dos eventos para gerar o select dinamicamente
+        const eventosDisponiveis = [
+            { val: "Geral", txt: "🌍 Geral" },
+            { val: "Lunar New Year", txt: "🏮 Lunar New Year" },
+            { val: "Valentines", txt: "💘 Valentines" },
+            { val: "Saint Patrick", txt: "🍀 Saint Patrick" },
+            { val: "Spring", txt: "🌸 Spring" },
+            { val: "Easter", txt: "🐰 Easter" },
+            { val: "Anniversary", txt: "🎉 Anniversary" },
+            { val: "Summer", txt: "☀️ Summer" },
+            { val: "Fall", txt: "🍁 Fall" },
+            { val: "Halloween", txt: "🎃 Halloween" },
+            { val: "Winter", txt: "❄️ Winter" }
+        ];
+
         modal.innerHTML = `
             <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 440px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
                 <h3 style="color:#ffb830; margin-bottom:12px; font-size:14px; font-weight:700; text-transform:uppercase;">✏️ Edit Item Parameters</h3>
@@ -1451,7 +1466,9 @@
                 <input type="text" id="edit-valor" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.valor || ''}">
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">EVENT CATEGORY:</label>
-                <input type="text" id="edit-evento" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.evento || 'Geral'}">
+                <select id="edit-evento" class="input-style" style="width:100%; margin-bottom:8px;">
+                    ${eventosDisponiveis.map(ev => `<option value="${ev.val}" ${item.evento === ev.val ? 'selected' : ''}>${ev.txt}</option>`).join('')}
+                </select>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">RARITY TIER:</label>
                 <select id="edit-raridade" class="input-style" style="width:100%; margin-bottom:8px;">
@@ -1470,8 +1487,8 @@
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">NEW ITEMS LISTING?</label>
                 <select id="edit-recente" class="input-style" style="width:100%; margin-bottom:8px;">
-                    <option value="nao" ${item.recente === 'nao'?'selected':''}>Não</option>
-                    <option value="sim" ${item.recente === 'sim'?'selected':''}>Sim (New Items)</option>
+                    <option value="nao" ${item.recente === 'nao' || !item.recente ? 'selected':''}>Não</option>
+                    <option value="sim" ${item.recente === 'sim' ? 'selected':''}>Sim (New Items)</option>
                 </select>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">DEMAND RATE:</label>
@@ -1513,10 +1530,10 @@
             item.nome = document.getElementById('edit-nome').value.trim() || item.nome;
             item.imgSrc = document.getElementById('edit-img').value.trim();
             item.valor = document.getElementById('edit-valor').value.trim();
-            item.evento = document.getElementById('edit-evento').value.trim() || 'Geral';
+            item.evento = document.getElementById('edit-evento').value; // Coleta o valor do select novo
             item.raridade = document.getElementById('edit-raridade').value;
             item.tipo = document.getElementById('edit-tipo').value;
-            item.recente = document.getElementById('edit-recente').value;
+            item.recente = document.getElementById('edit-recente').value; // Coleta o "New Items" do select novo
             item.demanda = document.getElementById('edit-demanda').value;
             item.tendencia = document.getElementById('edit-tendencia').value;
             item.status = document.getElementById('edit-status').value;
@@ -1527,6 +1544,7 @@
             modal.remove();
         };
     }
+
 
     function renderizarCardHTML(item) {
         const container = document.getElementById('container-cards');
