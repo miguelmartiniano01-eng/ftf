@@ -647,7 +647,7 @@
             z-index: 10;
         }
 
-        /* High Compact Print Mode (Forced 16 Col Grid View) */
+                /* High Compact Print Mode (Forced 16 Col Grid View) */
         .hide-mode .ftf-header,
         .hide-mode #criador-form,
         .hide-mode .btn-aba-container,
@@ -661,6 +661,27 @@
         .hide-mode .event-filter-container,
         .hide-mode .toolbar-container { display: none !important; }
 
+        /* Botão de voltar que SÓ aparece no modo print */
+        .btn-voltar-print {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 99999;
+            background: #ffb830;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .hide-mode .btn-voltar-print {
+            display: block !important; /* Só mostra quando estiver em modo print */
+        }
+
         .hide-mode #container-cards {
             grid-template-columns: repeat(16, 1fr) !important;
             width: 100% !important;
@@ -671,6 +692,7 @@
         .hide-mode .ftf-item-card {
             padding: 3px !important;
         }
+       
 
         .hide-mode .ftf-card-img-wrapper {
             height: 75px !important;
