@@ -275,6 +275,54 @@
             cursor: pointer;
         }
 
+        /* Event Filter Buttons (fixed: this is the class actually used in the HTML) */
+        .event-filter-container {
+            max-width: 1300px;
+            margin: 0 auto 8px auto;
+            background: #161920;
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+            border: 1px solid #1e222b;
+        }
+
+        .event-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #232836;
+            border-radius: 4px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+
+        .event-btn img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .event-btn:hover {
+            background: #202633;
+            color: #fff;
+        }
+
+        .event-btn.active {
+            background: #ffb830;
+            border-color: #ffb830;
+            color: #000;
+            font-weight: 700;
+        }
+
         /* Item Creator Layout Panel Form */
         #criador-form {
             background-color: #161920;
@@ -610,6 +658,7 @@
         .hide-mode #btn-limpar-tudo,
         .hide-mode .subtabs-container,
         .hide-mode .event-filter-wrapper,
+        .hide-mode .event-filter-container,
         .hide-mode .toolbar-container { display: none !important; }
 
         .hide-mode #container-cards {
@@ -1096,6 +1145,7 @@
     let listaDeMarretas = [];
     let raridadeAtual = 'legendary'; 
     let subcategoriaAtual = 'todos';
+    let eventoAtual = 'all';
     
     function inicializarBancoDados() {
         let dadosLocais = null;
@@ -1131,6 +1181,7 @@
         document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
 
         atualizarFiltroEventosMenu();
+        configurarBotoesEvento();
         carregarCardsSalvos();
     }
 
@@ -1193,6 +1244,21 @@
         select.innerHTML = '<option value="todos">🌍 Todos os Eventos</option>';
         eventosUnicos.sort().forEach(ev => {
             select.innerHTML += `<option value="${ev}">${ev}</option>`;
+        });
+    }
+
+    // FIX: conecta os botões de evento (.event-btn) que já existiam no HTML
+    // mas nunca tinham um listener de clique associado.
+    function configurarBotoesEvento() {
+        document.querySelectorAll('.event-btn').forEach(btn => {
+            if (btn.dataset.bound === '1') return; // evita duplicar listeners
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.event-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                eventoAtual = btn.getAttribute('data-event') || 'all';
+                carregarCardsSalvos();
+            });
         });
     }
 
@@ -1647,13 +1713,12 @@ containerEstrelas.innerHTML = estrelasHTML;
         if (!container) return;
 
         const termoPesquisa = document.getElementById('barraPesquisa').value.toLowerCase();
-        const eventoSelecionado = document.getElementById('filtroEvento').value;
 
         const itensFiltrados = listaDeMarretas.filter(item => {
             const raridadeItem = (item.raridade || 'legendary').toLowerCase();
             const bateRaridade = raridadeItem === raridadeAtual.toLowerCase();
             const bateNome = (item.nome || "").toLowerCase().includes(termoPesquisa);
-            const bateEvento = eventoSelecionado === 'todos' || item.evento === eventoSelecionado;
+            const bateEvento = eventoAtual === 'all' || item.evento === eventoAtual;
             
             if (!bateRaridade || !bateNome || !bateEvento) return false;
 
