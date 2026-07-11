@@ -898,7 +898,7 @@
         <button class="btn-aba active" id="aba-legendary" onclick="filtrarRaridade('legendary')">Legendary Items</button>
         <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')">Epic Items</button>
         <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')">Rare Items</button>
-        <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')">Common Items</button>
+        <button class="btn-aba" id="aba-common" onclick="filtrarRaridade('common')">Common Items</button>
     </div>
 
     <div class="subtabs-container">
@@ -962,7 +962,7 @@
     };
 
     const CORES_RARIDADE = {
-        "legendary": "#ffb830", 
+        "Legendary": "#ffb830", 
         "epics": "#a55eea",     
         "rares": "#45aaf2",     
         "commons": "#2ed573"    
@@ -976,7 +976,7 @@
         Fluctuating: `<svg viewBox="0 0 24 24" fill="none" stroke="#F2BE24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-9 6 18 3-9h3"></path></svg>`,
         Struggling: `<svg viewBox="0 0 24 24" fill="none" stroke="#E56D16" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
         Receding: `<svg viewBox="0 0 24 24" fill="none" stroke="#D84146" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`,
-        Dropping: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 10.5 15.5 15.5 11.5 22 18"></polyline><polyline points="16 18 22 18 22 12"></polyline></svg>`
+        Dropping: `<svg viewBox="0 0 24 24" fill="none" stroke="#a20002" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 10.5 15.5 15.5 11.5 22 18"></polyline><polyline points="16 18 22 18 22 12"></polyline></svg>`
     };
 
     const BASE_PADRAO_MARRETAS = [
@@ -1475,7 +1475,7 @@
                     <option value="legendary" ${item.raridade === 'legendary'?'selected':''}>👑 Legendary</option>
                     <option value="epics" ${item.raridade === 'epics'?'selected':''}>✨ Epic</option>
                     <option value="rares" ${item.raridade === 'rares'?'selected':''}>💎 Rare</option>
-                    <option value="commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
+                    <option value="#commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
                 </select>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">SUB-CATEGORY TYPE:</label>
