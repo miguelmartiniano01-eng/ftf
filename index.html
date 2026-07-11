@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -275,7 +274,7 @@
             cursor: pointer;
         }
 
-        /* Event Filter Buttons (fixed: this is the class actually used in the HTML) */
+        /* Event Filter Buttons */
         .event-filter-container {
             max-width: 1300px;
             margin: 0 auto 8px auto;
@@ -647,7 +646,7 @@
             z-index: 10;
         }
 
-                /* High Compact Print Mode (Forced 16 Col Grid View) */
+        /* High Compact Print Mode (Forced 16 Col Grid View) */
         .hide-mode .ftf-header,
         .hide-mode #criador-form,
         .hide-mode .btn-aba-container,
@@ -679,7 +678,7 @@
         }
 
         .hide-mode .btn-voltar-print {
-            display: block !important; /* Só mostra quando estiver em modo print */
+            display: block !important;
         }
 
         .hide-mode #container-cards {
@@ -693,7 +692,6 @@
             padding: 3px !important;
         }
        
-
         .hide-mode .ftf-card-img-wrapper {
             height: 75px !important;
         }
@@ -742,6 +740,8 @@
     </style>
 </head>
 <body id="capture-area">
+
+    <button class="btn-voltar-print" onclick="togglePrintMode()">⬅️ Voltar para Edição</button>
 
     <div class="ftf-header">
         <div class="ftf-header-logo">
@@ -797,22 +797,21 @@
                     <input type="text" id="valorItem" class="input-style" placeholder="Ex: 45">
                 </div>
                 <div class="form-group">
-    <label class="form-label">Evento</label>
-    <select id="eventoItem" class="input-style">
-        <option value="Geral" selected>🌍 Geral</option>
-        <option value="Lunar New Year">🏮 Lunar New Year</option>
-        <option value="Valentines">💘 Valentines</option>
-        <option value="Saint Patrick">🍀 Saint Patrick</option>
-        <option value="Spring">🌸 Spring</option>
-        <option value="Easter">🐰 Easter</option>
-        <option value="Anniversary">🎉 Anniversary</option>
-        <option value="Summer">☀️ Summer</option>
-        <option value="Fall">🍁 Fall</option>
-        <option value="Halloween">🎃 Halloween</option>
-        <option value="Winter">❄️ Winter</option>
-    </select>
-</div>
-
+                    <label class="form-label">Evento</label>
+                    <select id="eventoItem" class="input-style">
+                        <option value="Geral" selected>🌍 Geral</option>
+                        <option value="Lunar New Year">🏮 Lunar New Year</option>
+                        <option value="Valentines">💘 Valentines</option>
+                        <option value="Saint Patrick">🍀 Saint Patrick</option>
+                        <option value="Spring">🌸 Spring</option>
+                        <option value="Easter">🐰 Easter</option>
+                        <option value="Anniversary">🎉 Anniversary</option>
+                        <option value="Summer">☀️ Summer</option>
+                        <option value="Fall">🍁 Fall</option>
+                        <option value="Halloween">🎃 Halloween</option>
+                        <option value="Winter">❄️ Winter</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Raridade</label>
                     <select id="raridadeItem" class="input-style">
@@ -913,22 +912,18 @@
     </div>
 
     <div class="event-filter-container">
-  <button class="event-btn active" data-event="all">All Events</button>
-
-  <button class="event-btn" data-event="Lunar New Year"><img src="https://i.postimg.cc/HswnNHLh/Lunar-New-Year.png" alt="Lunar New Year"></button>
-  <button class="event-btn" data-event="Valentines"><img src="https://i.postimg.cc/7Y3hRDLj/Valentines.png" alt="Valentines"></button>
-  <button class="event-btn" data-event="Saint Patrick"><img src="https://i.postimg.cc/jdH21Kj1/Saint-Patrick.png" alt="Saint Patrick"></button>
-  <button class="event-btn" data-event="Spring"><img src="https://i.postimg.cc/Fsyz6mKq/Spring.png" alt="Spring"></button>
-  <button class="event-btn" data-event="Easter"><img src="https://i.postimg.cc/65rqPw3s/Easter.png" alt="Easter"></button>
-  <button class="event-btn" data-event="Anniversary"><img src="https://i.postimg.cc/fTcyPZb6/Anniversary.png" alt="Anniversary"></button>
-  <button class="event-btn" data-event="Summer"><img src="https://i.postimg.cc/wTXMrHBC/Summer.png" alt="Summer"></button>
-  <button class="event-btn" data-event="Fall"><img src="https://i.postimg.cc/vHrTKMBd/Fall.png" alt="Fall"></button>
-  <button class="event-btn" data-event="Halloween"><img src="https://i.postimg.cc/hPLvYgjg/Halloween.png" alt="Halloween"></button>
-  <button class="event-btn" data-event="Winter"><img src="https://i.postimg.cc/yYmxGBds/Winter.png" alt="Winter"></button>
-</div>
-
-
-
+        <button class="event-btn active" data-event="all">All Events</button>
+        <button class="event-btn" data-event="Lunar New Year"><img src="https://i.postimg.cc/HswnNHLh/Lunar-New-Year.png" alt="Lunar New Year"></button>
+        <button class="event-btn" data-event="Valentines"><img src="https://i.postimg.cc/7Y3hRDLj/Valentines.png" alt="Valentines"></button>
+        <button class="event-btn" data-event="Saint Patrick"><img src="https://i.postimg.cc/jdH21Kj1/Saint-Patrick.png" alt="Saint Patrick"></button>
+        <button class="event-btn" data-event="Spring"><img src="https://i.postimg.cc/Fsyz6mKq/Spring.png" alt="Spring"></button>
+        <button class="event-btn" data-event="Easter"><img src="https://i.postimg.cc/65rqPw3s/Easter.png" alt="Easter"></button>
+        <button class="event-btn" data-event="Anniversary"><img src="https://i.postimg.cc/fTcyPZb6/Anniversary.png" alt="Anniversary"></button>
+        <button class="event-btn" data-event="Summer"><img src="https://i.postimg.cc/wTXMrHBC/Summer.png" alt="Summer"></button>
+        <button class="event-btn" data-event="Fall"><img src="https://i.postimg.cc/vHrTKMBd/Fall.png" alt="Fall"></button>
+        <button class="event-btn" data-event="Halloween"><img src="https://i.postimg.cc/hPLvYgjg/Halloween.png" alt="Halloween"></button>
+        <button class="event-btn" data-event="Winter"><img src="https://i.postimg.cc/yYmxGBds/Winter.png" alt="Winter"></button>
+    </div>
 
     <div class="ftf-dashboard">
         <div class="ftf-dash-left">
@@ -1215,7 +1210,6 @@
         let datasSalvas = JSON.parse(localStorage.getItem('ftf_datas_att')) || {};
         document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
 
-        atualizarFiltroEventosMenu();
         configurarBotoesEvento();
         carregarCardsSalvos();
     }
@@ -1238,23 +1232,22 @@
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
     }
 
-        function mapearEventoAutomatico(nome) {
-    const n = (nome || "").toLowerCase();
-    
-    if (n.includes('lunar') || n.includes('ox') || n.includes('tiger') || n.includes('rat')) return 'Lunar New Year';
-    if (n.includes('valentine') || n.includes('heart') || n.includes('love') || n.includes('cupid')) return 'Valentines';
-    if (n.includes('patrick') || n.includes('clover') || n.includes('shamrock') || n.includes('leprechaun')) return 'Saint Patrick';
-    if (n.includes('spring') || n.includes('pegasus') || n.includes('bloom')) return 'Spring';
-    if (n.includes('easter') || n.includes('bunny') || n.includes('chick') || n.includes('egg')) return 'Easter';
-    if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th') || n.includes('balloons')) return 'Anniversary';
-    if (n.includes('summer') || n.includes('beach') || n.includes('sundae') || n.includes('anchor')) return 'Summer';
-    if (n.includes('autumn') || n.includes('fall') || n.includes('crops') || n.includes('maple')) return 'Fall';
-    if (n.includes('halloween') || n.includes('spook') || n.includes('witch') || n.includes('zombie') || n.includes('pumpkin')) return 'Halloween';
-    if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('snow') || n.includes('ice')) return 'Winter';
-    
-    return 'Geral';
-}
-
+    function mapearEventoAutomatico(nome) {
+        const n = (nome || "").toLowerCase();
+        
+        if (n.includes('lunar') || n.includes('ox') || n.includes('tiger') || n.includes('rat')) return 'Lunar New Year';
+        if (n.includes('valentine') || n.includes('heart') || n.includes('love') || n.includes('cupid')) return 'Valentines';
+        if (n.includes('patrick') || n.includes('clover') || n.includes('shamrock') || n.includes('leprechaun')) return 'Saint Patrick';
+        if (n.includes('spring') || n.includes('pegasus') || n.includes('bloom')) return 'Spring';
+        if (n.includes('easter') || n.includes('bunny') || n.includes('chick') || n.includes('egg')) return 'Easter';
+        if (n.includes('anniversary') || n.includes('2nd') || n.includes('3rd') || n.includes('4th') || n.includes('5th') || n.includes('6th') || n.includes('7th') || n.includes('8th') || n.includes('balloons')) return 'Anniversary';
+        if (n.includes('summer') || n.includes('beach') || n.includes('sundae') || n.includes('anchor')) return 'Summer';
+        if (n.includes('autumn') || n.includes('fall') || n.includes('crops') || n.includes('maple')) return 'Fall';
+        if (n.includes('halloween') || n.includes('spook') || n.includes('witch') || n.includes('zombie') || n.includes('pumpkin')) return 'Halloween';
+        if (n.includes('santa') || n.includes('christmas') || n.includes('winter') || n.includes('snow') || n.includes('ice')) return 'Winter';
+        
+        return 'Geral';
+    }
 
     function resetarParaPadraoCodigo() {
         if (confirm("Deseja realmente restaurar todos os valores oficiais padrão do FTF Values?")) {
@@ -1271,22 +1264,9 @@
         localStorage.setItem('ftf_datas_att', JSON.stringify(datasSalvas));
     }
 
-    function atualizarFiltroEventosMenu() {
-        const select = document.getElementById('filtroEvento');
-        if (!select) return;
-        const eventosUnicos = [...new Set(listaDeMarretas.map(item => item.evento || "Geral"))];
-        
-        select.innerHTML = '<option value="todos">🌍 Todos os Eventos</option>';
-        eventosUnicos.sort().forEach(ev => {
-            select.innerHTML += `<option value="${ev}">${ev}</option>`;
-        });
-    }
-
-    // FIX: conecta os botões de evento (.event-btn) que já existiam no HTML
-    // mas nunca tinham um listener de clique associado.
     function configurarBotoesEvento() {
         document.querySelectorAll('.event-btn').forEach(btn => {
-            if (btn.dataset.bound === '1') return; // evita duplicar listeners
+            if (btn.dataset.bound === '1') return; 
             btn.dataset.bound = '1';
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.event-btn').forEach(b => b.classList.remove('active'));
@@ -1340,7 +1320,6 @@
         });
 
         localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-        atualizarFiltroEventosMenu();
         carregarCardsSalvos();
         document.getElementById('listaLinksMassa').value = '';
     }
@@ -1442,13 +1421,12 @@
         
         raridadeAtual = raridade;
         definirAbaAtivaVisual(raridade);
-        atualizarFiltroEventosMenu();
         carregarCardsSalvos();
 
         document.getElementById('nomeItem').value = '';
         document.getElementById('linkImagem').value = '';
         document.getElementById('valorItem').value = '';
-        document.getElementById('eventoItem').value = '';
+        document.getElementById('eventoItem').value = 'Geral'; // Corrigido aqui
     }
 
     function abrirModalEdicaoCompleta(item) {
@@ -1545,7 +1523,6 @@
             item.templates = document.getElementById('edit-estabilidade').value;
 
             localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-            atualizarFiltroEventosMenu();
             carregarCardsSalvos();
             modal.remove();
         };
@@ -1644,30 +1621,28 @@
         document.getElementById('titulo-secao').innerText = `${raridadeAlvo.toUpperCase()} ITEMS`;
     }
 
-        function atualizarEstiloValorDoCard(cardHTML, item) {
+    function atualizarEstiloValorDoCard(cardHTML, item) {
         const containerValor = cardHTML.querySelector('.box-valor-dinamico');
         const containerBadge = cardHTML.querySelector('.box-badge-status');
         if (!containerValor) return;
 
         let badgeTendencia = '';
         let valorExibido = item.valor || "10";
-        let corDinamica = '#ffb830'; // Cor padrão amarela do FTF
+        let corDinamica = '#ffb830'; 
 
-        // Define a mesma cor para o valor e para a seta com base na tendência
         if (item.tendencia === 'subiu') { 
-            corDinamica = '#47cc6a'; // Verde
+            corDinamica = '#47cc6a'; 
             badgeTendencia = ` <span>↑</span>`; 
         }
         else if (item.tendencia === 'caiu') { 
-            corDinamica = '#ff4d4f'; // Vermelho
+            corDinamica = '#ff4d4f'; 
             badgeTendencia = ` <span>↓</span>`; 
         }
         else if (item.tendencia === 'corrigido') { 
-            corDinamica = '#f2be24'; // Amarelo de correção
+            corDinamica = '#f2be24'; 
             badgeTendencia = ` <span>*</span>`; 
         }
         
-        // Aplica a cor diretamente no container que junta valor + seta
         containerValor.style.color = corDinamica;
         containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
 
@@ -1679,7 +1654,6 @@
         }
     }
 
-
     function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
         const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
         if (!containerEstrelas) return;
@@ -1690,26 +1664,24 @@
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
         const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:3;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-for (let i = 1; i <= 5; i++) {
-    if (notaNum >= i) {
-        estrelasHTML += svgEstrelaCheia;
-    } else if (notaNum > i - 1 && notaNum < i) {
-        estrelasHTML += `
-            <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
-                <svg viewBox="0 0 24 24" style="position:absolute; top:0; left:0; width:100%; height:100%; fill:#334155;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
-                
-                <span style="position:absolute; top:0; left:0; width:50%; height:100%; overflow:hidden;">
-                    <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830; display:block;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
-                </span>
-            </span>
-        `;
-    } else {
-        estrelasHTML += svgEstrelaVazia;
+        for (let i = 1; i <= 5; i++) {
+            if (notaNum >= i) {
+                estrelasHTML += svgEstrelaCheia;
+            } else if (notaNum > i - 1 && notaNum < i) {
+                estrelasHTML += `
+                    <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" style="position:absolute; top:0; left:0; width:100%; height:100%; fill:#334155;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
+                        <span style="position:absolute; top:0; left:0; width:50%; height:100%; overflow:hidden;">
+                            <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830; display:block;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>
+                        </span>
+                    </span>
+                `;
+            } else {
+                estrelasHTML += svgEstrelaVazia;
+            }
+        }
+        containerEstrelas.innerHTML = estrelasHTML;
     }
- }
-containerEstrelas.innerHTML = estrelasHTML;
-
-}
         
     function ordenarEAtualizar() {
         const criterio = document.getElementById('ordenacaoLista').value;
@@ -1818,4 +1790,4 @@ containerEstrelas.innerHTML = estrelasHTML;
     window.onload = inicializarBancoDados;
 </script>
 </body>
-    </html>
+</html>
