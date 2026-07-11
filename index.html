@@ -962,10 +962,10 @@
     };
 
     const CORES_RARIDADE = {
-        "legendary": "#ffa502", 
+        "legendary": "#ffb830", 
         "epics": "#a55eea",     
         "rares": "#45aaf2",     
-        "commons": "#a5b1c2"    
+        "commons": "#2ed573"    
     };
 
     const SVG_ESTABILIDADE = {
@@ -1545,82 +1545,85 @@
         };
     }
 
+function renderizarCardHTML(item) {
+    const container = document.getElementById('container-cards');
+    const card = document.createElement("div");
+    card.className = "ftf-item-card";
 
-    function renderizarCardHTML(item) {
-        const container = document.getElementById('container-cards');
-        const card = document.createElement("div");
-        card.className = "ftf-item-card";
+    const raridadeKey = (item.raridade || 'legendary').toLowerCase();
+    const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
+    card.setAttribute('data-id', item.id);
 
-        const raridadeKey = (item.raridade || 'legendary').toLowerCase();
-        const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
-        card.setAttribute('data-id', item.id);
+    // Aplica a borda colorida baseada na raridade diretamente no card principal
+    card.style.border = `1px solid ${corRaridade}`;
 
-        const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
-        const estabilidadeTexto = item.templates || 'Stable';
-        const corEstabilidade = CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
+    const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
+    const estabilidadeTexto = item.templates || 'Stable';
+    const corEstabilidade = CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
 
-        card.innerHTML = `
-            <button class="btn-deletar">✕</button>
-            <div class="ftf-card-img-wrapper">
-                <span class="txt-posicao-automatica">#--</span>
-                <img src="${caminhoImagem}" loading="lazy" alt="${item.nome}" onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
+    card.innerHTML = `
+        <button class="btn-deletar">✕</button>
+        <div class="ftf-card-img-wrapper" style="border-color: ${corRaridade}80;">
+            <span class="txt-posicao-automatica">#--</span>
+            <img src="${caminhoImagem}" loading="lazy" alt="${item.nome}" onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
+        </div>
+        <div class="ftf-card-info">
+            <h3 class="ftf-item-name">${item.nome}</h3>
+            <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
+            
+            <div class="ftf-value-row">
+                <div>
+                    <div class="ftf-value-label">Value</div>
+                    <span class="box-valor-dinamico"></span>
+                </div>
+                <span class="txt-estabilidade" style="color: ${corEstabilidade};">
+                    ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
+                    <span>${estabilidadeTexto}</span>
+                </span>
             </div>
-            <div class="ftf-card-info">
-                <h3 class="ftf-item-name">${item.nome}</h3>
-                <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
-                
-                <div class="ftf-value-row">
-                    <div>
-                        <div class="ftf-value-label">Value</div>
-                        <span class="box-valor-dinamico"></span>
-                    </div>
-                    <span class="txt-estabilidade" style="color: ${corEstabilidade};">
-                        ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
-                        <span>${estabilidadeTexto}</span>
-                    </span>
-                </div>
 
-                <div class="box-badge-status"></div>
+            <div class="box-badge-status"></div>
 
-                <div class="ftf-demand-row">
-                    <span class="ftf-value-label">Demand</span>
-                    <span class="txt-demanda-estrelas"></span>
-                </div>
-
-                <div class="btn-acoes-card">
-                    <div class="btn-acoes-card-row">
-                        <button class="btn-subir" style="flex:1;">▲</button>
-                        <button class="btn-descer" style="flex:1;">▼</button>
-                    </div>
-                    <button class="btn-editar">✏️ Edit Parameters</button>
-                </div>
+            <div class="ftf-demand-row">
+                <span class="ftf-value-label">Demand</span>
+                <span class="txt-demanda-estrelas"></span>
             </div>
-        `;
 
-        card.querySelector('.btn-editar').addEventListener('click', () => abrirModalEdicaoCompleta(item));
-        card.querySelector('.btn-deletar').addEventListener('click', () => {
-            if (confirm(`Excluir item "${item.nome}"?`)) {
-                listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
-                card.remove();
-                localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-                carregarCardsSalvos();
-            }
-        });
+            <div class="btn-acoes-card">
+                <div class="btn-acoes-card-row">
+                    <button class="btn-subir" style="flex:1;">▲</button>
+                    <button class="btn-descer" style="flex:1;">▼</button>
+                </div>
+                <button class="btn-editar">✏️ Edit Parameters</button>
+            </div>
+        </div>
+    `;
 
-        card.querySelector('.btn-subir').addEventListener('click', () => {
-            const ant = card.previousElementSibling;
-            if (ant) { container.insertBefore(card, ant); reordenarArrayEGuardar(); }
-        });
+    card.querySelector('.btn-editar').addEventListener('click', () => abrirModalEdicaoCompleta(item));
+    card.querySelector('.btn-deletar').addEventListener('click', () => {
+        if (confirm(`Excluir item "${item.nome}"?`)) {
+            listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
+            card.remove();
+            localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+            carregarCardsSalvos();
+        }
+    });
 
-        card.querySelector('.btn-descer').addEventListener('click', () => {
-            const prox = card.nextElementSibling;
-            if (prox) { container.insertBefore(prox, card); reordenarArrayEGuardar(); }
-        });
+    card.querySelector('.btn-subir').addEventListener('click', () => {
+        const ant = card.previousElementSibling;
+        if (ant) { container.insertBefore(card, ant); reordenarArrayEGuardar(); }
+    });
 
-        atualizarEstiloValorDoCard(card, item);
-        gerarEstrelasDemanda(card, item.demanda);
-        return card;
-    }
+    card.querySelector('.btn-descer').addEventListener('click', () => {
+        const prox = card.nextElementSibling;
+        if (prox) { container.insertBefore(prox, card); reordenarArrayEGuardar(); }
+    });
+
+    atualizarEstiloValorDoCard(card, item);
+    gerarEstrelasDemanda(card, item.demanda);
+    return card;
+}
+
 
     function filtrarRaridade(raridadeAlvo) {
         raridadeAtual = raridadeAlvo;
