@@ -2020,4 +2020,63 @@
             if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
             if (subcategoriaAtual === 'unicos' && item.tipo !== 'unique') return false;
             if (subcategoriaAtual === 'bundles' && item.tipo !== 'bundles') return false;
-            if (subcategoriaAtual === 'high' &
+            if (subcategoriaAtual === 'high' &&
+                valorNum < 90) return false;
+            if (subcategoriaAtual === 'mid' && (valorNum < 30 || valorNum >= 90)) return false;
+            if (subcategoriaAtual === 'low' && (valorNum < 1 || valorNum >= 30)) return false;
+
+            return true;
+        });
+
+        document.getElementById('dash-qtd').innerText = itensFiltrados.length;
+        const totalValorCalculado = itensFiltrados.reduce((acc, obj) => {
+            const v = parseFloat((obj.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
+            return acc + v;
+        }, 0);
+        document.getElementById('dash-valor').innerText = totalValorCalculado;
+
+        container.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+
+        itensFiltrados.forEach(item => {
+            const card = renderizarCardHTML(item); 
+            if (card) fragment.appendChild(card);
+        });
+
+        container.appendChild(fragment);
+        atualizarNumbersVisuais();
+    }
+
+    function reordenarArrayEGuardar() {
+        let listaLimpa = listaDeMarretas.filter(item => (item.raridade || 'legendary') !== raridadeAtual);
+        let itensReordenadosDaAba = [];
+
+        document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML) => {
+            const id = parseInt(cardHTML.getAttribute('data-id'));
+            const correspondente = listaDeMarretas.find(m => m.id === id);
+            if (correspondente) itensReordenadosDaAba.push(correspondente);
+        });
+        
+        listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
+        localStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        atualizarNumbersVisuais();
+    }
+
+    function atualizarNumbersVisuais() {
+        document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML, index) => {
+            const caixaTextoPosicao = cardHTML.querySelector('.txt-posicao-automatica');
+            if (caixaTextoPosicao) caixaTextoPosicao.innerText = `#${index + 1}`;
+        });
+    }
+
+    function exportarLista() {
+        navigator.clipboard.writeText(JSON.stringify(listaDeMarretas, null, 2)).then(() => {
+            alert("Backup copiado!");
+        });
+    }
+
+    window.onload = inicializarBancoDados;
+</script>
+</body>
+</html>
+
