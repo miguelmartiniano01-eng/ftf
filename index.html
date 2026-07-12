@@ -2072,9 +2072,6 @@
     function exportarLista() {
         navigator.clipboard.writeText(JSON.stringify(listaDeMarretas, null, 2)).then(() => {
             alert("Backup copiado!");
-        });
-    }
-
                 }).catch(err => {
             alert("Erro ao copiar backup: " + err);
         });
