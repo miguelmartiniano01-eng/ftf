@@ -2075,8 +2075,47 @@
         });
     }
 
-    window.onload = inicializarBancoDados;
+                }).catch(err => {
+            alert("Erro ao copiar backup: " + err);
+        });
+    }
+
+    function salvarNaGaleria() {
+        const jaEstavaEmPrint = document.body.classList.contains('hide-mode');
+        if (!jaEstavaEmPrint) {
+            document.body.classList.add('hide-mode');
+            carregarCardsSalvos();
+        }
+
+        setTimeout(() => {
+            const areaCaptura = document.getElementById('capture-area');
+            html2canvas(areaCaptura, {
+                backgroundColor: "#0f1117",
+                useCORS: true, 
+                scale: 1.2, 
+                windowWidth: 1400
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `FTF-Values-${raridadeAtual}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                if (!jaEstavaEmPrint) {
+                    document.body.classList.remove('hide-mode');
+                    carregarCardsSalvos();
+                }
+            }).catch(err => {
+                if (!jaEstavaEmPrint) {
+                    document.body.classList.remove('hide-mode');
+                    carregarCardsSalvos();
+                }
+            });
+        }, 400);
+    }
+
+    window.onload = function() {
+        inicializarBancoDados();
+    };
 </script>
 </body>
 </html>
-
