@@ -2306,7 +2306,8 @@
         function renderizarCardBundle(item) {
 
     const card = document.createElement("div");
-    card.className = "ftf-bundle-card";
+    card.className = "ftf-bundle-card
+        ftf-bundle-card";
 
     card.dataset.id = item.id;
 
@@ -2412,16 +2413,13 @@
 
             </div>
 
-            <span class="mini-item-name">
+            <span <div class="mini-nome">
+    ${itemBundle.nome}
+</div>
 
-                ${itemBundle.nome}
-
-            </span>
-
-            <span class="mini-item-value">
-
-                ${itemBundle.valor || 0}
-
+<div class="mini-valor">
+    ${itemBundle.valor || 0}
+</div>
             </span>
 
         `;
