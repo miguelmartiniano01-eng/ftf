@@ -1980,63 +1980,329 @@
         };
     }
 
-    function abrirModalEdicaoBundle(item) {
-        const antigo = document.getElementById('modal-edicao-bundle-ftf');
-        if (antigo) antigo.remove();
+        function abrirModalEdicaoBundle(item) {
 
-        const modal = document.createElement('div');
-        modal.id = 'modal-edicao-bundle-ftf';
-        modal.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999;";
+    // Remove modal antiga se existir
+    const antiga = document.getElementById("modal-edicao-bundle");
+    if (antiga) antiga.remove();
 
-        const itensAtuais = Array.isArray(item.bundleItens) ? item.bundleItens : [];
-        const linhasHTML = (itensAtuais.length > 0 ? itensAtuais : [{nome:'', valor:'', imgSrc:''}]).map(it => `
-            <div class="linha-marreta-bundle">
-                <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
-                    <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="${it.imgSrc || 'https://placehold.co/60x60/0f1117/64748b?text=%3F'}" alt="preview">
-                </div>
-                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" value="${it.nome || ''}" oninput="recalcularTotalBundleEdicao(); atualizarPreviewImagemBundle(this)">
-                <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" value="${it.valor || ''}" oninput="recalcularTotalBundleEdicao()">
-                <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaMarretaBundleEdicao(this)">✕</button>
+    const overlay = document.createElement("div");
+    overlay.id = "modal-edicao-bundle";
+    overlay.className = "modal-overlay";
+
+    overlay.innerHTML = `
+        <div class="modal">
+
+            <h2>Editar Bundle</h2>
+
+            <div class="campo">
+                <label>Nome</label>
+                <input
+                    type="text"
+                    id="bundle-nome"
+                    value="${item.nome || ""}">
             </div>
-        `).join('');
 
-        modal.innerHTML = `
-            <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 460px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
-                <h3 style="color:#ffb830; margin-bottom:12px; font-size:14px; font-weight:700; text-transform:uppercase;">✏️ Editar Bundle</h3>
+            <div class="campo">
+                <label>Descrição</label>
+                <textarea
+                    id="bundle-descricao"
+                    rows="3">${item.descricao || ""}</textarea>
+            </div>
 
-                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">NOME DO BUNDLE:</label>
-                <input type="text" id="edit-bundle-nome" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.nome || ''}">
+            <div class="campo">
+                <label>Categoria</label>
+                <input
+                    type="text"
+                    id="bundle-categoria"
+                    value="${item.categoria || ""}">
+            </div>
 
-                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">RARIDADE DO BUNDLE:</label>
-                <select id="edit-bundle-raridade" class="input-style" style="width:100%; margin-bottom:8px;">
-                    <option value="legendary" ${item.raridade === 'legendary'?'selected':''}>👑 Legendary</option>
-                    <option value="epics" ${item.raridade === 'epics'?'selected':''}>✨ Epic</option>
-                    <option value="rares" ${item.raridade === 'rares'?'selected':''}>💎 Rare</option>
-                    <option value="commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
-                </select>
+            <div class="campo">
+                <label>Imagem</label>
+                <input
+                    type="text"
+                    id="bundle-imagem"
+                    value="${item.imagem || ""}">
+            </div>
 
-                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">TOTAL DE ESTRELAS (DEMANDA):</label>
-                <select id="edit-bundle-demanda" class="input-style" style="width:100%; margin-bottom:8px;">
-                    ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0].map(v => `<option value="${v}" ${parseFloat(item.demanda) === v ? 'selected':''}>${v}</option>`).join('')}
-                </select>
+            <div
+                id="bundle-preview"
+                style="
+                    margin:12px 0;
+                    text-align:center;
+                ">
+            </div>
 
-                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">MARRETAS DO BUNDLE:</label>
-                <div id="edit-bundle-marretas-wrapper" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;">
-                    ${linhasHTML}
-                </div>
-                <button type="button" class="btn-add-linha-marreta" onclick="adicionarLinhaMarretaBundleEdicao()">+ Adicionar Marreta</button>
+            <div class="campo">
+                <label>Preço</label>
+                <input
+                    type="number"
+                    id="bundle-preco"
+                    value="${item.preco || 0}">
+            </div>
 
-                <div class="bundle-total-preview">
-                    <span>Valor Total do Bundle</span>
-                    <span id="edit-bundle-total-preview-valor">${item.valor || 0}</span>
-                </div>
+            <hr>
 
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <button id="modal-bundle-cancelar" style="flex:1; padding:8px; background:#222733; color:#fff; border:1px solid #2d3445; border-radius:4px; font-weight:600; cursor:pointer;">Cancel</button>
-                    <button id="modal-bundle-s
-)}
-                    
-                
+            <h3>Marretas do Bundle</h3>
+
+            <div id="lista-marretas-bundle"></div>
+
+            <button
+                id="btn-add-marreta-bundle"
+                class="btn btn-secundario">
+
+                + Adicionar Marreta
+
+            </button>
+
+            <hr>
+
+            <div class="modal-actions">
+
+                <button
+                    id="btn-cancelar-bundle">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    id="btn-salvar-bundle">
+
+                    Salvar
+
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // ========
+    // PARTE 2
+    // continua aqui...
+                const preview = document.getElementById("bundle-preview");
+    const inputImagem = document.getElementById("bundle-imagem");
+    const listaMarretas = document.getElementById("lista-marretas-bundle");
+
+    function atualizarPreview() {
+
+        preview.innerHTML = "";
+
+        if (!inputImagem.value.trim()) return;
+
+        const img = document.createElement("img");
+
+        img.src = inputImagem.value.trim();
+        img.style.maxWidth = "180px";
+        img.style.maxHeight = "180px";
+        img.style.borderRadius = "8px";
+
+        img.onerror = () => {
+            preview.innerHTML = "<p>Imagem inválida.</p>";
+        };
+
+        preview.appendChild(img);
+
+    }
+
+    atualizarPreview();
+
+    inputImagem.addEventListener("input", atualizarPreview);
+
+    let itensBundle = [];
+
+    if (Array.isArray(item.marretas)) {
+
+        itensBundle = JSON.parse(JSON.stringify(item.marretas));
+
+    }
+
+    function renderizarListaBundle() {
+
+        listaMarretas.innerHTML = "";
+
+        itensBundle.forEach((marreta, indice) => {
+
+            const linha = document.createElement("div");
+
+            linha.className = "linha-bundle";
+
+            linha.style.display = "flex";
+            linha.style.gap = "10px";
+            linha.style.marginBottom = "8px";
+
+            linha.innerHTML = `
+                <input
+                    class="bundle-item-nome"
+                    type="text"
+                    value="${marreta.nome || ""}"
+                    placeholder="Nome">
+
+                <input
+                    class="bundle-item-preco"
+                    type="number"
+                    value="${marreta.preco || 0}"
+                    placeholder="Preço">
+
+                <button
+                    class="bundle-remover"
+                    data-index="${indice}">
+
+                    ✖
+
+                </button>
+            `;
+
+            listaMarretas.appendChild(linha);
+
+        });
+
+        listaMarretas
+            .querySelectorAll(".bundle-remover")
+            .forEach(botao => {
+
+                botao.onclick = () => {
+
+                    const indice = Number(botao.dataset.index);
+
+                    itensBundle.splice(indice, 1);
+
+                    renderizarListaBundle();
+
+                };
+
+            });
+
+    }
+
+    renderizarListaBundle();
+
+    document
+        .getElementById("btn-add-marreta-bundle")
+        .onclick = () => {
+
+            itensBundle.push({
+
+                nome: "",
+                preco: 0
+
+            });
+
+            renderizarListaBundle();
+
+        };
+
+    // ==========
+    // PARTE 3
+    // continua aqui...
+                function sincronizarItensDaTela() {
+
+        const linhas = listaMarretas.querySelectorAll(".linha-bundle");
+
+        linhas.forEach((linha, indice) => {
+
+            const nome = linha.querySelector(".bundle-item-nome").value.trim();
+
+            const preco = parseFloat(
+                linha.querySelector(".bundle-item-preco").value
+            ) || 0;
+
+            itensBundle[indice].nome = nome;
+            itensBundle[indice].preco = preco;
+
+        });
+
+    }
+
+    listaMarretas.addEventListener("input", () => {
+
+        sincronizarItensDaTela();
+
+        const total = itensBundle.reduce((soma, atual) => {
+
+            return soma + (Number(atual.preco) || 0);
+
+        }, 0);
+
+        document.getElementById("bundle-preco").value = total.toFixed(2);
+
+    });
+
+    document.getElementById("btn-cancelar-bundle").onclick = () => {
+
+        overlay.remove();
+
+    };
+
+    document.getElementById("btn-salvar-bundle").onclick = () => {
+
+        sincronizarItensDaTela();
+
+        item.nome =
+            document.getElementById("bundle-nome").value.trim();
+
+        item.descricao =
+            document.getElementById("bundle-descricao").value.trim();
+
+        item.categoria =
+            document.getElementById("bundle-categoria").value.trim();
+
+        item.imagem =
+            document.getElementById("bundle-imagem").value.trim();
+
+        item.preco =
+            parseFloat(
+                document.getElementById("bundle-preco").value
+            ) || 0;
+
+        item.marretas = itensBundle;
+
+        if (typeof safeStorage !== "undefined") {
+
+            safeStorage.setItem(
+                "listaDeMarretas",
+                JSON.stringify(listaDeMarretas)
+            );
+
+        } else {
+
+            localStorage.setItem(
+                "listaDeMarretas",
+                JSON.stringify(listaDeMarretas)
+            );
+
+        }
+
+        if (typeof carregarCardsSalvos === "function") {
+
+            carregarCardsSalvos();
+
+        }
+
+        if (typeof renderizarCatalogo === "function") {
+
+            renderizarCatalogo();
+
+        }
+
+        if (typeof atualizarCatalogo === "function") {
+
+            atualizarCatalogo();
+
+        }
+
+        overlay.remove();
+
+        alert("✅ Bundle atualizado com sucesso!");
+
+    };
+
+        }
+
 function renderizarCardHTML(item) {
     const container = document.getElementById('container-cards');
     const card = document.createElement("div");
