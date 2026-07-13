@@ -2760,9 +2760,26 @@ function renderizarCardHTML(item) {
         const fragment = document.createDocumentFragment();
 
         itensFiltrados.forEach(item => {
-            const card = renderizarCardHTML(item); 
-            if (card) fragment.appendChild(card);
-        });
+
+    let card;
+
+    if (item.tipo === "bundles") {
+
+        card = renderizarCardBundle(item);
+
+    } else {
+
+        card = renderizarCardHTML(item);
+
+    }
+
+    if (card) {
+
+        fragment.appendChild(card);
+
+    }
+
+});
 
         container.appendChild(fragment);
         atualizarNumbersVisuais();
