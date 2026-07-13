@@ -2303,7 +2303,169 @@
 
         }
 
+        function renderizarCardBundle(item) {
+
+    const card = document.createElement("div");
+    card.className = "ftf-bundle-card";
+
+    card.dataset.id = item.id;
+
+    const raridade = (item.raridade || "Legendary").toUpperCase();
+
+    const cor =
+        CORES_RARIDADE[(item.raridade || "legendary").toLowerCase()]
+        || "#b69d5d";
+
+    const itens = item.bundleItens || [];
+
+    const total =
+        Number(item.valor || item.preco || 0);
+
+    card.style.border = `1px solid ${cor}`;
+
+    card.innerHTML = `
+
+        <button class="btn-deletar">✕</button>
+
+        <div class="ftf-bundle-header">
+
+            <h3>${item.nome}</h3>
+
+            <span
+                class="ftf-item-rarity"
+                style="color:${cor};">
+
+                ${raridade}
+
+            </span>
+
+        </div>
+
+        <div class="ftf-bundle-values">
+
+            <div>
+
+                <span class="ftf-value-label">
+                    TOTAL VALUE
+                </span>
+
+                <div class="ftf-bundle-total">
+
+                    ${total}
+
+                </div>
+
+            </div>
+
+            <div>
+
+                <span class="ftf-value-label">
+
+                    DEMAND
+
+                </span>
+
+                <span class="txt-demanda-estrelas"></span>
+
+            </div>
+
+        </div>
+
+        <hr class="ftf-divider">
+
+        <span class="ftf-bundle-includes">
+
+            Includes:
+
+        </span>
+
+        <div class="ftf-bundle-includes-grid"></div>
+
+        <div class="btn-acoes-card">
+
+            <button class="btn-editar">
+
+                ✏️ Edit Bundle
+
+            </button>
+
+        </div>
+
+    `;
+
+    const grid =
+        card.querySelector(".ftf-bundle-includes-grid");
+
+    itens.forEach(itemBundle => {
+
+        const mini = document.createElement("div");
+
+        mini.className = "ftf-bundle-mini-item";
+
+        mini.innerHTML = `
+
+            <div class="ftf-bundle-mini-img-wrapper">
+
+                <img
+                    src="${itemBundle.imgSrc || buscarImagemPorNome(itemBundle.nome) || ""}"
+                    loading="lazy">
+
+            </div>
+
+            <span class="mini-item-name">
+
+                ${itemBundle.nome}
+
+            </span>
+
+            <span class="mini-item-value">
+
+                ${itemBundle.valor || 0}
+
+            </span>
+
+        `;
+
+        grid.appendChild(mini);
+
+    });
+
+    gerarEstrelasDemanda(card, item.demanda);
+
+    card
+        .querySelector(".btn-editar")
+        .onclick = () => abrirModalEdicaoBundle(item);
+
+    card
+        .querySelector(".btn-deletar")
+        .onclick = () => {
+
+            if (!confirm(`Excluir "${item.nome}"?`))
+                return;
+
+            listaDeMarretas =
+                listaDeMarretas.filter(i => i.id !== item.id);
+
+            safeStorage.setItem(
+                "ftf_custom_v5",
+                JSON.stringify(listaDeMarretas)
+            );
+
+            carregarCardsSalvos();
+
+        };
+
+    return card;
+
+        }
+
 function renderizarCardHTML(item) {
+
+    // Não renderiza bundles aqui
+    if (item.bundleItens || item.tipo === "bundle") {
+        return null;
+    }
+
     const container = document.getElementById('container-cards');
     const card = document.createElement("div");
     card.className = "ftf-item-card";
@@ -2312,76 +2474,146 @@ function renderizarCardHTML(item) {
     const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
     card.setAttribute('data-id', item.id);
 
-    // Aplica a borda colorida baseada na raridade diretamente no card principal
     card.style.border = `1px solid ${corRaridade}`;
 
-    const caminhoImagem = item.imgSrc || 'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
+    const caminhoImagem =
+        item.imgSrc ||
+        'https://placehold.co/150x110/0f1117/ffffff?text=No+Image';
+
     const estabilidadeTexto = item.templates || 'Stable';
-    const corEstabilidade = CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
+
+    const corEstabilidade =
+        CORES_ESTABILIDADE[estabilidadeTexto.toLowerCase().trim()] || '#94a3b8';
 
     card.innerHTML = `
         <button class="btn-deletar">✕</button>
-        <div class="ftf-card-img-wrapper" style="border-color: ${corRaridade}80;">
+
+        <div class="ftf-card-img-wrapper" style="border-color:${corRaridade}80;">
             <span class="txt-posicao-automatica">#--</span>
-            <img src="${caminhoImagem}" loading="lazy" alt="${item.nome}" onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
+
+            <img
+                src="${caminhoImagem}"
+                loading="lazy"
+                alt="${item.nome}"
+                onerror="this.src='https://placehold.co/150x110/0f1117/ffffff?text=No+Image'">
         </div>
+
         <div class="ftf-card-info">
+
             <h3 class="ftf-item-name">${item.nome}</h3>
-            <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
-            
+
+            <span class="ftf-item-rarity" style="color:${corRaridade};">
+                ${item.raridade}
+            </span>
+
             <div class="ftf-value-row">
+
                 <div>
+
                     <div class="ftf-value-label">Value</div>
+
                     <span class="box-valor-dinamico"></span>
+
                 </div>
-                <span class="txt-estabilidade" style="color: ${corEstabilidade};">
+
+                <span class="txt-estabilidade"
+                      style="color:${corEstabilidade};">
+
                     ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
+
                     <span>${estabilidadeTexto}</span>
+
                 </span>
+
             </div>
 
             <div class="box-badge-status"></div>
 
             <div class="ftf-demand-row">
-                <span class="ftf-value-label">Demand</span>
+
+                <span class="ftf-value-label">
+                    Demand
+                </span>
+
                 <span class="txt-demanda-estrelas"></span>
+
             </div>
 
             <div class="btn-acoes-card">
+
                 <div class="btn-acoes-card-row">
+
                     <button class="btn-subir" style="flex:1;">▲</button>
+
                     <button class="btn-descer" style="flex:1;">▼</button>
+
                 </div>
-                <button class="btn-editar">✏️ Edit Parameters</button>
+
+                <button class="btn-editar">
+                    ✏️ Edit Parameters
+                </button>
+
             </div>
+
         </div>
     `;
 
-    card.querySelector('.btn-editar').addEventListener('click', () => abrirModalEdicaoCompleta(item));
-    card.querySelector('.btn-deletar').addEventListener('click', () => {
-        if (confirm(`Excluir item "${item.nome}"?`)) {
-            listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
-            card.remove();
-            safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+    card.querySelector(".btn-editar")
+        .onclick = () => abrirModalEdicaoCompleta(item);
+
+    card.querySelector(".btn-deletar")
+        .onclick = () => {
+
+            if (!confirm(`Excluir "${item.nome}"?`))
+                return;
+
+            listaDeMarretas =
+                listaDeMarretas.filter(i => i.id !== item.id);
+
+            safeStorage.setItem(
+                "ftf_custom_v5",
+                JSON.stringify(listaDeMarretas)
+            );
+
             carregarCardsSalvos();
+
+        };
+
+    card.querySelector(".btn-subir").onclick = () => {
+
+        const anterior = card.previousElementSibling;
+
+        if (anterior) {
+
+            container.insertBefore(card, anterior);
+
+            reordenarArrayEGuardar();
+
         }
-    });
 
-    card.querySelector('.btn-subir').addEventListener('click', () => {
-        const ant = card.previousElementSibling;
-        if (ant) { container.insertBefore(card, ant); reordenarArrayEGuardar(); }
-    });
+    };
 
-    card.querySelector('.btn-descer').addEventListener('click', () => {
-        const prox = card.nextElementSibling;
-        if (prox) { container.insertBefore(prox, card); reordenarArrayEGuardar(); }
-    });
+    card.querySelector(".btn-descer").onclick = () => {
+
+        const proximo = card.nextElementSibling;
+
+        if (proximo) {
+
+            container.insertBefore(proximo, card);
+
+            reordenarArrayEGuardar();
+
+        }
+
+    };
 
     atualizarEstiloValorDoCard(card, item);
-    gerarEstrelasDemanda(card, item.demanda);
-    return card;
-}
 
+    gerarEstrelasDemanda(card, item.demanda);
+
+    return card;
+
+}
 
     function filtrarRaridade(raridadeAlvo) {
         raridadeAtual = raridadeAlvo;
