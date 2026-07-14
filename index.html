@@ -1154,7 +1154,7 @@
         <button class="btn-aba active" id="aba-legendary" onclick="filtrarRaridade('legendary')">Legendary Items</button>
         <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')">Epic Items</button>
         <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')">Rare Items</button>
-        <button class="btn-aba" id="aba-common" onclick="filtrarRaridade('common')">Common Items</button>
+        <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')">Common Items</button>
     </div>
 
     <div class="subtabs-container">
@@ -2370,6 +2370,12 @@ function renderizarCardHTML(item) {
         const btnTodos = document.getElementById('sub-todos');
         if (btnTodos) btnTodos.classList.add('active');
 
+        // Já deixa o formulário de criação (Item e Bundle) com a raridade da aba atual
+        const selectRaridadeItem = document.getElementById('raridadeItem');
+        if (selectRaridadeItem) selectRaridadeItem.value = raridadeAlvo;
+        const selectRaridadeBundle = document.getElementById('bundleRaridade');
+        if (selectRaridadeBundle) selectRaridadeBundle.value = raridadeAlvo;
+
         let datasSalvas = JSON.parse(safeStorage.getItem('ftf_datas_att')) || {};
         document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
 
@@ -2490,6 +2496,9 @@ function renderizarCardHTML(item) {
             const bateEvento = eventoAtual === 'all' || item.evento === eventoAtual;
             
             if (!bateRaridade || !bateNome || !bateEvento) return false;
+
+            // Bundles só aparecem quando a subcategoria "Bundles" está selecionada
+            if (item.tipo === 'bundles' && subcategoriaAtual !== 'bundles') return false;
 
             const valorNum = parseFloat((item.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
             if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
