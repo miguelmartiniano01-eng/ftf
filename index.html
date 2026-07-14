@@ -943,7 +943,7 @@
             <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Exportar Imagem</button>
         </div>
         <div>
-            <button id="btn-limpar-tudo" class="ui-btn" style="border-color: #ef4444; color: #ef4444;" onclick="resetarParaPadraoCodigo()">Restaurar Valores Padrão</button>
+            <button id="btn-limpar-tudo" class="ui-btn" style="border-color: #45aaf2; color: #45aaf2;" onclick="resetarParaPadraoCodigo()">Limpar Filtros e Config</button>
         </div>
     </div>
 
@@ -1471,8 +1471,29 @@
     let raridadeAtual = 'legendary'; 
     let subcategoriaAtual = 'todos';
     let eventoAtual = 'all';
+
+    // Limites de High/Mid/Low Tier variam por raridade
+    const LIMITES_TIER_POR_RARIDADE = {
+        legendary: { high: 90, mid: 30 },
+        epics: { high: 20, mid: 9 },
+        rares: { high: 12, mid: 4 },
+        commons: { high: 12, mid: 4 }
+    };
+    let LIMITES_TIER_ATUAL = LIMITES_TIER_POR_RARIDADE.legendary;
+
+    function atualizarLimitesTier(raridadeAlvo) {
+        LIMITES_TIER_ATUAL = LIMITES_TIER_POR_RARIDADE[(raridadeAlvo || 'legendary').toLowerCase()] || LIMITES_TIER_POR_RARIDADE.legendary;
+
+        const btnHigh = document.getElementById('sub-high');
+        const btnMid = document.getElementById('sub-mid');
+        const btnLow = document.getElementById('sub-low');
+        if (btnHigh) btnHigh.innerText = `High Tier (+${LIMITES_TIER_ATUAL.high})`;
+        if (btnMid) btnMid.innerText = `Mid Tier (${LIMITES_TIER_ATUAL.high}-${LIMITES_TIER_ATUAL.mid})`;
+        if (btnLow) btnLow.innerText = `Low Tier (${LIMITES_TIER_ATUAL.mid}-1)`;
+    }
     
     function inicializarBancoDados() {
+        atualizarLimitesTier(raridadeAtual);
         let dadosLocais = null;
         try {
             dadosLocais = JSON.parse(safeStorage.getItem('ftf_custom_v5'));
@@ -1545,12 +1566,65 @@
         return 'Geral';
     }
 
+    function limparConfiguracoesAntigasDoStorage() {
+        // Remove qualquer chave "ftf_*" que sobrou de versões antigas do código,
+        // mantendo só as chaves que a versão atual realmente usa.
+        const chavesAtuais = ['ftf_custom_v5', 'ftf_datas_att'];
+        const chavesParaRemover = [];
+
+        try {
+            for (let i = 0; i < window.localStorage.length; i++) {
+                const chave = window.localStorage.key(i);
+                if (chave && chave.startsWith('ftf_') && !chavesAtuais.includes(chave)) {
+                    chavesParaRemover.push(chave);
+                }
+            }
+            chavesParaRemover.forEach(chave => window.localStorage.removeItem(chave));
+        } catch (e) {
+            // Se o localStorage não estiver disponível, não há nada pra limpar
+        }
+
+        return chavesParaRemover;
+    }
+
     function resetarParaPadraoCodigo() {
-        if (confirm("Deseja realmente restaurar todos os valores oficiais padrão do FTF Values?")) {
-            safeStorage.removeItem('ftf_custom_v5');
-            safeStorage.removeItem('ftf_datas_att');
-            forçarInjecaoListaPadrao();
-            inicializarBancoDados();
+        if (confirm("Deseja limpar filtros, configurações de visualização e o histórico de versões antigas salvas no navegador? Seus itens e valores atuais NÃO serão apagados.")) {
+            // Limpa busca
+            const barraPesquisa = document.getElementById('barraPesquisa');
+            if (barraPesquisa) barraPesquisa.value = '';
+
+            // Volta ordenação pro padrão
+            const selectOrdenacao = document.getElementById('ordenacaoLista');
+            if (selectOrdenacao) selectOrdenacao.value = 'padrao';
+
+            // Reseta filtro de evento pra "All Events"
+            eventoAtual = 'all';
+            document.querySelectorAll('.event-btn').forEach(b => b.classList.remove('active'));
+            const btnAllEvents = document.querySelector('.event-btn[data-event="all"]');
+            if (btnAllEvents) btnAllEvents.classList.add('active');
+
+            // Reseta subcategoria pra "All"
+            subcategoriaAtual = 'todos';
+            document.querySelectorAll('.btn-subtab').forEach(b => b.classList.remove('active'));
+            const btnTodos = document.getElementById('sub-todos');
+            if (btnTodos) btnTodos.classList.add('active');
+
+            // Sai do Modo Print e do modo "Ocultar Controles" se estiverem ativos
+            document.body.classList.remove('hide-mode');
+            document.body.classList.remove('ocultar-controles-cards');
+            const btnPrint = document.getElementById('togglePrintBtn');
+            if (btnPrint) btnPrint.innerText = 'Modo Print';
+            const btnControles = document.getElementById('toggleControlesBtn');
+            if (btnControles) btnControles.innerText = 'Ocultar Controles';
+
+            // Limpa chaves antigas de versões passadas (não mexe nos itens atuais)
+            const chavesRemovidas = limparConfiguracoesAntigasDoStorage();
+            if (chavesRemovidas.length > 0) {
+                console.log('[FTF Values] Chaves antigas removidas do localStorage:', chavesRemovidas);
+            }
+
+            // Volta pra aba Legendary (sem apagar nada do banco de dados)
+            filtrarRaridade('legendary');
         }
     }
 
@@ -1723,6 +1797,7 @@
 
         raridadeAtual = raridade;
         definirAbaAtivaVisual(raridade);
+        atualizarLimitesTier(raridade);
         filtrarSubcategoria('bundles');
 
         limparFormularioBundle();
@@ -2364,6 +2439,7 @@ function renderizarCardHTML(item) {
     function filtrarRaridade(raridadeAlvo) {
         raridadeAtual = raridadeAlvo;
         definirAbaAtivaVisual(raridadeAlvo);
+        atualizarLimitesTier(raridadeAlvo);
 
         subcategoriaAtual = 'todos';
         document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
@@ -2504,9 +2580,9 @@ function renderizarCardHTML(item) {
             if (subcategoriaAtual === 'recentes' && item.recente !== 'sim') return false;
             if (subcategoriaAtual === 'unicos' && item.tipo !== 'unique') return false;
             if (subcategoriaAtual === 'bundles' && item.tipo !== 'bundles') return false;
-            if (subcategoriaAtual === 'high' && valorNum < 90) return false;
-            if (subcategoriaAtual === 'mid' && (valorNum < 30 || valorNum >= 90)) return false;
-            if (subcategoriaAtual === 'low' && (valorNum < 1 || valorNum >= 30)) return false;
+            if (subcategoriaAtual === 'high' && valorNum < LIMITES_TIER_ATUAL.high) return false;
+            if (subcategoriaAtual === 'mid' && (valorNum < LIMITES_TIER_ATUAL.mid || valorNum >= LIMITES_TIER_ATUAL.high)) return false;
+            if (subcategoriaAtual === 'low' && (valorNum < 1 || valorNum >= LIMITES_TIER_ATUAL.mid)) return false;
 
             return true;
         });
