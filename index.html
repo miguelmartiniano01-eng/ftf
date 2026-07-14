@@ -2016,6 +2016,21 @@
                         <option value="commons" ${item.raridade === 'commons'?'selected':''}>🍃 Common</option>
                     </select>
 
+                    <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">EVENTO:</label>
+                    <select id="edit-bundle-evento" class="input-style" style="width:100%; margin-bottom:8px;">
+                        <option value="Geral" ${item.evento === 'Geral' || !item.evento ? 'selected':''}>🌍 Geral</option>
+                        <option value="Lunar New Year" ${item.evento === 'Lunar New Year' ? 'selected':''}>🏮 Lunar New Year</option>
+                        <option value="Valentines" ${item.evento === 'Valentines' ? 'selected':''}>💘 Valentines</option>
+                        <option value="Saint Patrick" ${item.evento === 'Saint Patrick' ? 'selected':''}>🍀 Saint Patrick</option>
+                        <option value="Spring" ${item.evento === 'Spring' ? 'selected':''}>🌸 Spring</option>
+                        <option value="Easter" ${item.evento === 'Easter' ? 'selected':''}>🐰 Easter</option>
+                        <option value="Anniversary" ${item.evento === 'Anniversary' ? 'selected':''}>🎉 Anniversary</option>
+                        <option value="Summer" ${item.evento === 'Summer' ? 'selected':''}>☀️ Summer</option>
+                        <option value="Fall" ${item.evento === 'Fall' ? 'selected':''}>🍁 Fall</option>
+                        <option value="Halloween" ${item.evento === 'Halloween' ? 'selected':''}>🎃 Halloween</option>
+                        <option value="Winter" ${item.evento === 'Winter' ? 'selected':''}>❄️ Winter</option>
+                    </select>
+
                     <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">TOTAL DE ESTRELAS (DEMANDA):</label>
                     <select id="edit-bundle-demanda" class="input-style" style="width:100%; margin-bottom:8px;">
                         ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0].map(v => `<option value="${v}" ${parseFloat(item.demanda) === v ? 'selected':''}>${v}</option>`).join('')}
@@ -2060,6 +2075,7 @@
 
                 item.nome = document.getElementById('edit-bundle-nome').value.trim() || item.nome;
                 item.raridade = document.getElementById('edit-bundle-raridade').value;
+                item.evento = document.getElementById('edit-bundle-evento').value || 'Geral';
                 item.demanda = document.getElementById('edit-bundle-demanda').value;
                 item.bundleItens = novosItens;
                 item.valor = recalcularTotalBundleEdicao().toString();
