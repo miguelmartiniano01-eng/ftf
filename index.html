@@ -2349,6 +2349,11 @@ function renderizarCardHTML(item) {
         raridadeAtual = raridadeAlvo;
         definirAbaAtivaVisual(raridadeAlvo);
 
+        subcategoriaAtual = 'todos';
+        document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
+        const btnTodos = document.getElementById('sub-todos');
+        if (btnTodos) btnTodos.classList.add('active');
+
         let datasSalvas = JSON.parse(safeStorage.getItem('ftf_datas_att')) || {};
         document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
 
