@@ -663,6 +663,24 @@
             padding: 1px 2px;
         }
 
+        .ftf-card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 4px;
+            margin-bottom: 2px;
+            overflow: hidden;
+        }
+
+        .ftf-card-header-row .ftf-info-nome-raridade {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .ftf-card-header-row .ftf-item-name {
+            white-space: normal;
+        }
+
         .ftf-item-name {
             margin: 0;
             font-size: 11.5px;
@@ -709,17 +727,30 @@
             gap: 2px;
         }
 
+        /* Selos de estabilidade + status, alinhados à direita do bloco de Valor
+           (dentro da área de informações, não flutuando sobre a imagem) */
+        .ftf-badges-direita {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 3px;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
         .txt-estabilidade {
             display: flex;
             align-items: center;
             gap: 3px;
-            padding: 2px 4px;
+            padding: 2px 5px;
             border-radius: 3px;
             font-size: 8px;
             font-weight: 700;
             background: #161a24;
             border: 1px solid #222938;
-            height: 16px;
+            white-space: normal;
+            text-align: right;
+            max-width: 100%;
         }
 
         .txt-estabilidade svg {
@@ -731,9 +762,8 @@
         /* Status & Demand Rows */
         .box-badge-status {
             display: flex;
-            justify-content: flex-start;
-            margin-bottom: 4px;
-            min-height: 12px;
+            justify-content: flex-end;
+            max-width: 100%;
         }
 
         .ftf-badge {
@@ -745,6 +775,9 @@
             display: flex;
             align-items: center;
             gap: 2px;
+            white-space: normal;
+            text-align: right;
+            max-width: 100%;
         }
 
         .ftf-demand-row {
@@ -943,6 +976,7 @@
             <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Exportar Imagem</button>
         </div>
         <div>
+            <button id="btn-restaurar-backup" class="ui-btn" style="border-color: #47cc6a; color: #47cc6a;" onclick="restaurarDoBackupManual()">♻️ Restaurar Backup</button>
             <button id="btn-limpar-tudo" class="ui-btn" style="border-color: #45aaf2; color: #45aaf2;" onclick="resetarParaPadraoCodigo()">Limpar Filtros e Config</button>
         </div>
     </div>
@@ -1467,6 +1501,81 @@
         };
     })();
 
+    // Salva a lista sempre guardando uma cópia de segurança da versão anterior.
+    // Isso ajuda a recuperar os dados caso o app feche/desligue no meio de uma
+    // gravação (ex: aparelho apagando de repente durante uma edição).
+    function salvarListaDeMarretas() {
+        const versaoAtualSalva = safeStorage.getItem('ftf_custom_v5');
+        if (versaoAtualSalva) {
+            safeStorage.setItem('ftf_custom_v5_backup', versaoAtualSalva);
+        }
+        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+    }
+
+    // Permite ao usuário comparar e restaurar manualmente a última cópia de
+    // segurança, caso os dados atuais tenham perdido itens (ex: aparelho
+    // desligou/fechou de forma abrupta e a gravação ficou incompleta, mas
+    // ainda assim "válida" — nesse caso a recuperação automática não entra
+    // sozinha, então esse botão dá controle manual pro usuário decidir.
+    function restaurarDoBackupManual() {
+        let dadosBackup = null;
+        try {
+            dadosBackup = JSON.parse(safeStorage.getItem('ftf_custom_v5_backup'));
+        } catch (e) {
+            dadosBackup = null;
+        }
+
+        if (!Array.isArray(dadosBackup) || dadosBackup.length === 0) {
+            alert('Não encontrei nenhuma cópia de segurança salva no navegador.');
+            return;
+        }
+
+        const totalAtual = listaDeMarretas.length;
+        const totalBackup = dadosBackup.length;
+
+        const confirmar = confirm(
+            `Itens atuais: ${totalAtual}\nItens na última cópia de segurança: ${totalBackup}\n\n` +
+            `Restaurar vai SUBSTITUIR os itens atuais pelos da cópia de segurança. ` +
+            `Isso não pode ser desfeito. Deseja continuar?`
+        );
+
+        if (!confirmar) return;
+
+        listaDeMarretas = dadosBackup.map(item => ({
+            id: item.id,
+            nome: item.nome || "Marreta",
+            valor: item.valor || '10',
+            raridade: item.raridade || 'legendary',
+            demanda: item.demanda || '5',
+            tendencia: item.tendencia || 'none',
+            status: item.status || 'none',
+            templates: item.templates || 'Stable',
+            imgSrc: item.imgSrc,
+            evento: item.evento || mapearEventoAutomatico(item.nome),
+            tipo: item.tipo || 'normal',
+            recente: item.recente || 'nao',
+            bundleItens: Array.isArray(item.bundleItens) ? item.bundleItens : undefined
+        }));
+
+        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        carregarCardsSalvos();
+        alert(`Pronto! Restaurado para ${totalBackup} itens a partir da cópia de segurança.`);
+    }
+
+    // Força salvar sempre que o app for pra segundo plano ou a página for
+    // fechada/trocada — ajuda a não perder o progresso mais recente caso o
+    // aparelho desligue logo em seguida.
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && listaDeMarretas.length > 0) {
+            safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        }
+    });
+    window.addEventListener('pagehide', () => {
+        if (listaDeMarretas.length > 0) {
+            safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        }
+    });
+
     let listaDeMarretas = [];
     let raridadeAtual = 'legendary'; 
     let subcategoriaAtual = 'todos';
@@ -1501,6 +1610,23 @@
             dadosLocais = null;
         }
 
+        // Se os dados principais vieram vazios/corrompidos (ex: o aparelho
+        // desligou no meio de uma gravação), tenta recuperar pelo backup
+        // automático antes de resetar tudo pro padrão de fábrica.
+        if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
+            let dadosBackup = null;
+            try {
+                dadosBackup = JSON.parse(safeStorage.getItem('ftf_custom_v5_backup'));
+            } catch (e) {
+                dadosBackup = null;
+            }
+
+            if (Array.isArray(dadosBackup) && dadosBackup.length > 0) {
+                dadosLocais = dadosBackup;
+                console.warn('[FTF Values] Dados principais vazios/corrompidos — recuperado a partir do backup automático.');
+            }
+        }
+
         if (!Array.isArray(dadosLocais) || dadosLocais.length === 0) {
             listaDeMarretas = [];
             forçarInjecaoListaPadrao();
@@ -1522,7 +1648,7 @@
             }));
         }
 
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        salvarListaDeMarretas();
         
         let datasSalvas = JSON.parse(safeStorage.getItem('ftf_datas_att')) || {};
         document.getElementById('input-data-att').value = datasSalvas[raridadeAtual] || "July 4th, 2026";
@@ -1546,7 +1672,7 @@
             tipo: m.tipo || 'normal',
             recente: 'nao'
         }));
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        salvarListaDeMarretas();
     }
 
     function mapearEventoAutomatico(nome) {
@@ -1569,7 +1695,7 @@
     function limparConfiguracoesAntigasDoStorage() {
         // Remove qualquer chave "ftf_*" que sobrou de versões antigas do código,
         // mantendo só as chaves que a versão atual realmente usa.
-        const chavesAtuais = ['ftf_custom_v5', 'ftf_datas_att'];
+        const chavesAtuais = ['ftf_custom_v5', 'ftf_custom_v5_backup', 'ftf_datas_att'];
         const chavesParaRemover = [];
 
         try {
@@ -1777,7 +1903,7 @@
         const valorTotal = recalcularTotalBundle();
 
         const novoObj = {
-            id: Date.now(),
+            id: Date.now() + Math.floor(Math.random() * 100000),
             nome: nome,
             valor: valorTotal.toString(),
             raridade: raridade || 'legendary',
@@ -1793,7 +1919,7 @@
         };
 
         listaDeMarretas.push(novoObj);
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        salvarListaDeMarretas();
 
         raridadeAtual = raridade;
         definirAbaAtivaVisual(raridade);
@@ -1830,7 +1956,7 @@
             listaDeMarretas.push(novoObj);
         });
 
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        salvarListaDeMarretas();
         carregarCardsSalvos();
         document.getElementById('listaLinksMassa').value = '';
     }
@@ -1913,7 +2039,7 @@
         if (!nome) return;
 
         const novoObj = { 
-            id: Date.now(), 
+            id: Date.now() + Math.floor(Math.random() * 100000),
             nome: nome, 
             valor: valor.toString().trim(), 
             raridade: raridade || 'legendary', 
@@ -1928,7 +2054,7 @@
         };
         
         listaDeMarretas.push(novoObj);
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        salvarListaDeMarretas();
         
         raridadeAtual = raridade;
         definirAbaAtivaVisual(raridade);
@@ -2050,7 +2176,7 @@
             item.status = document.getElementById('edit-status').value;
             item.templates = document.getElementById('edit-estabilidade').value;
 
-            safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+            salvarListaDeMarretas();
             carregarCardsSalvos();
             modal.remove();
         };
@@ -2155,7 +2281,7 @@
                 item.bundleItens = novosItens;
                 item.valor = recalcularTotalBundleEdicao().toString();
 
-                safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+                salvarListaDeMarretas();
                 carregarCardsSalvos();
                 modal.remove();
             };
@@ -2255,7 +2381,7 @@
                 if (confirm(`Excluir Bundle "${item.nome}"?`)) {
                     listaDeMarretas = listaDeMarretas.filter(m => m.id !== item.id);
                     card.remove();
-                    safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+                    salvarListaDeMarretas();
                     carregarCardsSalvos();
                 }
             });
@@ -2321,11 +2447,15 @@ function renderizarCardHTML(item) {
 
         <div class="ftf-card-info">
 
-            <h3 class="ftf-item-name">${item.nome}</h3>
+            <div class="ftf-card-header-row">
+                <div class="ftf-info-nome-raridade">
+                    <h3 class="ftf-item-name">${item.nome}</h3>
 
-            <span class="ftf-item-rarity" style="color:${corRaridade};">
-                ${item.raridade}
-            </span>
+                    <span class="ftf-item-rarity" style="color:${corRaridade};">
+                        ${item.raridade}
+                    </span>
+                </div>
+            </div>
 
             <div class="ftf-value-row">
 
@@ -2337,6 +2467,11 @@ function renderizarCardHTML(item) {
 
                 </div>
 
+            </div>
+
+            <div class="ftf-badges-direita">
+                <div class="box-badge-status"></div>
+
                 <span class="txt-estabilidade"
                       style="color:${corEstabilidade};">
 
@@ -2345,10 +2480,7 @@ function renderizarCardHTML(item) {
                     <span>${estabilidadeTexto}</span>
 
                 </span>
-
             </div>
-
-            <div class="box-badge-status"></div>
 
             <div class="ftf-demand-row">
 
@@ -2555,7 +2687,7 @@ function renderizarCardHTML(item) {
             return;
         }
 
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        salvarListaDeMarretas();
         carregarCardsSalvos();
     }
 
@@ -2624,17 +2756,24 @@ function renderizarCardHTML(item) {
     }
 
     function reordenarArrayEGuardar() {
-        let listaLimpa = listaDeMarretas.filter(item => (item.raridade || 'legendary') !== raridadeAtual);
-        let itensReordenadosDaAba = [];
+        // Pega só os IDs que estão de fato visíveis na tela agora (respeitando
+        // qualquer filtro ativo: pesquisa, tier, unique, bundles, etc).
+        const idsVisiveis = new Set();
+        const itensReordenadosDaAba = [];
 
         document.querySelectorAll('#container-cards .ftf-item-card').forEach((cardHTML) => {
             const id = parseInt(cardHTML.getAttribute('data-id'));
+            idsVisiveis.add(id);
             const correspondente = listaDeMarretas.find(m => m.id === id);
             if (correspondente) itensReordenadosDaAba.push(correspondente);
         });
-        
-        listaDeMarretas = [...listaLimpa, ...itensReordenadosDaAba];
-        safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+
+        // Mantém intactos todos os itens que NÃO estão visíveis agora (outras
+        // raridades, ou itens filtrados pela pesquisa/tier/subcategoria atual)
+        const listaRestante = listaDeMarretas.filter(item => !idsVisiveis.has(item.id));
+
+        listaDeMarretas = [...listaRestante, ...itensReordenadosDaAba];
+        salvarListaDeMarretas();
         atualizarNumbersVisuais();
     }
 
