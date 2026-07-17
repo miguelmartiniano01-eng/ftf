@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1370,7 +1369,19 @@
                             <option value="decreased">Desceu</option>
                             <option value="corrected">Corrigido</option>
                         </select>
-                        <input type="text" class="input-style changelog-valor" placeholder="Estrelas">
+                        <select class="input-style changelog-valor">
+                            <option value="5">5 ⭐️⭐️⭐️⭐️⭐️</option>
+                            <option value="4.5">4.5</option>
+                            <option value="4">4</option>
+                            <option value="3.5">3.5</option>
+                            <option value="3">3</option>
+                            <option value="2.5">2.5</option>
+                            <option value="2">2</option>
+                            <option value="1.5">1.5</option>
+                            <option value="1">1</option>
+                            <option value="0.5">0.5</option>
+                            <option value="0">0</option>
+                        </select>
                         <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
                     </div>
                 </div>
@@ -1383,11 +1394,20 @@
                 <div id="changelog-linhas-status">
                     <div class="linha-changelog-3col">
                         <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta">
-                        <select class="input-style changelog-verbo">
+                        <select class="input-style changelog-verbo" onchange="atualizarOpcoesStatusChangelog(this)">
                             <option value="set to">Set to</option>
                             <option value="labeled to">Labeled to</option>
                         </select>
-                        <input type="text" class="input-style changelog-valor" placeholder="Ex: Doing Well / Overpaid For">
+                        <select class="input-style changelog-valor">
+                            <option value="Rising">Rising</option>
+                            <option value="Doing Well">Doing Well</option>
+                            <option value="Improving">Improving</option>
+                            <option value="Stable">Stable</option>
+                            <option value="Fluctuating">Fluctuating</option>
+                            <option value="Struggling">Struggling</option>
+                            <option value="Receding">Receding</option>
+                            <option value="Dropping">Dropping</option>
+                        </select>
                         <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
                     </div>
                 </div>
@@ -1399,9 +1419,16 @@
                 <textarea id="changelogBugFix" class="input-style form-input-full" rows="2" placeholder="Ex: FTF Values logo png fixed" style="resize: vertical; font-size: 11px;"></textarea>
             </div>
 
-            <div style="margin-top: 8px;" class="form-group">
-                <label class="form-label" style="color:#94a3b8;">💬 Outras Informações (uma por linha)</label>
-                <textarea id="changelogOutros" class="input-style form-input-full" rows="2" placeholder="Ex: Midnight Light corrected to 20" style="resize: vertical; font-size: 11px;"></textarea>
+            <div style="margin-top: 8px;">
+                <label class="form-label" style="color:#94a3b8; margin-bottom:6px; display:block;">💬 Outras Informações</label>
+                <div id="changelog-linhas-outros">
+                    <div class="linha-changelog-2col">
+                        <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou assunto)">
+                        <input type="text" class="input-style changelog-valor" placeholder="Ex: corrected to 20">
+                        <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-linha-marreta" onclick="adicionarLinhaChangelog('outros')">+ Adicionar</button>
             </div>
 
             <input type="hidden" id="changelogEditandoId" value="">
@@ -2935,7 +2962,7 @@ function renderizarCardHTML(item) {
         const TAMANHO_ESTRELA = '9px'; 
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:2;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:3;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
         for (let i = 1; i <= 5; i++) {
             if (notaNum >= i) {
                 estrelasHTML += svgEstrelaCheia;
@@ -3165,12 +3192,30 @@ function renderizarCardHTML(item) {
 
     // ===== CHANGELOG =====
     const CHANGELOG_TIPOS = {
-        valor_sobe:   { label: 'Value Increase',      cor: '#47cc6a', bg: 'rgba(71,204,106,0.12)',  icone: '📈' },
-        valor_desce:  { label: 'Value Decrease',      cor: '#ff4d4f', bg: 'rgba(255,77,79,0.12)',   icone: '📉' },
-        demanda:      { label: 'Demand Change',       cor: '#f2984a', bg: 'rgba(242,152,74,0.12)',  icone: '⭐' },
-        status:       { label: 'Description Change',  cor: '#45aaf2', bg: 'rgba(69,170,242,0.12)',  icone: '📄' },
-        bug_fix:      { label: 'Bug Fix',              cor: '#94a3b8', bg: 'rgba(148,163,184,0.12)', icone: '🐛' },
-        outros:       { label: 'Other',                 cor: '#94a3b8', bg: 'rgba(148,163,184,0.12)', icone: '💬' }
+        valor_sobe:   {
+            label: 'Value Increase', cor: '#47cc6a', bg: 'rgba(71,204,106,0.12)',
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#47cc6a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`
+        },
+        valor_desce:  {
+            label: 'Value Decrease', cor: '#ff4d4f', bg: 'rgba(255,77,79,0.12)',
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff4d4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>`
+        },
+        demanda:      {
+            label: 'Demand Change', cor: '#f2984a', bg: 'rgba(242,152,74,0.12)',
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#f2984a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M3 12h4l2.5-8 4 16 2.5-8H21"></path></svg>`
+        },
+        status:       {
+            label: 'Description Change', cor: '#45aaf2', bg: 'rgba(69,170,242,0.12)',
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#45aaf2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line></svg>`
+        },
+        bug_fix:      {
+            label: 'Bug Fix', cor: '#94a3b8', bg: 'rgba(148,163,184,0.12)',
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><rect x="8" y="6" width="8" height="12" rx="4"></rect><line x1="12" y1="2" x2="12" y2="6"></line><line x1="4" y1="10" x2="8" y2="10"></line><line x1="4" y1="14" x2="8" y2="14"></line><line x1="16" y1="10" x2="20" y2="10"></line><line x1="16" y1="14" x2="20" y2="14"></line><line x1="9" y1="20" x2="7" y2="22"></line><line x1="15" y1="20" x2="17" y2="22"></line></svg>`
+        },
+        outros:       {
+            label: 'Other', cor: '#94a3b8', bg: 'rgba(148,163,184,0.12)',
+            svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`
+        }
     };
 
     let listaChangelog = [];
@@ -3239,8 +3284,21 @@ function renderizarCardHTML(item) {
         valor_sobe: (nome, valor) => `${nome} increased to ${valor}`,
         valor_desce: (nome, valor) => `${nome} decreased to ${valor}`,
         demanda: (nome, valor, verbo) => `${nome} ${verbo} to ${valor} star${valor == 1 ? '' : 's'}`,
-        status: (nome, valor, verbo) => `${nome} ${verbo} ${valor}`
+        status: (nome, valor, verbo) => `${nome} ${verbo} ${valor}`,
+        outros: (nome, valor) => `${nome} ${valor}`
     };
+
+    const OPCOES_STATUS_ESTABILIDADE = ['Rising', 'Doing Well', 'Improving', 'Stable', 'Fluctuating', 'Struggling', 'Receding', 'Dropping'];
+    const OPCOES_STATUS_BADGE = ['Overpaid For', 'Underpaid For', 'Niche'];
+
+    // Quando o usuário escolhe "Set to" (estabilidade) ou "Labeled to"
+    // (selo de status), troca as opções do select de valor pra combinar.
+    function atualizarOpcoesStatusChangelog(selectVerbo) {
+        const linha = selectVerbo.closest('.linha-changelog-3col');
+        const selectValor = linha.querySelector('.changelog-valor');
+        const opcoes = selectVerbo.value === 'labeled to' ? OPCOES_STATUS_BADGE : OPCOES_STATUS_ESTABILIDADE;
+        selectValor.innerHTML = opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
+    }
 
     // Cria uma nova linha (Nome + Valor, com ou sem select de verbo) pra uma
     // categoria do changelog que segue um padrão fixo de frase.
@@ -3257,18 +3315,39 @@ function renderizarCardHTML(item) {
                     <option value="decreased">Desceu</option>
                     <option value="corrected">Corrigido</option>
                 </select>
-                <input type="text" class="input-style changelog-valor" placeholder="Estrelas">
+                <select class="input-style changelog-valor">
+                    <option value="5">5 ⭐️⭐️⭐️⭐️⭐️</option>
+                    <option value="4.5">4.5</option>
+                    <option value="4">4</option>
+                    <option value="3.5">3.5</option>
+                    <option value="3">3</option>
+                    <option value="2.5">2.5</option>
+                    <option value="2">2</option>
+                    <option value="1.5">1.5</option>
+                    <option value="1">1</option>
+                    <option value="0.5">0.5</option>
+                    <option value="0">0</option>
+                </select>
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
             `;
         } else if (tipo === 'status') {
             linha.className = 'linha-changelog-3col';
             linha.innerHTML = `
                 <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta">
-                <select class="input-style changelog-verbo">
+                <select class="input-style changelog-verbo" onchange="atualizarOpcoesStatusChangelog(this)">
                     <option value="set to">Set to</option>
                     <option value="labeled to">Labeled to</option>
                 </select>
-                <input type="text" class="input-style changelog-valor" placeholder="Ex: Doing Well">
+                <select class="input-style changelog-valor">
+                    ${OPCOES_STATUS_ESTABILIDADE.map(op => `<option value="${op}">${op}</option>`).join('')}
+                </select>
+                <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+            `;
+        } else if (tipo === 'outros') {
+            linha.className = 'linha-changelog-2col';
+            linha.innerHTML = `
+                <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou assunto)">
+                <input type="text" class="input-style changelog-valor" placeholder="Ex: corrected to 20">
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
             `;
         } else {
@@ -3338,10 +3417,10 @@ function renderizarCardHTML(item) {
             ...coletarEntriesChangelog('valor_sobe'),
             ...coletarEntriesChangelog('valor_desce'),
             ...coletarEntriesChangelog('demanda'),
-            ...coletarEntriesChangelog('status')
+            ...coletarEntriesChangelog('status'),
+            ...coletarEntriesChangelog('outros')
         ];
         linhasParaArray(document.getElementById('changelogBugFix').value).forEach(t => entries.push({ tipo: 'bug_fix', texto: t }));
-        linhasParaArray(document.getElementById('changelogOutros').value).forEach(t => entries.push({ tipo: 'outros', texto: t }));
 
         if (entries.length === 0) {
             alert('Adicione pelo menos uma mudança em alguma categoria.');
@@ -3377,8 +3456,8 @@ function renderizarCardHTML(item) {
         resetarLinhasChangelog('valor_desce');
         resetarLinhasChangelog('demanda');
         resetarLinhasChangelog('status');
+        resetarLinhasChangelog('outros');
         document.getElementById('changelogBugFix').value = '';
-        document.getElementById('changelogOutros').value = '';
         document.getElementById('changelogEditandoId').value = '';
     }
 
@@ -3389,7 +3468,7 @@ function renderizarCardHTML(item) {
         document.getElementById('changelogVersao').value = item.versao || '';
         document.getElementById('changelogData').value = item.data || '';
 
-        ['valor_sobe', 'valor_desce', 'demanda', 'status'].forEach(tipo => {
+        ['valor_sobe', 'valor_desce', 'demanda', 'status', 'outros'].forEach(tipo => {
             const wrapper = document.getElementById('changelog-linhas-' + tipo);
             wrapper.innerHTML = '';
             const entriesDoTipo = item.entries.filter(e => e.tipo === tipo);
@@ -3401,15 +3480,17 @@ function renderizarCardHTML(item) {
                     const linhas = wrapper.querySelectorAll('.linha-changelog-2col, .linha-changelog-3col');
                     const ultimaLinha = linhas[linhas.length - 1];
                     ultimaLinha.querySelector('.changelog-nome').value = e.nome || '';
-                    ultimaLinha.querySelector('.changelog-valor').value = e.valor || '';
                     const selectVerbo = ultimaLinha.querySelector('.changelog-verbo');
-                    if (selectVerbo && e.verbo) selectVerbo.value = e.verbo;
+                    if (selectVerbo && e.verbo) {
+                        selectVerbo.value = e.verbo;
+                        if (tipo === 'status') atualizarOpcoesStatusChangelog(selectVerbo);
+                    }
+                    ultimaLinha.querySelector('.changelog-valor').value = e.valor || '';
                 });
             }
         });
 
         document.getElementById('changelogBugFix').value = item.entries.filter(e => e.tipo === 'bug_fix').map(e => e.texto).join('\n');
-        document.getElementById('changelogOutros').value = item.entries.filter(e => e.tipo === 'outros').map(e => e.texto).join('\n');
         document.getElementById('changelogEditandoId').value = item.id;
 
         mudarAbaForm('changelog');
@@ -3440,7 +3521,7 @@ function renderizarCardHTML(item) {
                 const cfg = CHANGELOG_TIPOS[entry.tipo] || CHANGELOG_TIPOS.outros;
                 return `
                     <div class="changelog-entry-row">
-                        <div class="changelog-icon-circle" style="background:${cfg.bg};">${cfg.icone}</div>
+                        <div class="changelog-icon-circle" style="background:${cfg.bg};">${cfg.svg}</div>
                         <div class="changelog-entry-texto-wrapper">
                             <span class="changelog-entry-label" style="color:${cfg.cor};">${cfg.label}</span>
                             <span class="changelog-entry-texto">${textoDaEntryChangelog(entry)}</span>
