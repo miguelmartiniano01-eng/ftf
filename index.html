@@ -421,6 +421,22 @@
             align-items: center;
         }
 
+        .linha-changelog-2col {
+            display: grid;
+            grid-template-columns: 1fr 90px 32px;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .linha-changelog-3col {
+            display: grid;
+            grid-template-columns: 1fr 100px 90px 32px;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
         .bundle-marreta-preview-wrapper {
             width: 40px;
             height: 34px;
@@ -928,6 +944,107 @@
             text-align: right;
         }
 
+        /* ===== Changelog ===== */
+        #container-changelog {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .changelog-version-block {
+            background: #14171f;
+            border: 1px solid #232836;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .changelog-version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #232836;
+        }
+
+        .changelog-version-titulo {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffb830;
+        }
+
+        .changelog-version-data {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .changelog-version-acoes {
+            display: flex;
+            gap: 6px;
+        }
+
+        .changelog-version-acoes button {
+            background: #1c202b;
+            color: #94a3b8;
+            border: 1px solid #282f40;
+            font-size: 11px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .changelog-version-acoes button:hover {
+            background: #282f40;
+            color: #fff;
+        }
+
+        .changelog-entry-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .changelog-icon-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
+            font-size: 15px;
+        }
+
+        .changelog-entry-texto-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 2px;
+        }
+
+        .changelog-entry-label {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .changelog-entry-texto {
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .changelog-vazio {
+            text-align: center;
+            color: #64748b;
+            padding: 30px;
+            font-size: 13px;
+        }
+
         /* Mobile Optimization Rules */
         @media (max-width: 640px) {
             #container-cards {
@@ -951,6 +1068,28 @@
             .linha-marreta-bundle .bundle-marreta-valor,
             .linha-marreta-bundle .edit-bundle-marreta-valor { grid-area: valor; }
             .linha-marreta-bundle .btn-remover-linha-marreta { grid-area: btn; }
+
+            .linha-changelog-2col {
+                grid-template-columns: 1fr 32px;
+                grid-template-areas:
+                    "nome btn"
+                    "valor valor";
+            }
+            .linha-changelog-2col .changelog-nome { grid-area: nome; }
+            .linha-changelog-2col .changelog-valor { grid-area: valor; }
+            .linha-changelog-2col .btn-remover-linha-marreta { grid-area: btn; }
+
+            .linha-changelog-3col {
+                grid-template-columns: 1fr 32px;
+                grid-template-areas:
+                    "nome btn"
+                    "verbo verbo"
+                    "valor valor";
+            }
+            .linha-changelog-3col .changelog-nome { grid-area: nome; }
+            .linha-changelog-3col .changelog-verbo { grid-area: verbo; }
+            .linha-changelog-3col .changelog-valor { grid-area: valor; }
+            .linha-changelog-3col .btn-remover-linha-marreta { grid-area: btn; }
         }
     </style>
 </head>
@@ -963,8 +1102,9 @@
             <h1>FTF <span>VALUES</span></h1>
         </div>
         <div class="ftf-nav-links">
-            <div class="ftf-nav-item" onclick="filtrarRaridade('legendary')">Marretas</div>
+            <div class="ftf-nav-item" onclick="mostrarMarretas()">Marretas</div>
             <div class="ftf-nav-item" onclick="filtrarSubcategoria('bundles')">Bundles</div>
+            <div class="ftf-nav-item" onclick="mostrarChangelog()">Changelog</div>
             <div class="ftf-nav-item active">Custom List</div>
         </div>
     </div>
@@ -996,6 +1136,7 @@
         <div class="form-tabs">
             <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual Card</button>
             <button class="form-tab-btn" id="tab-bundle" onclick="mudarAbaForm('bundle')">➕ Bundle</button>
+            <button class="form-tab-btn" id="tab-changelog" onclick="mudarAbaForm('changelog')">➕ Changelog</button>
             <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Links Extra (Massa)</button>
         </div>
 
@@ -1177,6 +1318,94 @@
             <button type="button" class="btn-submit" onclick="criarNovoBundle()">Criar Bundle 🎁</button>
         </div>
 
+        <div id="form-changelog" class="form-section" style="display: none;">
+            <h3>➕ Adicionar Nova Versão ao Changelog</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Versão</label>
+                    <input type="text" id="changelogVersao" class="input-style" placeholder="Ex: 3.8">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Data</label>
+                    <input type="text" id="changelogData" class="input-style" placeholder="Ex: June 29th, 2026">
+                </div>
+            </div>
+
+            <!-- Marretas que Subiram -->
+            <div style="margin-top: 14px;">
+                <label class="form-label" style="color:#47cc6a; margin-bottom:6px; display:block;">📈 Marretas que Subiram</label>
+                <div id="changelog-linhas-valor_sobe">
+                    <div class="linha-changelog-2col">
+                        <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou várias: A, B & C)">
+                        <input type="text" class="input-style changelog-valor" placeholder="Novo valor">
+                        <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-linha-marreta" onclick="adicionarLinhaChangelog('valor_sobe')">+ Adicionar</button>
+            </div>
+
+            <!-- Marretas que Desceram -->
+            <div style="margin-top: 10px;">
+                <label class="form-label" style="color:#ff4d4f; margin-bottom:6px; display:block;">📉 Marretas que Desceram</label>
+                <div id="changelog-linhas-valor_desce">
+                    <div class="linha-changelog-2col">
+                        <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou várias: A, B & C)">
+                        <input type="text" class="input-style changelog-valor" placeholder="Novo valor">
+                        <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-linha-marreta" onclick="adicionarLinhaChangelog('valor_desce')">+ Adicionar</button>
+            </div>
+
+            <!-- Mudanças de Demanda -->
+            <div style="margin-top: 10px;">
+                <label class="form-label" style="color:#f2984a; margin-bottom:6px; display:block;">⭐ Marretas que Mudaram de Demanda</label>
+                <div id="changelog-linhas-demanda">
+                    <div class="linha-changelog-3col">
+                        <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta">
+                        <select class="input-style changelog-verbo">
+                            <option value="increased">Subiu</option>
+                            <option value="decreased">Desceu</option>
+                            <option value="corrected">Corrigido</option>
+                        </select>
+                        <input type="text" class="input-style changelog-valor" placeholder="Estrelas">
+                        <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-linha-marreta" onclick="adicionarLinhaChangelog('demanda')">+ Adicionar</button>
+            </div>
+
+            <!-- Mudanças de Status -->
+            <div style="margin-top: 10px;">
+                <label class="form-label" style="color:#45aaf2; margin-bottom:6px; display:block;">📄 Marretas que Mudaram de Status</label>
+                <div id="changelog-linhas-status">
+                    <div class="linha-changelog-3col">
+                        <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta">
+                        <select class="input-style changelog-verbo">
+                            <option value="set to">Set to</option>
+                            <option value="labeled to">Labeled to</option>
+                        </select>
+                        <input type="text" class="input-style changelog-valor" placeholder="Ex: Doing Well / Overpaid For">
+                        <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-linha-marreta" onclick="adicionarLinhaChangelog('status')">+ Adicionar</button>
+            </div>
+
+            <div style="margin-top: 10px;" class="form-group">
+                <label class="form-label" style="color:#94a3b8;">🐛 Fix de Bugs (uma por linha)</label>
+                <textarea id="changelogBugFix" class="input-style form-input-full" rows="2" placeholder="Ex: FTF Values logo png fixed" style="resize: vertical; font-size: 11px;"></textarea>
+            </div>
+
+            <div style="margin-top: 8px;" class="form-group">
+                <label class="form-label" style="color:#94a3b8;">💬 Outras Informações (uma por linha)</label>
+                <textarea id="changelogOutros" class="input-style form-input-full" rows="2" placeholder="Ex: Midnight Light corrected to 20" style="resize: vertical; font-size: 11px;"></textarea>
+            </div>
+
+            <input type="hidden" id="changelogEditandoId" value="">
+            <button type="button" class="btn-submit" style="margin-top:10px; background:#45aaf2;" onclick="criarNovoChangelog()">Publicar Versão no Changelog 📋</button>
+        </div>
+
         <div id="form-massa" class="form-section" style="display: none;">
             <h3>Importação em Bloco</h3>
             <textarea id="listaLinksMassa" class="input-style form-input-full" rows="6" placeholder="Cole uma lista de URLs separadas por quebra de linha..." style="resize: vertical; font-family: monospace; font-size: 11px;"></textarea>
@@ -1238,6 +1467,8 @@
 
     <h2 id="titulo-secao">LEGENDARY ITEMS</h2>
     <div id="container-cards"></div>
+
+    <div id="container-changelog" style="display:none;"></div>
 
     <script>
     const CORES_ESTABILIDADE = {
@@ -1505,6 +1736,10 @@
     // Isso ajuda a recuperar os dados caso o app feche/desligue no meio de uma
     // gravação (ex: aparelho apagando de repente durante uma edição).
     function salvarListaDeMarretas() {
+        const backupAtual = safeStorage.getItem('ftf_custom_v5_backup');
+        if (backupAtual) {
+            safeStorage.setItem('ftf_custom_v5_backup2', backupAtual);
+        }
         const versaoAtualSalva = safeStorage.getItem('ftf_custom_v5');
         if (versaoAtualSalva) {
             safeStorage.setItem('ftf_custom_v5_backup', versaoAtualSalva);
@@ -1517,31 +1752,38 @@
     // desligou/fechou de forma abrupta e a gravação ficou incompleta, mas
     // ainda assim "válida" — nesse caso a recuperação automática não entra
     // sozinha, então esse botão dá controle manual pro usuário decidir.
+    // Guarda 2 gerações de backup (backup e backup2) e escolhe automaticamente
+    // a que tiver mais itens, já que às vezes o backup mais recente também
+    // pode ter sido salvo incompleto se o aparelho desligar duas vezes seguidas.
     function restaurarDoBackupManual() {
-        let dadosBackup = null;
-        try {
-            dadosBackup = JSON.parse(safeStorage.getItem('ftf_custom_v5_backup'));
-        } catch (e) {
-            dadosBackup = null;
-        }
+        let dadosBackup1 = null, dadosBackup2 = null;
+        try { dadosBackup1 = JSON.parse(safeStorage.getItem('ftf_custom_v5_backup')); } catch (e) { dadosBackup1 = null; }
+        try { dadosBackup2 = JSON.parse(safeStorage.getItem('ftf_custom_v5_backup2')); } catch (e) { dadosBackup2 = null; }
 
-        if (!Array.isArray(dadosBackup) || dadosBackup.length === 0) {
+        const total1 = Array.isArray(dadosBackup1) ? dadosBackup1.length : 0;
+        const total2 = Array.isArray(dadosBackup2) ? dadosBackup2.length : 0;
+
+        if (total1 === 0 && total2 === 0) {
             alert('Não encontrei nenhuma cópia de segurança salva no navegador.');
             return;
         }
 
+        // Escolhe automaticamente a cópia com mais itens entre as duas gerações
+        const melhorBackup = total2 > total1 ? dadosBackup2 : dadosBackup1;
+        const totalMelhor = Math.max(total1, total2);
         const totalAtual = listaDeMarretas.length;
-        const totalBackup = dadosBackup.length;
 
         const confirmar = confirm(
-            `Itens atuais: ${totalAtual}\nItens na última cópia de segurança: ${totalBackup}\n\n` +
-            `Restaurar vai SUBSTITUIR os itens atuais pelos da cópia de segurança. ` +
-            `Isso não pode ser desfeito. Deseja continuar?`
+            `Itens atuais: ${totalAtual}\n` +
+            `Cópia de segurança mais recente: ${total1} itens\n` +
+            `Cópia de segurança anterior: ${total2} itens\n\n` +
+            `Vou restaurar a cópia com MAIS itens (${totalMelhor}). ` +
+            `Isso vai SUBSTITUIR os itens atuais e não pode ser desfeito. Deseja continuar?`
         );
 
         if (!confirmar) return;
 
-        listaDeMarretas = dadosBackup.map(item => ({
+        listaDeMarretas = melhorBackup.map(item => ({
             id: item.id,
             nome: item.nome || "Marreta",
             valor: item.valor || '10',
@@ -1559,7 +1801,7 @@
 
         safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
         carregarCardsSalvos();
-        alert(`Pronto! Restaurado para ${totalBackup} itens a partir da cópia de segurança.`);
+        alert(`Pronto! Restaurado para ${totalMelhor} itens a partir da cópia de segurança.`);
     }
 
     // Força salvar sempre que o app for pra segundo plano ou a página for
@@ -1695,7 +1937,7 @@
     function limparConfiguracoesAntigasDoStorage() {
         // Remove qualquer chave "ftf_*" que sobrou de versões antigas do código,
         // mantendo só as chaves que a versão atual realmente usa.
-        const chavesAtuais = ['ftf_custom_v5', 'ftf_custom_v5_backup', 'ftf_datas_att'];
+        const chavesAtuais = ['ftf_custom_v5', 'ftf_custom_v5_backup', 'ftf_custom_v5_backup2', 'ftf_datas_att', 'ftf_changelog_v1', 'ftf_changelog_v1_backup'];
         const chavesParaRemover = [];
 
         try {
@@ -1776,9 +2018,11 @@
     function mudarAbaForm(aba) {
         document.getElementById('tab-unico').classList.remove('active');
         document.getElementById('tab-bundle').classList.remove('active');
+        document.getElementById('tab-changelog').classList.remove('active');
         document.getElementById('tab-massa').classList.remove('active');
         document.getElementById('form-individual').style.display = 'none';
         document.getElementById('form-bundle').style.display = 'none';
+        document.getElementById('form-changelog').style.display = 'none';
         document.getElementById('form-massa').style.display = 'none';
 
         if(aba === 'unico') {
@@ -1787,6 +2031,9 @@
         } else if(aba === 'bundle') {
             document.getElementById('tab-bundle').classList.add('active');
             document.getElementById('form-bundle').style.display = 'block';
+        } else if(aba === 'changelog') {
+            document.getElementById('tab-changelog').classList.add('active');
+            document.getElementById('form-changelog').style.display = 'block';
         } else {
             document.getElementById('tab-massa').classList.add('active');
             document.getElementById('form-massa').style.display = 'block';
@@ -2790,7 +3037,314 @@ function renderizarCardHTML(item) {
         });
     }
 
-    window.onload = inicializarBancoDados;
+    // ===== CHANGELOG =====
+    const CHANGELOG_TIPOS = {
+        valor_sobe:   { label: 'Value Increase',      cor: '#47cc6a', bg: 'rgba(71,204,106,0.12)',  icone: '📈' },
+        valor_desce:  { label: 'Value Decrease',      cor: '#ff4d4f', bg: 'rgba(255,77,79,0.12)',   icone: '📉' },
+        demanda:      { label: 'Demand Change',       cor: '#f2984a', bg: 'rgba(242,152,74,0.12)',  icone: '⭐' },
+        status:       { label: 'Description Change',  cor: '#45aaf2', bg: 'rgba(69,170,242,0.12)',  icone: '📄' },
+        bug_fix:      { label: 'Bug Fix',              cor: '#94a3b8', bg: 'rgba(148,163,184,0.12)', icone: '🐛' },
+        outros:       { label: 'Other',                 cor: '#94a3b8', bg: 'rgba(148,163,184,0.12)', icone: '💬' }
+    };
+
+    let listaChangelog = [];
+
+    function salvarListaChangelog() {
+        const versaoAtualSalva = safeStorage.getItem('ftf_changelog_v1');
+        if (versaoAtualSalva) {
+            safeStorage.setItem('ftf_changelog_v1_backup', versaoAtualSalva);
+        }
+        safeStorage.setItem('ftf_changelog_v1', JSON.stringify(listaChangelog));
+    }
+
+    function inicializarChangelog() {
+        let dados = null;
+        try {
+            dados = JSON.parse(safeStorage.getItem('ftf_changelog_v1'));
+        } catch (e) {
+            dados = null;
+        }
+        listaChangelog = Array.isArray(dados) ? dados : [];
+        renderizarChangelog();
+    }
+
+    function mostrarChangelog() {
+        document.getElementById('container-cards').style.display = 'none';
+        document.getElementById('container-changelog').style.display = 'block';
+        document.getElementById('titulo-secao').style.display = 'none';
+        document.getElementById('search-container').style.display = 'none';
+        document.querySelector('.btn-aba-container').style.display = 'none';
+        document.querySelector('.subtabs-container').style.display = 'none';
+        document.querySelector('.event-filter-container').style.display = 'none';
+        document.querySelector('.ftf-dashboard').style.display = 'none';
+
+        document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
+        const navChangelog = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Changelog');
+        if (navChangelog) navChangelog.classList.add('active');
+
+        renderizarChangelog();
+    }
+
+    function mostrarMarretas() {
+        document.getElementById('container-cards').style.display = 'grid';
+        document.getElementById('container-changelog').style.display = 'none';
+        document.getElementById('titulo-secao').style.display = 'flex';
+        document.getElementById('search-container').style.display = 'flex';
+        document.querySelector('.btn-aba-container').style.display = 'flex';
+        document.querySelector('.subtabs-container').style.display = 'flex';
+        document.querySelector('.event-filter-container').style.display = 'flex';
+        document.querySelector('.ftf-dashboard').style.display = 'flex';
+
+        document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
+        const navMarretas = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Marretas');
+        if (navMarretas) navMarretas.classList.add('active');
+
+        filtrarRaridade(raridadeAtual);
+    }
+
+    function linhasParaArray(texto) {
+        return (texto || '')
+            .split('\n')
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
+    }
+
+    const CHANGELOG_TEMPLATES = {
+        valor_sobe: (nome, valor) => `${nome} increased to ${valor}`,
+        valor_desce: (nome, valor) => `${nome} decreased to ${valor}`,
+        demanda: (nome, valor, verbo) => `${nome} ${verbo} to ${valor} star${valor == 1 ? '' : 's'}`,
+        status: (nome, valor, verbo) => `${nome} ${verbo} ${valor}`
+    };
+
+    // Cria uma nova linha (Nome + Valor, com ou sem select de verbo) pra uma
+    // categoria do changelog que segue um padrão fixo de frase.
+    function adicionarLinhaChangelog(tipo) {
+        const wrapper = document.getElementById('changelog-linhas-' + tipo);
+        const linha = document.createElement('div');
+
+        if (tipo === 'demanda') {
+            linha.className = 'linha-changelog-3col';
+            linha.innerHTML = `
+                <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta">
+                <select class="input-style changelog-verbo">
+                    <option value="increased">Subiu</option>
+                    <option value="decreased">Desceu</option>
+                    <option value="corrected">Corrigido</option>
+                </select>
+                <input type="text" class="input-style changelog-valor" placeholder="Estrelas">
+                <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+            `;
+        } else if (tipo === 'status') {
+            linha.className = 'linha-changelog-3col';
+            linha.innerHTML = `
+                <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta">
+                <select class="input-style changelog-verbo">
+                    <option value="set to">Set to</option>
+                    <option value="labeled to">Labeled to</option>
+                </select>
+                <input type="text" class="input-style changelog-valor" placeholder="Ex: Doing Well">
+                <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+            `;
+        } else {
+            linha.className = 'linha-changelog-2col';
+            linha.innerHTML = `
+                <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou várias: A, B & C)">
+                <input type="text" class="input-style changelog-valor" placeholder="Novo valor">
+                <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
+            `;
+        }
+
+        wrapper.appendChild(linha);
+    }
+
+    function removerLinhaChangelog(botao) {
+        const linha = botao.parentElement;
+        const wrapper = linha.parentElement;
+        if (wrapper.children.length > 1) {
+            linha.remove();
+        }
+    }
+
+    // Lê todas as linhas de uma categoria e monta as frases prontas usando
+    // os templates acima (nome + valor [+ verbo] -> frase completa em inglês).
+    function coletarEntriesChangelog(tipo) {
+        const wrapper = document.getElementById('changelog-linhas-' + tipo);
+        const entries = [];
+        wrapper.querySelectorAll(`.linha-changelog-2col, .linha-changelog-3col`).forEach(linha => {
+            const nome = linha.querySelector('.changelog-nome').value.trim();
+            const valor = linha.querySelector('.changelog-valor').value.trim();
+            const selectVerbo = linha.querySelector('.changelog-verbo');
+            const verbo = selectVerbo ? selectVerbo.value : null;
+
+            if (nome && valor) {
+                entries.push({ tipo: tipo, nome: nome, valor: valor, verbo: verbo });
+            }
+        });
+        return entries;
+    }
+
+    // Gera a frase final pra exibir, a partir dos dados estruturados
+    // (nome + valor [+ verbo]) ou usa o texto puro (bug_fix / outros).
+    function textoDaEntryChangelog(entry) {
+        if (entry.texto) return entry.texto; // bug_fix / outros (texto livre)
+        const template = CHANGELOG_TEMPLATES[entry.tipo];
+        if (!template) return '';
+        return entry.verbo ? template(entry.nome, entry.valor, entry.verbo) : template(entry.nome, entry.valor);
+    }
+
+    function resetarLinhasChangelog(tipo) {
+        const wrapper = document.getElementById('changelog-linhas-' + tipo);
+        wrapper.innerHTML = '';
+        adicionarLinhaChangelog(tipo);
+    }
+
+    function criarNovoChangelog() {
+        const versao = document.getElementById('changelogVersao').value.trim();
+        const data = document.getElementById('changelogData').value.trim();
+        const idEditando = document.getElementById('changelogEditandoId').value;
+
+        if (!versao) {
+            alert('Digite o número da versão.');
+            return;
+        }
+
+        const entries = [
+            ...coletarEntriesChangelog('valor_sobe'),
+            ...coletarEntriesChangelog('valor_desce'),
+            ...coletarEntriesChangelog('demanda'),
+            ...coletarEntriesChangelog('status')
+        ];
+        linhasParaArray(document.getElementById('changelogBugFix').value).forEach(t => entries.push({ tipo: 'bug_fix', texto: t }));
+        linhasParaArray(document.getElementById('changelogOutros').value).forEach(t => entries.push({ tipo: 'outros', texto: t }));
+
+        if (entries.length === 0) {
+            alert('Adicione pelo menos uma mudança em alguma categoria.');
+            return;
+        }
+
+        if (idEditando) {
+            const itemExistente = listaChangelog.find(c => c.id === parseInt(idEditando));
+            if (itemExistente) {
+                itemExistente.versao = versao;
+                itemExistente.data = data;
+                itemExistente.entries = entries;
+            }
+        } else {
+            listaChangelog.unshift({
+                id: Date.now() + Math.floor(Math.random() * 100000),
+                versao: versao,
+                data: data,
+                entries: entries
+            });
+        }
+
+        salvarListaChangelog();
+        limparFormularioChangelog();
+        renderizarChangelog();
+        mostrarChangelog();
+    }
+
+    function limparFormularioChangelog() {
+        document.getElementById('changelogVersao').value = '';
+        document.getElementById('changelogData').value = '';
+        resetarLinhasChangelog('valor_sobe');
+        resetarLinhasChangelog('valor_desce');
+        resetarLinhasChangelog('demanda');
+        resetarLinhasChangelog('status');
+        document.getElementById('changelogBugFix').value = '';
+        document.getElementById('changelogOutros').value = '';
+        document.getElementById('changelogEditandoId').value = '';
+    }
+
+    function editarChangelogVersao(id) {
+        const item = listaChangelog.find(c => c.id === id);
+        if (!item) return;
+
+        document.getElementById('changelogVersao').value = item.versao || '';
+        document.getElementById('changelogData').value = item.data || '';
+
+        ['valor_sobe', 'valor_desce', 'demanda', 'status'].forEach(tipo => {
+            const wrapper = document.getElementById('changelog-linhas-' + tipo);
+            wrapper.innerHTML = '';
+            const entriesDoTipo = item.entries.filter(e => e.tipo === tipo);
+            if (entriesDoTipo.length === 0) {
+                adicionarLinhaChangelog(tipo);
+            } else {
+                entriesDoTipo.forEach(e => {
+                    adicionarLinhaChangelog(tipo);
+                    const linhas = wrapper.querySelectorAll('.linha-changelog-2col, .linha-changelog-3col');
+                    const ultimaLinha = linhas[linhas.length - 1];
+                    ultimaLinha.querySelector('.changelog-nome').value = e.nome || '';
+                    ultimaLinha.querySelector('.changelog-valor').value = e.valor || '';
+                    const selectVerbo = ultimaLinha.querySelector('.changelog-verbo');
+                    if (selectVerbo && e.verbo) selectVerbo.value = e.verbo;
+                });
+            }
+        });
+
+        document.getElementById('changelogBugFix').value = item.entries.filter(e => e.tipo === 'bug_fix').map(e => e.texto).join('\n');
+        document.getElementById('changelogOutros').value = item.entries.filter(e => e.tipo === 'outros').map(e => e.texto).join('\n');
+        document.getElementById('changelogEditandoId').value = item.id;
+
+        mudarAbaForm('changelog');
+        document.getElementById('criador-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function excluirChangelogVersao(id) {
+        const item = listaChangelog.find(c => c.id === id);
+        if (!item) return;
+        if (confirm(`Excluir a versão "${item.versao}" do changelog?`)) {
+            listaChangelog = listaChangelog.filter(c => c.id !== id);
+            salvarListaChangelog();
+            renderizarChangelog();
+        }
+    }
+
+    function renderizarChangelog() {
+        const container = document.getElementById('container-changelog');
+        if (!container) return;
+
+        if (listaChangelog.length === 0) {
+            container.innerHTML = `<div class="changelog-vazio">Nenhuma versão publicada no changelog ainda.</div>`;
+            return;
+        }
+
+        container.innerHTML = listaChangelog.map(versaoItem => {
+            const entriesHTML = versaoItem.entries.map(entry => {
+                const cfg = CHANGELOG_TIPOS[entry.tipo] || CHANGELOG_TIPOS.outros;
+                return `
+                    <div class="changelog-entry-row">
+                        <div class="changelog-icon-circle" style="background:${cfg.bg};">${cfg.icone}</div>
+                        <div class="changelog-entry-texto-wrapper">
+                            <span class="changelog-entry-label" style="color:${cfg.cor};">${cfg.label}</span>
+                            <span class="changelog-entry-texto">${textoDaEntryChangelog(entry)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="changelog-version-block">
+                    <div class="changelog-version-header">
+                        <div>
+                            <div class="changelog-version-titulo">Version ${versaoItem.versao}</div>
+                            <div class="changelog-version-data">${versaoItem.data || ''}</div>
+                        </div>
+                        <div class="changelog-version-acoes">
+                            <button onclick="editarChangelogVersao(${versaoItem.id})">✏️ Editar</button>
+                            <button onclick="excluirChangelogVersao(${versaoItem.id})">🗑️ Excluir</button>
+                        </div>
+                    </div>
+                    ${entriesHTML}
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.onload = function() {
+        inicializarBancoDados();
+        inicializarChangelog();
+    };
 </script>
 </body>
 </html>
