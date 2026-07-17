@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1102,9 +1103,9 @@
         </div>
         <div class="ftf-nav-links">
             <div class="ftf-nav-item" onclick="mostrarMarretas()">Marretas</div>
-            <div class="ftf-nav-item" onclick="filtrarSubcategoria('bundles')">Bundles</div>
+            <div class="ftf-nav-item" onclick="irParaBundles()">Bundles</div>
             <div class="ftf-nav-item" onclick="mostrarChangelog()">Changelog</div>
-            <div class="ftf-nav-item active">Custom List</div>
+            <div class="ftf-nav-item active" onclick="mostrarMarretas()">Custom List</div>
         </div>
     </div>
 
@@ -3254,6 +3255,15 @@ function renderizarCardHTML(item) {
         if (navChangelog) navChangelog.classList.add('active');
 
         renderizarChangelog();
+    }
+
+    function irParaBundles() {
+        mostrarMarretas();
+        filtrarSubcategoria('bundles');
+
+        document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
+        const navBundles = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Bundles');
+        if (navBundles) navBundles.classList.add('active');
     }
 
     function mostrarMarretas() {
