@@ -36,7 +36,7 @@
 
         /* Top Header Navigation style FTF */
         .ftf-header {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 12px auto;
             background: #161920;
             border-bottom: 1px solid #232836;
@@ -85,7 +85,7 @@
 
         /* Controls Toggle Area */
         .toolbar-container {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 12px auto;
             background: #161920;
             padding: 8px 12px;
@@ -128,7 +128,7 @@
 
         /* Dashboard Overview Area style FTF */
         .ftf-dashboard {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 12px auto;
             background: #161920;
             border-radius: 6px;
@@ -186,7 +186,7 @@
 
         /* Main Search & Sorting Inputs Row */
         .search-wrapper {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 12px auto;
             display: flex;
             gap: 8px;
@@ -221,7 +221,7 @@
 
         /* Filter Tab Buttons Style */
         .btn-aba-container, .event-filter-wrapper, .subtabs-container {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 8px auto;
             background: #161920;
             padding: 6px;
@@ -277,7 +277,7 @@
 
         /* Event Filter Buttons */
         .event-filter-container {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 8px auto;
             background: #161920;
             padding: 6px;
@@ -329,7 +329,7 @@
             padding: 14px;
             border-radius: 6px;
             border: 1px solid #232836;
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 12px auto;
         }
 
@@ -513,7 +513,7 @@
 
         /* Section Category Title Header Layout */
         #titulo-secao {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 16px auto 10px auto;
             color: #fff;
             font-size: 13px;
@@ -539,9 +539,40 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 8px;
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto;
             width: 100%;
+        }
+
+        /* Vai reduzindo o tamanho mínimo do card em telas mais estreitas,
+           pra a quantidade de colunas ir diminuindo aos poucos (em vez de
+           pular direto para um número fixo de colunas). */
+        @media (max-width: 980px) {
+            #container-cards {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 680px) {
+            #container-cards {
+                grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #container-cards {
+                grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 340px) {
+            #container-cards {
+                grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+                gap: 4px;
+            }
         }
 
         /* Strict Official FTF Card UI Style Concept */
@@ -933,13 +964,29 @@
             display: none !important;
         }
 
+        /* ===== Modo Somente Visualização (trava de edição) =====
+           Ativo por padrão sempre que uma senha já foi definida. Some com
+           tudo que cria/edita/exclui/importa dados — sobra só visualizar,
+           pesquisar, filtrar, ordenar e exportar imagem. */
+        .modo-view-only #criador-form,
+        .modo-view-only .btn-deletar,
+        .modo-view-only .btn-acoes-card,
+        .modo-view-only .changelog-version-acoes,
+        .modo-view-only #btn-restaurar-backup,
+        .modo-view-only #btn-importar-backup,
+        .modo-view-only #btn-readicionar-faltando,
+        .modo-view-only #btn-limpar-tudo,
+        .modo-view-only #btn-alterar-senha {
+            display: none !important;
+        }
+
         /* Utilities */
         hr {
             display: none;
         }
 
         #btn-exportar-container {
-            max-width: 1300px;
+            max-width: 1180px;
             margin: 0 auto 12px auto;
             text-align: right;
         }
@@ -1047,10 +1094,6 @@
 
         /* Mobile Optimization Rules */
         @media (max-width: 640px) {
-            #container-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 4px;
-            }
             .ftf-header-logo h1 { font-size: 14px; }
             .ftf-nav-links { gap: 8px; }
             .ftf-nav-item { font-size: 11px; }
@@ -1116,6 +1159,8 @@
             <button class="ui-btn btn-salvar-galeria" onclick="salvarNaGaleria()">📥 Exportar Imagem</button>
         </div>
         <div>
+            <button id="btn-lock-toggle" class="ui-btn" style="border-color: #ffb830; color: #ffb830; font-weight:700;" onclick="clicouBotaoBloqueio()">🔒 Proteger Minha Lista</button>
+            <button id="btn-alterar-senha" class="ui-btn" style="border-color: #94a3b8; color: #94a3b8; display:none;" onclick="alterarSenhaEdicao()">🔑 Alterar Senha</button>
             <button id="btn-restaurar-backup" class="ui-btn" style="border-color: #47cc6a; color: #47cc6a;" onclick="restaurarDoBackupManual()">♻️ Restaurar Backup</button>
             <button id="btn-importar-backup" class="ui-btn" style="border-color: #45aaf2; color: #45aaf2;" onclick="importarBackupColado()">📋 Importar Backup Colado</button>
             <button id="btn-readicionar-faltando" class="ui-btn" style="border-color: #ffb830; color: #ffb830;" onclick="readicionarLegendariesFaltando()">🔄 Readicionar Legendaries Faltando</button>
@@ -1967,7 +2012,7 @@
     function limparConfiguracoesAntigasDoStorage() {
         // Remove qualquer chave "ftf_*" que sobrou de versões antigas do código,
         // mantendo só as chaves que a versão atual realmente usa.
-        const chavesAtuais = ['ftf_custom_v5', 'ftf_custom_v5_backup', 'ftf_custom_v5_backup2', 'ftf_datas_att', 'ftf_changelog_v1', 'ftf_changelog_v1_backup'];
+        const chavesAtuais = ['ftf_custom_v5', 'ftf_custom_v5_backup', 'ftf_custom_v5_backup2', 'ftf_datas_att', 'ftf_changelog_v1', 'ftf_changelog_v1_backup', 'ftf_edit_lock_hash'];
         const chavesParaRemover = [];
 
         try {
@@ -2963,7 +3008,7 @@ function renderizarCardHTML(item) {
         const TAMANHO_ESTRELA = '9px'; 
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
-        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:2;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
+        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:3;"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.133 9.21l8.2-1.192z"/></svg>`;
         for (let i = 1; i <= 5; i++) {
             if (notaNum >= i) {
                 estrelasHTML += svgEstrelaCheia;
@@ -3558,9 +3603,117 @@ function renderizarCardHTML(item) {
         }).join('');
     }
 
+    // ===== BLOQUEIO DE EDIÇÃO (modo somente-visualização) =====
+    // Aviso: como este app roda 100% no navegador, sem servidor, isso é uma
+    // trava simples (soft-lock) pra impedir edição casual de quem não sabe
+    // a senha — não é segurança real contra alguém que abra o console do
+    // navegador. Serve bem pra "só eu edito, quem mais ver só visualiza".
+
+    function hashSimples(texto) {
+        let hash = 0;
+        for (let i = 0; i < texto.length; i++) {
+            hash = ((hash << 5) - hash) + texto.charCodeAt(i);
+            hash |= 0;
+        }
+        return hash.toString(36);
+    }
+
+    let modoSomenteVisualizacao = false;
+
+    function inicializarBloqueioEdicao() {
+        const senhaSalva = safeStorage.getItem('ftf_edit_lock_hash');
+        if (senhaSalva) {
+            modoSomenteVisualizacao = true;
+            document.body.classList.add('modo-view-only');
+        } else {
+            modoSomenteVisualizacao = false;
+            document.body.classList.remove('modo-view-only');
+        }
+        atualizarBotaoBloqueio();
+    }
+
+    function atualizarBotaoBloqueio() {
+        const btn = document.getElementById('btn-lock-toggle');
+        const btnAlterar = document.getElementById('btn-alterar-senha');
+        if (!btn) return;
+        const temSenha = !!safeStorage.getItem('ftf_edit_lock_hash');
+
+        if (!temSenha) {
+            btn.innerText = '🔒 Proteger Minha Lista';
+            if (btnAlterar) btnAlterar.style.display = 'none';
+        } else if (modoSomenteVisualizacao) {
+            btn.innerText = '🔒 Somente Visualização (toque p/ editar)';
+            if (btnAlterar) btnAlterar.style.display = 'none';
+        } else {
+            btn.innerText = '🔓 Editando (toque p/ bloquear)';
+            if (btnAlterar) btnAlterar.style.display = 'inline-block';
+        }
+    }
+
+    function clicouBotaoBloqueio() {
+        const temSenha = !!safeStorage.getItem('ftf_edit_lock_hash');
+
+        if (!temSenha) {
+            const novaSenha = prompt('Crie uma senha/PIN pra proteger a edição da sua lista.\n\nGUARDE BEM — sem ela, você não vai conseguir editar de novo (só limpando os dados do navegador, o que apaga tudo).');
+            if (!novaSenha || !novaSenha.trim()) return;
+            const confirmaSenha = prompt('Confirme a senha:');
+            if (novaSenha.trim() !== (confirmaSenha || '').trim()) {
+                alert('As senhas não coincidem. Tente de novo.');
+                return;
+            }
+            safeStorage.setItem('ftf_edit_lock_hash', hashSimples(novaSenha.trim()));
+            modoSomenteVisualizacao = true;
+            document.body.classList.add('modo-view-only');
+            atualizarBotaoBloqueio();
+            alert('Pronto! Sua lista agora está protegida.\n\nA partir de agora, toda vez que a página abrir ela já vai estar travada — toque no cadeado e digite a senha sempre que quiser editar.');
+            return;
+        }
+
+        if (modoSomenteVisualizacao) {
+            const tentativa = prompt('Digite a senha para editar:');
+            if (tentativa === null) return;
+            const hashSalvo = safeStorage.getItem('ftf_edit_lock_hash');
+            if (hashSimples(tentativa.trim()) === hashSalvo) {
+                modoSomenteVisualizacao = false;
+                document.body.classList.remove('modo-view-only');
+                atualizarBotaoBloqueio();
+            } else {
+                alert('Senha incorreta.');
+            }
+        } else {
+            modoSomenteVisualizacao = true;
+            document.body.classList.add('modo-view-only');
+            atualizarBotaoBloqueio();
+        }
+    }
+
+    function alterarSenhaEdicao() {
+        const hashSalvo = safeStorage.getItem('ftf_edit_lock_hash');
+        if (!hashSalvo) return;
+
+        const atual = prompt('Digite a senha atual:');
+        if (atual === null) return;
+        if (hashSimples(atual.trim()) !== hashSalvo) {
+            alert('Senha atual incorreta.');
+            return;
+        }
+
+        const nova = prompt('Digite a nova senha:');
+        if (!nova || !nova.trim()) return;
+        const confirma = prompt('Confirme a nova senha:');
+        if (nova.trim() !== (confirma || '').trim()) {
+            alert('As senhas não coincidem.');
+            return;
+        }
+
+        safeStorage.setItem('ftf_edit_lock_hash', hashSimples(nova.trim()));
+        alert('Senha alterada com sucesso!');
+    }
+
     window.onload = function() {
         inicializarBancoDados();
         inicializarChangelog();
+        inicializarBloqueioEdicao();
     };
 </script>
 </body>
