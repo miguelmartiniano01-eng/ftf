@@ -142,6 +142,99 @@
             border: 1px solid #1e222b;
         }
 
+        /* ===== Banner colorido de Raridade (nome + total + valor + data) ===== */
+        .ftf-rarity-banner {
+            max-width: 1180px;
+            margin: 0 auto 12px auto;
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #2a2f3d;
+        }
+
+        .banner-raridade-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .banner-raridade-icone {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .banner-raridade-titulo {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .banner-raridade-stats {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .banner-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .banner-stat-label {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
+        }
+
+        .banner-stat-value {
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .banner-legendary {
+            background: linear-gradient(135deg, rgba(255,241,89,0.16), rgba(255,241,89,0.03));
+            border-color: rgba(255,241,89,0.35);
+        }
+        .banner-legendary .banner-raridade-titulo,
+        .banner-legendary .banner-stat-value { color: #fff159; }
+
+        .banner-epics {
+            background: linear-gradient(135deg, rgba(165,94,234,0.18), rgba(165,94,234,0.03));
+            border-color: rgba(165,94,234,0.35);
+        }
+        .banner-epics .banner-raridade-titulo,
+        .banner-epics .banner-stat-value { color: #a55eea; }
+
+        .banner-rares {
+            background: linear-gradient(135deg, rgba(89,213,255,0.18), rgba(89,213,255,0.03));
+            border-color: rgba(89,213,255,0.35);
+        }
+        .banner-rares .banner-raridade-titulo,
+        .banner-rares .banner-stat-value { color: #59d5ff; }
+
+        .banner-commons {
+            background: linear-gradient(135deg, rgba(241,89,255,0.18), rgba(241,89,255,0.03));
+            border-color: rgba(241,89,255,0.35);
+        }
+        .banner-commons .banner-raridade-titulo,
+        .banner-commons .banner-stat-value { color: #f159ff; }
+
+        @media (max-width: 640px) {
+            .ftf-rarity-banner { padding: 12px 14px; }
+            .banner-raridade-stats { gap: 14px; }
+            .banner-stat-value { font-size: 15px; }
+        }
+
         .ftf-dash-left {
             display: flex;
             align-items: center;
@@ -1169,17 +1262,6 @@
         </div>
     </div>
 
-    <div class="search-wrapper" id="search-container">
-        <input type="text" id="barraPesquisa" class="input-style" placeholder="Search items..." oninput="carregarCardsSalvos()">
-        <select id="ordenacaoLista" class="input-style" onchange="ordenarEAtualizar()">
-            <option value="padrao">🔢 Ordem Padrão</option>
-            <option value="valor-alto">📈 Value (High to Low)</option>
-            <option value="valor-baixo">📉 Value (Low to High)</option>
-            <option value="nome-az">🔤 Name (A-Z)</option>
-            <option value="nome-za">🔤 Name (Z-A)</option>
-        </select>
-    </div>
-
     <div id="criador-form">
         <div class="form-tabs">
             <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual Card</button>
@@ -1496,6 +1578,38 @@
         <button class="btn-aba" id="aba-commons" onclick="filtrarRaridade('commons')">Common Items</button>
     </div>
 
+    <div class="ftf-rarity-banner banner-legendary" id="banner-raridade">
+        <div class="banner-raridade-left">
+            <span class="banner-raridade-icone" id="banner-icone">👑</span>
+            <span class="banner-raridade-titulo" id="banner-titulo">Legendary Items</span>
+        </div>
+        <div class="banner-raridade-stats">
+            <div class="banner-stat">
+                <span class="banner-stat-label">Last Updated</span>
+                <input type="text" id="input-data-att" class="dash-date-input" placeholder="July 4th, 2026" oninput="salvarDataAtualizacao()">
+            </div>
+            <div class="banner-stat">
+                <span class="banner-stat-label">Total Value</span>
+                <span class="banner-stat-value" id="dash-valor">0</span>
+            </div>
+            <div class="banner-stat">
+                <span class="banner-stat-label">Items</span>
+                <span class="banner-stat-value" id="dash-qtd">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-wrapper" id="search-container">
+        <input type="text" id="barraPesquisa" class="input-style" placeholder="Search items..." oninput="carregarCardsSalvos()">
+        <select id="ordenacaoLista" class="input-style" onchange="ordenarEAtualizar()">
+            <option value="padrao">🔢 Ordem Padrão</option>
+            <option value="valor-alto">📈 Value (High to Low)</option>
+            <option value="valor-baixo">📉 Value (Low to High)</option>
+            <option value="nome-az">🔤 Name (A-Z)</option>
+            <option value="nome-za">🔤 Name (Z-A)</option>
+        </select>
+    </div>
+
     <div class="subtabs-container">
         <button class="btn-subtab active" id="sub-todos" onclick="filtrarSubcategoria('todos')">All</button>
         <button class="btn-subtab" id="sub-recentes" onclick="filtrarSubcategoria('recentes')">New Items</button>
@@ -1520,28 +1634,10 @@
         <button class="event-btn" data-event="Winter"><img src="https://i.postimg.cc/yYmxGBds/Winter.png" alt="Winter"></button>
     </div>
 
-    <div class="ftf-dashboard">
-        <div class="ftf-dash-left">
-            <div class="ftf-dash-block">
-                <span class="ftf-dash-label">Items Count</span>
-                <span class="ftf-dash-value" id="dash-qtd">0</span>
-            </div>
-            <div class="ftf-dash-block">
-                <span class="ftf-dash-label">Total Value</span>
-                <span class="ftf-dash-value"><span id="dash-valor">0</span></span>
-            </div>
-        </div>
-        <div class="ftf-dash-block" style="align-items: flex-end;">
-            <span class="ftf-dash-label">Last Updated</span>
-            <input type="text" id="input-data-att" class="dash-date-input" placeholder="July 4th, 2026" oninput="salvarDataAtualizacao()">
-        </div>
-    </div>
-
     <div id="btn-exportar-container">
         <button type="button" class="ui-btn" onclick="exportarLista()">Copiar código de Backup 📋</button>
     </div>
 
-    <h2 id="titulo-secao">LEGENDARY ITEMS</h2>
     <div id="container-cards"></div>
 
     <div id="container-changelog" style="display:none;"></div>
@@ -2960,11 +3056,27 @@ function renderizarCardHTML(item) {
         carregarCardsSalvos();
     }
 
+    const ICONES_RARIDADE = {
+        legendary: '👑',
+        epics: '✨',
+        rares: '💎',
+        commons: '🍃'
+    };
+
     function definirAbaAtivaVisual(raridadeAlvo) {
         document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
         const botaoAtivo = document.getElementById('aba-' + raridadeAlvo);
         if (botaoAtivo) botaoAtivo.classList.add('active');
-        document.getElementById('titulo-secao').innerText = `${raridadeAlvo.toUpperCase()} ITEMS`;
+
+        const banner = document.getElementById('banner-raridade');
+        const bannerIcone = document.getElementById('banner-icone');
+        const bannerTitulo = document.getElementById('banner-titulo');
+        if (banner) {
+            banner.classList.remove('banner-legendary', 'banner-epics', 'banner-rares', 'banner-commons');
+            banner.classList.add('banner-' + raridadeAlvo);
+        }
+        if (bannerIcone) bannerIcone.innerText = ICONES_RARIDADE[raridadeAlvo] || '👑';
+        if (bannerTitulo) bannerTitulo.innerText = `${raridadeAlvo.charAt(0).toUpperCase() + raridadeAlvo.slice(1)} Items`;
     }
 
     function atualizarEstiloValorDoCard(cardHTML, item) {
@@ -3290,12 +3402,11 @@ function renderizarCardHTML(item) {
     function mostrarChangelog() {
         document.getElementById('container-cards').style.display = 'none';
         document.getElementById('container-changelog').style.display = 'block';
-        document.getElementById('titulo-secao').style.display = 'none';
+        document.getElementById('banner-raridade').style.display = 'none';
         document.getElementById('search-container').style.display = 'none';
         document.querySelector('.btn-aba-container').style.display = 'none';
         document.querySelector('.subtabs-container').style.display = 'none';
         document.querySelector('.event-filter-container').style.display = 'none';
-        document.querySelector('.ftf-dashboard').style.display = 'none';
 
         document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
         const navChangelog = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Changelog');
@@ -3316,12 +3427,11 @@ function renderizarCardHTML(item) {
     function mostrarMarretas() {
         document.getElementById('container-cards').style.display = 'grid';
         document.getElementById('container-changelog').style.display = 'none';
-        document.getElementById('titulo-secao').style.display = 'flex';
+        document.getElementById('banner-raridade').style.display = 'flex';
         document.getElementById('search-container').style.display = 'flex';
         document.querySelector('.btn-aba-container').style.display = 'flex';
         document.querySelector('.subtabs-container').style.display = 'flex';
         document.querySelector('.event-filter-container').style.display = 'flex';
-        document.querySelector('.ftf-dashboard').style.display = 'flex';
 
         document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
         const navMarretas = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Marretas');
