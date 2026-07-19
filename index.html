@@ -209,11 +209,11 @@
         .banner-legendary .banner-stat-value { color: #fff159; }
 
         .banner-epics {
-            background: linear-gradient(135deg, rgba(241,89,255,0.18), rgba(165,94,234,0.03));
-            border-color: rgba(241,89,255,0.35);
+            background: linear-gradient(135deg, rgba(165,94,234,0.18), rgba(165,94,234,0.03));
+            border-color: rgba(165,94,234,0.35);
         }
         .banner-epics .banner-raridade-titulo,
-        .banner-epics .banner-stat-value { color: #f159ff; }
+        .banner-epics .banner-stat-value { color: #a55eea; }
 
         .banner-rares {
             background: linear-gradient(135deg, rgba(89,213,255,0.18), rgba(89,213,255,0.03));
@@ -1668,7 +1668,7 @@
 
     const CORES_RARIDADE = {
         "legendary": "#fff159", 
-        "epics": "#f159ff",     
+        "epics": "#a55eea",     
         "rares": "#59d5ff",     
         "commons": "#b9ff59"    
     };
@@ -2351,6 +2351,18 @@
         recalcularTotalBundle();
     }
 
+    // Verifica se já existe uma marreta (ou bundle) com esse nome, ignorando
+    // maiúsculas/minúsculas e espaços extras. Usado pra impedir duplicatas
+    // na criação e na edição de nome de itens.
+    function existeItemComNome(nome, idParaIgnorar) {
+        const alvo = (nome || '').trim().toLowerCase();
+        if (!alvo) return false;
+        return listaDeMarretas.some(m =>
+            m.id !== idParaIgnorar &&
+            (m.nome || '').trim().toLowerCase() === alvo
+        );
+    }
+
     function criarNovoBundle() {
         const nome = document.getElementById('bundleNome').value.trim();
         const raridade = document.getElementById('bundleRaridade').value;
@@ -2359,6 +2371,11 @@
 
         if (!nome) {
             alert('Digite um nome para o Bundle.');
+            return;
+        }
+
+        if (existeItemComNome(nome)) {
+            alert(`Já existe um item chamado "${nome}" na sua lista. Escolha um nome diferente para o Bundle.`);
             return;
         }
 
@@ -2519,6 +2536,11 @@
 
         if (!nome) return;
 
+        if (existeItemComNome(nome)) {
+            alert(`Já existe um item chamado "${nome}" na sua lista. Escolha um nome diferente, ou edite o item existente em vez de criar um novo.`);
+            return;
+        }
+
         const novoObj = { 
             id: Date.now() + Math.floor(Math.random() * 100000),
             nome: nome, 
@@ -2644,7 +2666,14 @@
         document.body.appendChild(modal);
         document.getElementById('modal-cancelar').onclick = () => modal.remove();
         document.getElementById('modal-salvar').onclick = () => {
-            item.nome = document.getElementById('edit-nome').value.trim() || item.nome;
+            const novoNome = document.getElementById('edit-nome').value.trim() || item.nome;
+
+            if (existeItemComNome(novoNome, item.id)) {
+                alert(`Já existe outro item chamado "${novoNome}". Escolha um nome diferente.`);
+                return;
+            }
+
+            item.nome = novoNome;
             item.imgSrc = document.getElementById('edit-img').value.trim();
             item.valor = document.getElementById('edit-valor').value.trim();
             item.evento = document.getElementById('edit-evento').value; // Coleta o valor do select novo
@@ -2754,7 +2783,13 @@
                     return;
                 }
 
-                item.nome = document.getElementById('edit-bundle-nome').value.trim() || item.nome;
+                const novoNomeBundle = document.getElementById('edit-bundle-nome').value.trim() || item.nome;
+                if (existeItemComNome(novoNomeBundle, item.id)) {
+                    alert(`Já existe outro item chamado "${novoNomeBundle}". Escolha um nome diferente para o Bundle.`);
+                    return;
+                }
+
+                item.nome = novoNomeBundle;
                 item.raridade = document.getElementById('edit-bundle-raridade').value;
                 item.evento = document.getElementById('edit-bundle-evento').value || 'Geral';
                 item.demanda = document.getElementById('edit-bundle-demanda').value;
