@@ -223,11 +223,18 @@
         .banner-rares .banner-stat-value { color: #59d5ff; }
 
         .banner-commons {
-            background: linear-gradient(135deg, rgba(241,89,255,0.18), rgba(241,89,255,0.03));
-            border-color: rgba(241,89,255,0.35);
+            background: linear-gradient(135deg, rgba(185,255,89,0.16), rgba(185,255,89,0.03));
+            border-color: rgba(185,255,89,0.35);
         }
         .banner-commons .banner-raridade-titulo,
-        .banner-commons .banner-stat-value { color: #f159ff; }
+        .banner-commons .banner-stat-value { color: #b9ff59; }
+
+        .banner-bundles {
+            background: linear-gradient(135deg, rgba(148,163,184,0.16), rgba(148,163,184,0.03));
+            border-color: rgba(148,163,184,0.35);
+        }
+        .banner-bundles .banner-raridade-titulo,
+        .banner-bundles .banner-stat-value { color: #cbd5e1; }
 
         @media (max-width: 640px) {
             .ftf-rarity-banner { padding: 12px 14px; }
@@ -2432,6 +2439,7 @@
         document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
         const btnAlvo = document.getElementById('sub-' + sub);
         if(btnAlvo) btnAlvo.classList.add('active');
+        atualizarBanner();
         carregarCardsSalvos();
     }
 
@@ -3036,13 +3044,13 @@ function renderizarCardHTML(item) {
 
     function filtrarRaridade(raridadeAlvo) {
         raridadeAtual = raridadeAlvo;
-        definirAbaAtivaVisual(raridadeAlvo);
-        atualizarLimitesTier(raridadeAlvo);
-
         subcategoriaAtual = 'todos';
         document.querySelectorAll('.btn-subtab').forEach(btn => btn.classList.remove('active'));
         const btnTodos = document.getElementById('sub-todos');
         if (btnTodos) btnTodos.classList.add('active');
+
+        definirAbaAtivaVisual(raridadeAlvo);
+        atualizarLimitesTier(raridadeAlvo);
 
         // Já deixa o formulário de criação (Item e Bundle) com a raridade da aba atual
         const selectRaridadeItem = document.getElementById('raridadeItem');
@@ -3063,20 +3071,30 @@ function renderizarCardHTML(item) {
         commons: '🍃'
     };
 
+    function atualizarBanner() {
+        const banner = document.getElementById('banner-raridade');
+        const bannerIcone = document.getElementById('banner-icone');
+        const bannerTitulo = document.getElementById('banner-titulo');
+        if (!banner) return;
+
+        banner.classList.remove('banner-legendary', 'banner-epics', 'banner-rares', 'banner-commons', 'banner-bundles');
+
+        if (subcategoriaAtual === 'bundles') {
+            banner.classList.add('banner-bundles');
+            if (bannerIcone) bannerIcone.innerText = '🎁';
+            if (bannerTitulo) bannerTitulo.innerText = 'Bundles';
+        } else {
+            banner.classList.add('banner-' + raridadeAtual);
+            if (bannerIcone) bannerIcone.innerText = ICONES_RARIDADE[raridadeAtual] || '👑';
+            if (bannerTitulo) bannerTitulo.innerText = `${raridadeAtual.charAt(0).toUpperCase() + raridadeAtual.slice(1)} Items`;
+        }
+    }
+
     function definirAbaAtivaVisual(raridadeAlvo) {
         document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
         const botaoAtivo = document.getElementById('aba-' + raridadeAlvo);
         if (botaoAtivo) botaoAtivo.classList.add('active');
-
-        const banner = document.getElementById('banner-raridade');
-        const bannerIcone = document.getElementById('banner-icone');
-        const bannerTitulo = document.getElementById('banner-titulo');
-        if (banner) {
-            banner.classList.remove('banner-legendary', 'banner-epics', 'banner-rares', 'banner-commons');
-            banner.classList.add('banner-' + raridadeAlvo);
-        }
-        if (bannerIcone) bannerIcone.innerText = ICONES_RARIDADE[raridadeAlvo] || '👑';
-        if (bannerTitulo) bannerTitulo.innerText = `${raridadeAlvo.charAt(0).toUpperCase() + raridadeAlvo.slice(1)} Items`;
+        atualizarBanner();
     }
 
     function atualizarEstiloValorDoCard(cardHTML, item) {
