@@ -230,11 +230,18 @@
         .banner-commons .banner-stat-value { color: #b9ff59; }
 
         .banner-bundles {
-            background: linear-gradient(135deg, rgba(148,163,184,0.16), rgba(148,163,184,0.03));
-            border-color: rgba(148,163,184,0.35);
+            background: linear-gradient(135deg, rgba(212,184,150,0.20), rgba(212,184,150,0.04));
+            border-color: rgba(212,184,150,0.4);
         }
         .banner-bundles .banner-raridade-titulo,
-        .banner-bundles .banner-stat-value { color: #cbd5e1; }
+        .banner-bundles .banner-stat-value { color: #d4b896; }
+
+        .banner-bege {
+            background: linear-gradient(135deg, rgba(212,163,115,0.22), rgba(212,163,115,0.04));
+            border-color: rgba(212,163,115,0.45);
+        }
+        .banner-bege .banner-raridade-titulo,
+        .banner-bege .banner-stat-value { color: #d4a373; }
 
         @media (max-width: 640px) {
             .ftf-rarity-banner { padding: 12px 14px; }
@@ -1579,6 +1586,7 @@
     </div>
 
     <div class="btn-aba-container">
+        <button class="btn-aba" id="aba-bundles" onclick="irParaBundles()">Bundles</button>
         <button class="btn-aba active" id="aba-legendary" onclick="filtrarRaridade('legendary')">Legendary Items</button>
         <button class="btn-aba" id="aba-epics" onclick="filtrarRaridade('epics')">Epic Items</button>
         <button class="btn-aba" id="aba-rares" onclick="filtrarRaridade('rares')">Rare Items</button>
@@ -1667,6 +1675,8 @@
         "rares": "#59d5ff",     
         "commons": "#b9ff59"    
     };
+
+    const COR_BUNDLE = "#d4b896";
 
     const SVG_ESTABILIDADE = {
         Rising: `<svg viewBox="0 0 24 24" fill="none" stroke="#36D8B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
@@ -2801,8 +2811,7 @@
             const card = document.createElement("div");
             card.className = "ftf-item-card ftf-bundle-card";
 
-            const raridadeKey = (item.raridade || 'legendary').toLowerCase();
-            const corRaridade = CORES_RARIDADE[raridadeKey] || '#2d3545';
+            const corRaridade = COR_BUNDLE;
             card.setAttribute('data-id', item.id);
             card.style.border = `1px solid ${corRaridade}`;
 
@@ -2872,7 +2881,7 @@
 
             const containerValor = card.querySelector('.box-valor-dinamico');
             if (containerValor) {
-                containerValor.style.color = '#ffb830';
+                containerValor.style.color = COR_BUNDLE;
                 containerValor.innerHTML = item.valor || '0';
             }
 
@@ -3075,25 +3084,31 @@ function renderizarCardHTML(item) {
         const banner = document.getElementById('banner-raridade');
         const bannerIcone = document.getElementById('banner-icone');
         const bannerTitulo = document.getElementById('banner-titulo');
-        if (!banner) return;
 
-        banner.classList.remove('banner-legendary', 'banner-epics', 'banner-rares', 'banner-commons', 'banner-bundles');
+        document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
 
         if (subcategoriaAtual === 'bundles') {
-            banner.classList.add('banner-bundles');
+            const btnBundles = document.getElementById('aba-bundles');
+            if (btnBundles) btnBundles.classList.add('active');
+            if (banner) {
+                banner.classList.remove('banner-legendary', 'banner-epics', 'banner-rares', 'banner-commons');
+                banner.classList.add('banner-bundles');
+            }
             if (bannerIcone) bannerIcone.innerText = '🎁';
             if (bannerTitulo) bannerTitulo.innerText = 'Bundles';
         } else {
-            banner.classList.add('banner-' + raridadeAtual);
+            const botaoAtivo = document.getElementById('aba-' + raridadeAtual);
+            if (botaoAtivo) botaoAtivo.classList.add('active');
+            if (banner) {
+                banner.classList.remove('banner-legendary', 'banner-epics', 'banner-rares', 'banner-commons', 'banner-bundles');
+                banner.classList.add('banner-' + raridadeAtual);
+            }
             if (bannerIcone) bannerIcone.innerText = ICONES_RARIDADE[raridadeAtual] || '👑';
             if (bannerTitulo) bannerTitulo.innerText = `${raridadeAtual.charAt(0).toUpperCase() + raridadeAtual.slice(1)} Items`;
         }
     }
 
     function definirAbaAtivaVisual(raridadeAlvo) {
-        document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
-        const botaoAtivo = document.getElementById('aba-' + raridadeAlvo);
-        if (botaoAtivo) botaoAtivo.classList.add('active');
         atualizarBanner();
     }
 
