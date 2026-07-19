@@ -3,7 +3,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FTF Values - Custom Edition</title>
 
     <meta name="mobile-web-app-capable" content="yes">
@@ -3479,16 +3479,7 @@ function renderizarCardHTML(item) {
         renderizarChangelog();
     }
 
-    function irParaBundles() {
-        mostrarMarretas();
-        filtrarSubcategoria('bundles');
-
-        document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
-        const navBundles = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Bundles');
-        if (navBundles) navBundles.classList.add('active');
-    }
-
-    function mostrarMarretas() {
+    function mostrarContainersMarretas() {
         document.getElementById('container-cards').style.display = 'grid';
         document.getElementById('container-changelog').style.display = 'none';
         document.getElementById('banner-raridade').style.display = 'flex';
@@ -3496,6 +3487,20 @@ function renderizarCardHTML(item) {
         document.querySelector('.btn-aba-container').style.display = 'flex';
         document.querySelector('.subtabs-container').style.display = 'flex';
         document.querySelector('.event-filter-container').style.display = 'flex';
+    }
+
+    function irParaBundles() {
+        mostrarContainersMarretas();
+
+        document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
+        const navMarretas = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Marretas');
+        if (navMarretas) navMarretas.classList.add('active');
+
+        filtrarSubcategoria('bundles');
+    }
+
+    function mostrarMarretas() {
+        mostrarContainersMarretas();
 
         document.querySelectorAll('.ftf-nav-item').forEach(el => el.classList.remove('active'));
         const navMarretas = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Marretas');
