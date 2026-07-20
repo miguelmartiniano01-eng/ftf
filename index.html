@@ -1993,14 +1993,32 @@
     // Força salvar sempre que o app for pra segundo plano ou a página for
     // fechada/trocada — ajuda a não perder o progresso mais recente caso o
     // aparelho desligue logo em seguida.
+    // Salva de forma mais segura quando o app vai pra segundo plano: se já
+    // existe uma versão salva com MAIS itens (provavelmente salva por outra
+    // aba/instância do app), não sobrescreve com a cópia atual (que pode
+    // estar desatualizada). Isso reduz o risco de duplicar/perder itens
+    // quando o usuário usa duas abas do app ao mesmo tempo.
+    function salvarComProtecaoContraSobrescrita() {
+        try {
+            const salvoAtualmente = JSON.parse(safeStorage.getItem('ftf_custom_v5'));
+            if (Array.isArray(salvoAtualmente) && salvoAtualmente.length > listaDeMarretas.length) {
+                console.warn('[FTF Values] Salvamento em segundo plano ignorado: já existe uma versão salva com mais itens (provavelmente de outra aba aberta).');
+                return;
+            }
+        } catch (e) {
+            // Se não conseguir ler o que já tá salvo, segue com o salvamento normal
+        }
+        salvarListaDeMarretas();
+    }
+
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden' && listaDeMarretas.length > 0) {
-            safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+            salvarComProtecaoContraSobrescrita();
         }
     });
     window.addEventListener('pagehide', () => {
         if (listaDeMarretas.length > 0) {
-            safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+            salvarComProtecaoContraSobrescrita();
         }
     });
 
