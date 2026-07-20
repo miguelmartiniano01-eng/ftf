@@ -2482,22 +2482,7 @@
         const btnAlvo = document.getElementById('sub-' + sub);
         if(btnAlvo) btnAlvo.classList.add('active');
         atualizarBanner();
-
-        if (sub === 'bundles') {
-            // Os cards de bundle ocupam mais de uma coluna do grid (grid-column:
-            // span). Se a gente desenha eles no mesmo instante em que o
-            // container acabou de virar visível, o navegador às vezes calcula
-            // errado quantas colunas cabem e o card fica "sumido" até algo
-            // forçar um recálculo. Esperar 1 frame garante que o navegador já
-            // terminou de mostrar o container antes de desenhar os cards.
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    carregarCardsSalvos();
-                });
-            });
-        } else {
-            carregarCardsSalvos();
-        }
+        carregarCardsSalvos();
     }
 
     function togglePrintMode() {
@@ -3285,7 +3270,10 @@ function renderizarCardHTML(item) {
 
         const itensFiltrados = listaDeMarretas.filter(item => {
             const raridadeItem = (item.raridade || 'legendary').toLowerCase();
-            const bateRaridade = raridadeItem === raridadeAtual.toLowerCase();
+            // Na visão de Bundles, mostra TODOS os bundles juntos, independente
+            // da raridade em que cada um foi marcado (Bundles é uma categoria
+            // à parte, não fica preso na última raridade que você tava vendo).
+            const bateRaridade = subcategoriaAtual === 'bundles' ? true : (raridadeItem === raridadeAtual.toLowerCase());
             const bateNome = (item.nome || "").toLowerCase().includes(termoPesquisa);
             const bateEvento = eventoAtual === 'all' || item.evento === eventoAtual;
             
