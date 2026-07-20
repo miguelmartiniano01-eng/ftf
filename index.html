@@ -2482,7 +2482,22 @@
         const btnAlvo = document.getElementById('sub-' + sub);
         if(btnAlvo) btnAlvo.classList.add('active');
         atualizarBanner();
-        carregarCardsSalvos();
+
+        if (sub === 'bundles') {
+            // Os cards de bundle ocupam mais de uma coluna do grid (grid-column:
+            // span). Se a gente desenha eles no mesmo instante em que o
+            // container acabou de virar visível, o navegador às vezes calcula
+            // errado quantas colunas cabem e o card fica "sumido" até algo
+            // forçar um recálculo. Esperar 1 frame garante que o navegador já
+            // terminou de mostrar o container antes de desenhar os cards.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    carregarCardsSalvos();
+                });
+            });
+        } else {
+            carregarCardsSalvos();
+        }
     }
 
     function togglePrintMode() {
@@ -3155,8 +3170,6 @@ function renderizarCardHTML(item) {
             if (bannerIcone) bannerIcone.innerText = ICONES_RARIDADE[raridadeAtual] || '👑';
             if (bannerTitulo) bannerTitulo.innerText = `${raridadeAtual.charAt(0).toUpperCase() + raridadeAtual.slice(1)} Items`;
         }
-
-        if (banner) void banner.offsetHeight;
     }
 
     function definirAbaAtivaVisual(raridadeAlvo) {
@@ -3327,14 +3340,6 @@ function renderizarCardHTML(item) {
 });
 
         container.appendChild(fragment);
-
-        // Força o navegador a "redesenhar" a tela agora mesmo. Alguns
-        // navegadores (percebido no Opera) às vezes atualizam o conteúdo
-        // por dentro mas demoram a repintar visualmente até alguma outra
-        // ação disparar isso — essa linha lê uma propriedade de layout
-        // (offsetHeight), o que obriga o navegador a recalcular e repintar
-        // na hora, sem precisar o usuário trocar de aba manualmente.
-        void container.offsetHeight;
         atualizarNumbersVisuais();
     }
 
