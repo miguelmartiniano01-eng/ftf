@@ -3155,6 +3155,8 @@ function renderizarCardHTML(item) {
             if (bannerIcone) bannerIcone.innerText = ICONES_RARIDADE[raridadeAtual] || '👑';
             if (bannerTitulo) bannerTitulo.innerText = `${raridadeAtual.charAt(0).toUpperCase() + raridadeAtual.slice(1)} Items`;
         }
+
+        if (banner) void banner.offsetHeight;
     }
 
     function definirAbaAtivaVisual(raridadeAlvo) {
@@ -3325,6 +3327,14 @@ function renderizarCardHTML(item) {
 });
 
         container.appendChild(fragment);
+
+        // Força o navegador a "redesenhar" a tela agora mesmo. Alguns
+        // navegadores (percebido no Opera) às vezes atualizam o conteúdo
+        // por dentro mas demoram a repintar visualmente até alguma outra
+        // ação disparar isso — essa linha lê uma propriedade de layout
+        // (offsetHeight), o que obriga o navegador a recalcular e repintar
+        // na hora, sem precisar o usuário trocar de aba manualmente.
+        void container.offsetHeight;
         atualizarNumbersVisuais();
     }
 
