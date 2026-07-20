@@ -3224,36 +3224,42 @@ function renderizarCardHTML(item) {
         containerEstrelas.innerHTML = estrelasHTML;
     }
         
-    function ordenarEAtualizar() {
-        const criterio = document.getElementById('ordenacaoLista').value;
+    // A ordenação escolhida no select agora é só uma forma de VISUALIZAR a
+    // lista — não mexe na ordem "de verdade" guardada (a que reflete a sua
+    // organização manual com as setas ▲▼). Assim, trocar pra "Value" e
+    // depois voltar pra "Ordem Padrão" sempre recupera exatamente a ordem
+    // que você tinha organizado, sem perder nada.
+    let criterioOrdenacaoAtual = 'padrao';
 
-        if (criterio === 'nome-az') {
-            listaDeMarretas.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
-        } 
-        else if (criterio === 'nome-za') {
-            listaDeMarretas.sort((a, b) => (b.nome || "").localeCompare(a.nome || ""));
-        } 
-        else if (criterio === 'valor-alto') {
-            listaDeMarretas.sort((a, b) => {
+    function ordenarEAtualizar() {
+        criterioOrdenacaoAtual = document.getElementById('ordenacaoLista').value;
+        carregarCardsSalvos();
+    }
+
+    function aplicarOrdenacaoParaExibicao(itens) {
+        if (criterioOrdenacaoAtual === 'padrao') return itens;
+
+        const copia = itens.slice();
+
+        if (criterioOrdenacaoAtual === 'nome-az') {
+            copia.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
+        } else if (criterioOrdenacaoAtual === 'nome-za') {
+            copia.sort((a, b) => (b.nome || "").localeCompare(a.nome || ""));
+        } else if (criterioOrdenacaoAtual === 'valor-alto') {
+            copia.sort((a, b) => {
                 const valA = parseFloat((a.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
                 const valB = parseFloat((b.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
                 return valB - valA;
             });
-        } 
-        else if (criterio === 'valor-baixo') {
-            listaDeMarretas.sort((a, b) => {
+        } else if (criterioOrdenacaoAtual === 'valor-baixo') {
+            copia.sort((a, b) => {
                 const valA = parseFloat((a.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
                 const valB = parseFloat((b.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0;
                 return valA - valB;
             });
-        } 
-        else if (criterio === 'padrao') {
-            inicializarBancoDados();
-            return;
         }
 
-        salvarListaDeMarretas();
-        carregarCardsSalvos();
+        return copia;
     }
 
     function carregarCardsSalvos() {
@@ -3291,10 +3297,12 @@ function renderizarCardHTML(item) {
         }, 0);
         document.getElementById('dash-valor').innerText = totalValorCalculado;
 
+        const itensParaExibir = aplicarOrdenacaoParaExibicao(itensFiltrados);
+
         container.innerHTML = '';
         const fragment = document.createDocumentFragment();
 
-        itensFiltrados.forEach(item => {
+        itensParaExibir.forEach(item => {
 
     let card;
 
@@ -3321,6 +3329,12 @@ function renderizarCardHTML(item) {
     }
 
     function reordenarArrayEGuardar() {
+        if (criterioOrdenacaoAtual !== 'padrao') {
+            alert('Pra reorganizar manualmente com as setas ▲▼, primeiro troca a ordenação pra "🔢 Ordem Padrão" no topo. Assim você reorganiza a ordem de verdade, sem misturar com uma visualização temporária de Value/Name.');
+            carregarCardsSalvos();
+            return;
+        }
+
         // Pega só os IDs que estão de fato visíveis na tela agora (respeitando
         // qualquer filtro ativo: pesquisa, tier, unique, bundles, etc).
         const idsVisiveis = new Set();
