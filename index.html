@@ -882,24 +882,24 @@
             gap: 2px;
         }
 
-        /* Selos de estabilidade + status, alinhados à direita do bloco de Valor
-           (dentro da área de informações, não flutuando sobre a imagem) */
+        /* Selos de estabilidade + status, alinhados à direita, na mesma
+           linha do Valor */
         .ftf-badges-direita {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 3px;
-            width: 100%;
-            margin-bottom: 4px;
+            gap: 2px;
+            flex: none;
+            max-width: 58%;
         }
 
         .txt-estabilidade {
             display: flex;
             align-items: center;
-            gap: 3px;
-            padding: 2px 5px;
+            gap: 2px;
+            padding: 1px 4px;
             border-radius: 3px;
-            font-size: 8px;
+            font-size: 6.5px;
             font-weight: 700;
             background: #161a24;
             border: 1px solid #222938;
@@ -909,8 +909,8 @@
         }
 
         .txt-estabilidade svg {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             flex: none;
         }
 
@@ -922,9 +922,9 @@
         }
 
         .ftf-badge {
-            font-size: 7px;
+            font-size: 6px;
             font-weight: 800;
-            padding: 1px 4px;
+            padding: 1px 3px;
             border-radius: 2px;
             text-transform: uppercase;
             display: flex;
@@ -1624,7 +1624,7 @@
         <input type="text" id="barraPesquisa" class="input-style" placeholder="Search items..." oninput="carregarCardsSalvos()">
         <select id="ordenacaoLista" class="input-style" onchange="ordenarEAtualizar()">
             <option value="padrao">🔢 Ordem Padrão</option>
-            <option value="valor-alto">📈 Value (High to Low)</option>
+            <option value="valor-alto" selected>📈 Value (High to Low)</option>
             <option value="valor-baixo">📉 Value (Low to High)</option>
             <option value="nome-az">🔤 Name (A-Z)</option>
             <option value="nome-za">🔤 Name (Z-A)</option>
@@ -2222,7 +2222,10 @@
 
             // Volta ordenação pro padrão
             const selectOrdenacao = document.getElementById('ordenacaoLista');
-            if (selectOrdenacao) selectOrdenacao.value = 'padrao';
+            if (selectOrdenacao) {
+                selectOrdenacao.value = 'valor-alto';
+                criterioOrdenacaoAtual = 'valor-alto';
+            }
 
             // Reseta filtro de evento pra "All Events"
             eventoAtual = 'all';
@@ -2987,19 +2990,19 @@ function renderizarCardHTML(item) {
 
                 </div>
 
-            </div>
+                <div class="ftf-badges-direita">
+                    <div class="box-badge-status"></div>
 
-            <div class="ftf-badges-direita">
-                <div class="box-badge-status"></div>
+                    <span class="txt-estabilidade"
+                          style="color:${corEstabilidade};">
 
-                <span class="txt-estabilidade"
-                      style="color:${corEstabilidade};">
+                        ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
 
-                    ${SVG_ESTABILIDADE[estabilidadeTexto] || ""}
+                        <span>${estabilidadeTexto}</span>
 
-                    <span>${estabilidadeTexto}</span>
+                    </span>
+                </div>
 
-                </span>
             </div>
 
             <div class="ftf-demand-row">
@@ -3225,7 +3228,7 @@ function renderizarCardHTML(item) {
     // organização manual com as setas ▲▼). Assim, trocar pra "Value" e
     // depois voltar pra "Ordem Padrão" sempre recupera exatamente a ordem
     // que você tinha organizado, sem perder nada.
-    let criterioOrdenacaoAtual = 'padrao';
+    let criterioOrdenacaoAtual = 'valor-alto';
 
     function ordenarEAtualizar() {
         criterioOrdenacaoAtual = document.getElementById('ordenacaoLista').value;
