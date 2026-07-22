@@ -3328,12 +3328,6 @@ function renderizarCardHTML(item) {
     }
 
     function reordenarArrayEGuardar() {
-        if (criterioOrdenacaoAtual !== 'padrao') {
-            alert('Pra reorganizar manualmente com as setas ▲▼, primeiro troca a ordenação pra "🔢 Ordem Padrão" no topo. Assim você reorganiza a ordem de verdade, sem misturar com uma visualização temporária de Value/Name.');
-            carregarCardsSalvos();
-            return;
-        }
-
         // Pega só os IDs que estão de fato visíveis na tela agora (respeitando
         // qualquer filtro ativo: pesquisa, tier, unique, bundles, etc).
         const idsVisiveis = new Set();
