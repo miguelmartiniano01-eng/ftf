@@ -1063,6 +1063,14 @@
             height: 12px !important;
         }
 
+        .hide-mode .ftf-item-rarity,
+        .hide-mode .ftf-demand-row,
+        .hide-mode .txt-estabilidade,
+        .hide-mode .box-badge-status,
+        .hide-mode .ftf-badges-direita {
+            display: none !important;
+        }
+
         .hide-mode .ftf-item-card.ftf-bundle-card {
             grid-column: span 4 !important;
         }
@@ -2392,11 +2400,6 @@
             return;
         }
 
-        if (existeItemComNome(nome)) {
-            alert(`Já existe um item chamado "${nome}" na sua lista. Escolha um nome diferente para o Bundle.`);
-            return;
-        }
-
         const bundleItens = [];
         document.querySelectorAll('#form-bundle-marretas-wrapper .linha-marreta-bundle').forEach(linha => {
             const nomeMarreta = linha.querySelector('.bundle-marreta-nome').value.trim();
@@ -2554,11 +2557,6 @@
 
         if (!nome) return;
 
-        if (existeItemComNome(nome)) {
-            alert(`Já existe um item chamado "${nome}" na sua lista. Escolha um nome diferente, ou edite o item existente em vez de criar um novo.`);
-            return;
-        }
-
         const novoObj = { 
             id: Date.now() + Math.floor(Math.random() * 100000),
             nome: nome, 
@@ -2686,11 +2684,6 @@
         document.getElementById('modal-salvar').onclick = () => {
             const novoNome = document.getElementById('edit-nome').value.trim() || item.nome;
 
-            if (existeItemComNome(novoNome, item.id)) {
-                alert(`Já existe outro item chamado "${novoNome}". Escolha um nome diferente.`);
-                return;
-            }
-
             item.nome = novoNome;
             item.imgSrc = document.getElementById('edit-img').value.trim();
             item.valor = document.getElementById('edit-valor').value.trim();
@@ -2802,11 +2795,6 @@
                 }
 
                 const novoNomeBundle = document.getElementById('edit-bundle-nome').value.trim() || item.nome;
-                if (existeItemComNome(novoNomeBundle, item.id)) {
-                    alert(`Já existe outro item chamado "${novoNomeBundle}". Escolha um nome diferente para o Bundle.`);
-                    return;
-                }
-
                 item.nome = novoNomeBundle;
                 item.raridade = document.getElementById('edit-bundle-raridade').value;
                 item.evento = document.getElementById('edit-bundle-evento').value || 'Geral';
@@ -2880,7 +2868,7 @@
                 <div class="ftf-card-info" style="padding-top: 4px;">
                     <span class="txt-posicao-automatica" style="position: static; display: inline-block; margin-bottom: 4px; width: fit-content;">#--</span>
                     <h3 class="ftf-item-name" style="font-size: 13px;">🎁 ${item.nome}</h3>
-                    <span class="ftf-item-rarity" style="color: ${corRaridade};">${item.raridade}</span>
+                    <span class="ftf-item-rarity" style="color: ${corRaridade};">${NOME_EXIBICAO_RARIDADE[(item.raridade || 'legendary').toLowerCase()] || item.raridade}</span>
 
                     <div class="ftf-value-row">
                         <div>
@@ -2984,7 +2972,7 @@ function renderizarCardHTML(item) {
                     <h3 class="ftf-item-name">${item.nome}</h3>
 
                     <span class="ftf-item-rarity" style="color:${corRaridade};">
-                        ${item.raridade}
+                        ${NOME_EXIBICAO_RARIDADE[raridadeKey] || item.raridade}
                     </span>
                 </div>
             </div>
@@ -3127,6 +3115,14 @@ function renderizarCardHTML(item) {
         epics: '✨',
         rares: '💎',
         commons: '🍃'
+    };
+
+    // Nome "bonito" da raridade pra exibir nos cards (sem plural: Common, Rare, Epic, Legendary)
+    const NOME_EXIBICAO_RARIDADE = {
+        legendary: 'Legendary',
+        epics: 'Epic',
+        rares: 'Rare',
+        commons: 'Common'
     };
 
     function atualizarBanner() {
