@@ -3211,32 +3211,35 @@ function renderizarCardHTML(item) {
         const TAMANHO_ESTRELA = '9px'; 
         const PATH_ESTRELA_GORDINHA = "M 9.33,5.25 L 10.96,2.65 Q 12.00,1.00 13.04,2.65 L 14.67,5.25 Q 15.70,6.90 17.60,7.38 L 20.57,8.13 Q 22.46,8.60 21.21,10.10 L 19.24,12.45 Q 17.99,13.95 18.12,15.89 L 18.33,18.95 Q 18.47,20.90 16.66,20.17 L 13.81,19.03 Q 12.00,18.30 10.19,19.03 L 7.34,20.17 Q 5.53,20.90 5.67,18.95 L 5.88,15.89 Q 6.01,13.95 4.76,12.45 L 2.79,10.10 Q 1.54,8.60 3.43,8.13 L 6.40,7.38 Q 8.30,6.90 9.33,5.25 Z";
 
-        // Path com pontas ligeiramente arredondadas igual ao do design
-const PATH_ESTRELA = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
+        // Path da estrela "gordinha" com proporções bem preenchidas
+const PATH_ESTRELA_GORDINHA = "M12 2.5l2.9 6.26 6.8 0.82-5.02 4.67 1.3 6.75L12 17.5l-6.02 3.5 1.3-6.75-5.02-4.67 6.8-0.82L12 2.5z";
 
-// Cores e tamanhos conforme a imagem
-const COR_CHEIA = "#F2BE24"; // Amarelo vibrante do print
-const COR_CONTORNO = "#3A4556"; // Cinza/azul escuro do contorno da estrela vazia
+// Cores exatas da UI
+const COR_AMARELA = "#FFB830"; // Amarelo vibrante das estrelas cheias
+const COR_CINZA_ESCURA = "#3A4556"; // Cinza escuro para o "recheio" e contorno
+const COR_CINZA_BORDA = "#4B5563"; // Borda suave para as estrelas totalmente vazias
 
-const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:${COR_CHEIA}; vertical-align: middle;"><path d="${PATH_ESTRELA}"/></svg>`;
+// Estrela Cheia
+const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:${COR_AMARELA}; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
 
-const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:${COR_CONTORNO}; stroke-width:1.8; stroke-linejoin:round; vertical-align: middle;"><path d="${PATH_ESTRELA}"/></svg>`;
+// Estrela Vazia (Apenas contorno suave)
+const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:${COR_CINZA_BORDA}; stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
 
 for (let i = 1; i <= 5; i++) {
     if (notaNum >= i) {
         estrelasHTML += svgEstrelaCheia;
     } else if (notaNum > i - 1 && notaNum < i) {
-        // Meia Estrela com overlay limpo usando clipPath (sem sobreposição de fundos opacos)
-        const idClip = `clip-meia-${Math.random().toString(36).substr(2, 9)}`;
+        // Meia Estrela: Lado esquerdo Amarelo + Lado direito Cinza Recheado
+        const idClipAmarelo = `clip-amarelo-${Math.random().toString(36).substr(2, 9)}`;
         estrelasHTML += `
             <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
                 <defs>
-                    <clipPath id="${idClip}">
+                    <clipPath id="${idClipAmarelo}">
                         <rect x="0" y="0" width="12" height="24" />
                     </clipPath>
                 </defs>
-                <path d="${PATH_ESTRELA}" fill="none" stroke="${COR_CONTORNO}" stroke-width="1.8" stroke-linejoin="round"/>
-                <path d="${PATH_ESTRELA}" fill="${COR_CHEIA}" clip-path="url(#${idClip})" />
+                <path d="${PATH_ESTRELA_GORDINHA}" fill="${COR_CINZA_ESCURA}" />
+                <path d="${PATH_ESTRELA_GORDINHA}" fill="${COR_AMARELA}" clip-path="url(#${idClipAmarelo})" />
             </svg>
         `;
     } else {
