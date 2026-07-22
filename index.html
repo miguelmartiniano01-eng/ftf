@@ -3202,27 +3202,27 @@ function renderizarCardHTML(item) {
         }
     }
 
-    function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
+function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
     const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
     if (!containerEstrelas) return;
     
     let notaNum = parseFloat(notaEstrelas) || 0;
     let estrelasHTML = '';
-    const TAMANHO_ESTRELA = '9px'; 
+    const TAMANHO_ESTRELA = '10px'; // Aumentei 1px para destacar o formato gordinho
 
-    // Path da estrela "gordinha" com proporções bem preenchidas
-    const PATH_ESTRELA_GORDINHA = "M12 2.5l2.9 6.26 6.8 0.82-5.02 4.67 1.3 6.75L12 17.5l-6.02 3.5 1.3-6.75-5.02-4.67 6.8-0.82L12 2.5z";
+    // Vetor de estrela BEM gordinha e preenchida
+    const PATH_ESTRELA_GORDINHA = "M12 1.7l3.08 6.26 6.91 1.01-5 4.87 1.18 6.88L12 17.47l-6.17 3.25 1.18-6.88-5-4.87 6.91-1.01L12 1.7z";
 
     // Cores exatas da UI
-    const COR_AMARELA = "#FFB830";      // Amarelo vibrante das estrelas cheias
-    const COR_CINZA_ESCURA = "#3A4556"; // Cinza escuro para o "recheio" da meia estrela
-    const COR_CINZA_BORDA = "#4B5563";  // Borda suave para as estrelas totalmente vazias
+    const COR_AMARELA = "#FFB830";      // Amarelo vibrante
+    const COR_CINZA_ESCURA = "#3A4556"; // Cinza escuro para o "recheio"
+    const COR_CINZA_BORDA = "#4B5563";  // Borda suave para as vazias
 
-    // Estrela Cheia
+    // Estrela Cheia (Preenchida por completo)
     const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:${COR_AMARELA}; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
 
-    // Estrela Vazia (Apenas contorno suave)
-    const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:${COR_CINZA_BORDA}; stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
+    // Estrela Vazia (Apenas o contorno gordinho)
+    const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:${COR_CINZA_BORDA}; stroke-width:2; stroke-linejoin:round; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
 
     for (let i = 1; i <= 5; i++) {
         if (notaNum >= i) {
