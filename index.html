@@ -1684,10 +1684,10 @@
     const SVG_ESTABILIDADE = {
         Rising: `<svg viewBox="0 0 24 24" fill="none" stroke="#36D8B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
         "Doing Well": `<svg viewBox="0 0 24 24" fill="none" stroke="#47CC6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 11.5 2 18"></polyline></svg>`,
-        Improving: `<svg viewBox="0 0 24 24"fill="none"stroke="#8BCC14"stroke-width="3"stroke-linecap="round" stroke-linejoin="round"><path d="M14 10V5.5C14 4.7 13.5 4 12.8 4c-.4 0-.8.2-1 .6L9 10H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h11a2 2 0 0 0 2-1.7l1-6A2 2 0 0 0 17 10z"/><path d="M5 10v10"/></svg>`,
+        Improving: `<svg viewBox="0 0 24 24" fill="none" stroke="#8BCC14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>`,
         Stable: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
         Fluctuating: `<svg viewBox="0 0 24 24" fill="none" stroke="#F2BE24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-9 6 18 3-9h3"></path></svg>`,
-        Struggling: `<svg viewBox="0 0 24 24"fill="none"stroke="#E56D16"stroke-width="3"stroke-linecap="round" stroke-linejoin="round"> <g transform="translate(24 24) scale(1 -1)"> <path d="M14 10V5.5C14 4.7 13.5 4 12.8 4c-.4 0-.8.2-1 .6L9 10H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h11a2 2 0 0 0 2-1.7l1-6A2 2 0 0 0 17 10z"/><path d="M5 10v10"/></g></svg>`,
+        Struggling: `<svg viewBox="0 0 24 24" fill="none" stroke="#E56D16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>`,
         Receding: `<svg viewBox="0 0 24 24" fill="none" stroke="#D84146" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`,
         Dropping: `<svg viewBox="0 0 24 24" fill="none" stroke="#a20002" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 10.5 15.5 15.5 11.5 22 18"></polyline><polyline points="16 18 22 18 22 12"></polyline></svg>`
     };
@@ -3210,25 +3210,40 @@ function renderizarCardHTML(item) {
         const TAMANHO_ESTRELA = '9px'; 
         const PATH_ESTRELA_GORDINHA = "M 9.33,5.25 L 10.96,2.65 Q 12.00,1.00 13.04,2.65 L 14.67,5.25 Q 15.70,6.90 17.60,7.38 L 20.57,8.13 Q 22.46,8.60 21.21,10.10 L 19.24,12.45 Q 17.99,13.95 18.12,15.89 L 18.33,18.95 Q 18.47,20.90 16.66,20.17 L 13.81,19.03 Q 12.00,18.30 10.19,19.03 L 7.34,20.17 Q 5.53,20.90 5.67,18.95 L 5.88,15.89 Q 6.01,13.95 4.76,12.45 L 2.79,10.10 Q 1.54,8.60 3.43,8.13 L 6.40,7.38 Q 8.30,6.90 9.33,5.25 Z";
 
-        const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
-        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#5B5B66; stroke-width:1.5;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
-        for (let i = 1; i <= 5; i++) {
-            if (notaNum >= i) {
-                estrelasHTML += svgEstrelaCheia;
-            } else if (notaNum > i - 1 && notaNum < i) {
-                estrelasHTML += `
-                    <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
-                        <svg viewBox="0 0 24 24" style="position:absolute; top:0; left:0; width:100%; height:100%; fill:#334155;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>
-                        <span style="position:absolute; top:0; left:0; width:50%; height:100%; overflow:hidden;">
-                            <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#5B5B66; display:block;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>
-                        </span>
-                    </span>
-                `;
-            } else {
-                estrelasHTML += svgEstrelaVazia;
-            }
-        }
-        containerEstrelas.innerHTML = estrelasHTML;
+        // Path com pontas ligeiramente arredondadas igual ao do design
+const PATH_ESTRELA = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
+
+// Cores e tamanhos conforme a imagem
+const COR_CHEIA = "#F2BE24"; // Amarelo vibrante do print
+const COR_CONTORNO = "#3A4556"; // Cinza/azul escuro do contorno da estrela vazia
+
+const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:${COR_CHEIA}; vertical-align: middle;"><path d="${PATH_ESTRELA}"/></svg>`;
+
+const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:${COR_CONTORNO}; stroke-width:1.8; stroke-linejoin:round; vertical-align: middle;"><path d="${PATH_ESTRELA}"/></svg>`;
+
+for (let i = 1; i <= 5; i++) {
+    if (notaNum >= i) {
+        estrelasHTML += svgEstrelaCheia;
+    } else if (notaNum > i - 1 && notaNum < i) {
+        // Meia Estrela com overlay limpo usando clipPath (sem sobreposição de fundos opacos)
+        const idClip = `clip-meia-${Math.random().toString(36).substr(2, 9)}`;
+        estrelasHTML += `
+            <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
+                <defs>
+                    <clipPath id="${idClip}">
+                        <rect x="0" y="0" width="12" height="24" />
+                    </clipPath>
+                </defs>
+                <path d="${PATH_ESTRELA}" fill="none" stroke="${COR_CONTORNO}" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="${PATH_ESTRELA}" fill="${COR_CHEIA}" clip-path="url(#${idClip})" />
+            </svg>
+        `;
+    } else {
+        estrelasHTML += svgEstrelaVazia;
+    }
+}
+
+containerEstrelas.innerHTML = estrelasHTML;
     }
         
     // A ordenação escolhida no select agora é só uma forma de VISUALIZAR a
