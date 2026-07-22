@@ -3203,51 +3203,107 @@ function renderizarCardHTML(item) {
     }
 
         function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
-    const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
-    if (!containerEstrelas) return;
-    
-    let notaNum = parseFloat(notaEstrelas) || 0;
-    let estrelasHTML = '';
-    const TAMANHO_ESTRELA = '11px'; // Aumentei um tiquinho para dar espaço para o recheio aparecer!
+    const container = cardHTML.querySelector(".txt-demanda-estrelas");
+    if (!container) return;
 
-    // Path ultra-gordinho feito com curvas suaves (Q)
-    const PATH_ESTRELA_GORDINHA = "M 12,2 Q 13.5,6.5 17.5,7.5 Q 21.5,8.5 19,12.5 Q 16.5,16.5 18,21 Q 13.5,18.5 12,18.5 Q 10.5,18.5 6,21 Q 7.5,16.5 5,12.5 Q 2.5,8.5 6.5,7.5 Q 10.5,6.5 12,2 Z";
+    const nota = Math.max(0, Math.min(5, parseFloat(notaEstrelas) || 0));
 
-    // Cores exatas
-    const COR_AMARELA = "#FFB830";      // Amarelo vibrante
-    const COR_CINZA_ESCURA = "#3A4556"; // Cinza escuro para o "recheio"
-    const COR_CINZA_BORDA = "#5B5B66";  // Borda para as estrelas totalmente vazias
+    const TAM = 15;
 
-    // Estrela Cheia
-    const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:${COR_AMARELA}; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
+    const COR_AMARELA = "#FFB830";
+    const COR_BORDA = "#46546B";
 
-    // Estrela Vazia (Contorno gordinho)
-    const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:${COR_CINZA_BORDA}; stroke-width:2.2; stroke-linejoin:round; vertical-align: middle;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
+    // Estrela semelhante à da imagem
+    const PATH =
+        "M12 2.8L14.8 8.5L21 9.4L16.5 13.8L17.6 20L12 17L6.4 20L7.5 13.8L3 9.4L9.2 8.5Z";
 
-    for (let i = 1; i <= 5; i++) {
-        if (notaNum >= i) {
-            estrelasHTML += svgEstrelaCheia;
-        } else if (notaNum > i - 1 && notaNum < i) {
-            // Meia Estrela
-            const idClipAmarelo = `clip-amarelo-${Math.random().toString(36).substr(2, 9)}`;
-            estrelasHTML += `
-                <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
-                    <defs>
-                        <clipPath id="${idClipAmarelo}">
-                            <rect x="0" y="0" width="12" height="24" />
-                        </clipPath>
-                    </defs>
-                    <path d="${PATH_ESTRELA_GORDINHA}" fill="${COR_CINZA_ESCURA}" />
-                    <path d="${PATH_ESTRELA_GORDINHA}" fill="${COR_AMARELA}" clip-path="url(#${idClipAmarelo})" />
-                </svg>
-            `;
+    let html = "";
+
+    for (let i = 0; i < 5; i++) {
+
+        const valor = nota - i;
+
+        if (valor >= 1) {
+
+            // CHEIA
+
+            html += `
+<svg
+viewBox="0 0 24 24"
+width="${TAM}"
+height="${TAM}"
+style="margin-right:2px;vertical-align:middle">
+
+<path
+d="${PATH}"
+fill="${COR_AMARELA}"/>
+
+</svg>`;
+
+        } else if (valor >= 0.5) {
+
+            // METADE
+
+            const id = "clip" + Math.random().toString(36).slice(2);
+
+            html += `
+<svg
+viewBox="0 0 24 24"
+width="${TAM}"
+height="${TAM}"
+style="margin-right:2px;vertical-align:middle">
+
+<defs>
+
+<clipPath id="${id}">
+<rect x="0" y="0" width="12" height="24"/>
+</clipPath>
+
+</defs>
+
+<!-- contorno -->
+
+<path
+d="${PATH}"
+fill="none"
+stroke="${COR_BORDA}"
+stroke-width="1.5"
+stroke-linejoin="round"/>
+
+<!-- metade -->
+
+<path
+d="${PATH}"
+fill="${COR_AMARELA}"
+clip-path="url(#${id})"/>
+
+</svg>`;
+
         } else {
-            estrelasHTML += svgEstrelaVazia;
+
+            // VAZIA
+
+            html += `
+<svg
+viewBox="0 0 24 24"
+width="${TAM}"
+height="${TAM}"
+style="margin-right:2px;vertical-align:middle">
+
+<path
+d="${PATH}"
+fill="none"
+stroke="${COR_BORDA}"
+stroke-width="1.5"
+stroke-linejoin="round"/>
+
+</svg>`;
+
         }
     }
 
-    containerEstrelas.innerHTML = estrelasHTML;
-}
+    container.innerHTML = html;
+        }
 
 
     // A ordenação escolhida no select agora é só uma forma de VISUALIZAR a
