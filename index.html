@@ -3196,9 +3196,9 @@ function renderizarCardHTML(item) {
 
         if (containerBadge) {
             containerBadge.innerHTML = '';
-            if (item.status === 'overpaid') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #47cc6a; background: rgba(71,204,106,0.5);">Overpaid For</span>`;
-            else if (item.status === 'underpaid') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #ff4d4f; background: rgba(255,77,79,0.5);">Underpaid For</span>`;
-            else if (item.status === 'niche') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #45aaf2; background: rgba(69,170,242,0.5);">Niche</span>`;
+            if (item.status === 'overpaid') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #47cc6a; background: rgba(71,204,106,0.5);">＋ Overpaid For</span>`;
+            else if (item.status === 'underpaid') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #ff4d4f; background: rgba(255,77,79,0.5);">－ Underpaid For</span>`;
+            else if (item.status === 'niche') containerBadge.innerHTML = `<span class="ftf-badge" style="color: #45aaf2; background: rgba(69,170,242,0.5);">☆ Niche</span>`;
         }
     }
 
