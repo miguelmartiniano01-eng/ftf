@@ -3203,125 +3203,34 @@ function renderizarCardHTML(item) {
     }
 
         function gerarEstrelasDemanda(cardHTML, notaEstrelas) {
-    const container = cardHTML.querySelector(".txt-demanda-estrelas");
-    if (!container) return;
+        const containerEstrelas = cardHTML.querySelector('.txt-demanda-estrelas');
+        if (!containerEstrelas) return;
+        
+        let notaNum = parseFloat(notaEstrelas) || 0;
+        let estrelasHTML = '';
+        const TAMANHO_ESTRELA = '9px'; 
+        const PATH_ESTRELA_GORDINHA = "M 9.33,5.25 L 10.96,2.65 Q 12.00,1.00 13.04,2.65 L 14.67,5.25 Q 15.70,6.90 17.60,7.38 L 20.57,8.13 Q 22.46,8.60 21.21,10.10 L 19.24,12.45 Q 17.99,13.95 18.12,15.89 L 18.33,18.95 Q 18.47,20.90 16.66,20.17 L 13.81,19.03 Q 12.00,18.30 10.19,19.03 L 7.34,20.17 Q 5.53,20.90 5.67,18.95 L 5.88,15.89 Q 6.01,13.95 4.76,12.45 L 2.79,10.10 Q 1.54,8.60 3.43,8.13 L 6.40,7.38 Q 8.30,6.90 9.33,5.25 Z";
 
-    const nota = Math.max(0, Math.min(5, parseFloat(notaEstrelas) || 0));
-
-    const TAM = 15;
-
-    const COR_AMARELA = "#FFB830";
-    const COR_BORDA = "#46546B";
-
-            const PATH = `
-M12 2.9
-C13.2 2.9 14.0 4.7 15.0 6.8
-C15.5 7.8 16.8 8.5 19.0 8.8
-C21.2 9.1 22.0 9.6 21.5 10.6
-C20.7 11.8 19.0 13.0 17.2 14.3
-C16.6 14.7 16.5 15.5 16.9 17.0
-C17.3 18.6 17.6 20.0 17.9 21.0
-C18.0 21.5 17.5 21.8 16.9 21.5
-C15.2 20.6 13.6 19.8 12.3 19.2
-C12.1 19.0 11.9 19.0 11.7 19.2
-C10.4 19.8 8.8 20.6 7.1 21.5
-C6.5 21.8 6.0 21.5 6.1 21.0
-C6.4 20.0 6.7 18.6 7.1 17.0
-C7.5 15.5 7.4 14.7 6.8 14.3
-C5.0 13.0 3.3 11.8 2.5 10.6
-C2.0 9.6 2.8 9.1 5.0 8.8
-C7.2 8.5 8.5 7.8 9.0 6.8
-C10.0 4.7 10.8 2.9 12 2.9
-Z`;
-
-    let html = "";
-
-    for (let i = 0; i < 5; i++) {
-
-        const valor = nota - i;
-
-        if (valor >= 1) {
-
-            // CHEIA
-
-            html += `
-<svg
-viewBox="0 0 24 24"
-width="${TAM}"
-height="${TAM}"
-style="margin-right:2px;vertical-align:middle">
-
-<path
-d="${PATH}"
-fill="${COR_AMARELA}"/>
-
-</svg>`;
-
-        } else if (valor >= 0.5) {
-
-            // METADE
-
-            const id = "clip" + Math.random().toString(36).slice(2);
-
-            html += `
-<svg
-viewBox="0 0 24 24"
-width="${TAM}"
-height="${TAM}"
-style="margin-right:2px;vertical-align:middle">
-
-<defs>
-
-<clipPath id="${id}">
-<rect x="0" y="0" width="12" height="24"/>
-</clipPath>
-
-</defs>
-
-<!-- contorno -->
-
-<path
-d="${PATH}"
-fill="none"
-stroke="${COR_BORDA}"
-stroke-width="1.5"
-stroke-linejoin="round"/>
-
-<!-- metade -->
-
-<path
-d="${PATH}"
-fill="${COR_AMARELA}"
-clip-path="url(#${id})"/>
-
-</svg>`;
-
-        } else {
-
-            // VAZIA
-
-            html += `
-<svg
-viewBox="0 0 24 24"
-width="${TAM}"
-height="${TAM}"
-style="margin-right:2px;vertical-align:middle">
-
-<path
-d="${PATH}"
-fill="none"
-stroke="${COR_BORDA}"
-stroke-width="1.5"
-stroke-linejoin="round"/>
-
-</svg>`;
-
+        const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
+        const svgEstrelaVazia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:none; stroke:#334155; stroke-width:1.5;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
+        for (let i = 1; i <= 5; i++) {
+            if (notaNum >= i) {
+                estrelasHTML += svgEstrelaCheia;
+            } else if (notaNum > i - 1 && notaNum < i) {
+                estrelasHTML += `
+                    <span style="display:inline-block; position:relative; width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; vertical-align: middle;">
+                        <svg viewBox="0 0 24 24" style="position:absolute; top:0; left:0; width:100%; height:100%; fill:#334155;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>
+                        <span style="position:absolute; top:0; left:0; width:50%; height:100%; overflow:hidden;">
+                            <svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830; display:block;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>
+                        </span>
+                    </span>
+                `;
+            } else {
+                estrelasHTML += svgEstrelaVazia;
+            }
         }
+        containerEstrelas.innerHTML = estrelasHTML;
     }
-
-    container.innerHTML = html;
-        }
-
 
     // A ordenação escolhida no select agora é só uma forma de VISUALIZAR a
     // lista — não mexe na ordem "de verdade" guardada (a que reflete a sua
