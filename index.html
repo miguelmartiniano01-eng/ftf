@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -525,9 +526,32 @@
 
         .linha-marreta-bundle {
             display: grid;
-            grid-template-columns: 40px 1fr 90px 32px;
+            grid-template-columns: 40px 1fr 90px 24px 32px;
             gap: 6px;
             align-items: center;
+        }
+
+        .bundle-move-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .bundle-move-btns button {
+            background: #1b2030;
+            border: 1px solid #2d3445;
+            color: #94a3b8;
+            border-radius: 3px;
+            font-size: 9px;
+            line-height: 1;
+            padding: 3px 0;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .bundle-move-btns button:hover {
+            background: #232836;
+            color: #ffb830;
         }
 
         .linha-changelog-2col {
@@ -949,6 +973,14 @@
             align-items: center;
         }
 
+        .txt-range-valor {
+            font-size: 6.5px;
+            color: #94a3b8;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
         /* Action Configuration Controls Layer */
         .btn-acoes-card {
             margin-top: 5px;
@@ -1214,10 +1246,10 @@
             .ftf-nav-item { font-size: 11px; }
             .ftf-card-img-wrapper { height: 95px; }
             .linha-marreta-bundle {
-                grid-template-columns: 40px 1fr 32px;
+                grid-template-columns: 40px 1fr 24px 32px;
                 grid-template-areas:
-                    "img nome nome"
-                    "img valor btn";
+                    "img nome nome nome"
+                    "img valor mover btn";
             }
             .linha-marreta-bundle .bundle-marreta-preview-wrapper,
             .linha-marreta-bundle .edit-bundle-marreta-preview-wrapper { grid-area: img; }
@@ -1225,6 +1257,7 @@
             .linha-marreta-bundle .edit-bundle-marreta-nome { grid-area: nome; }
             .linha-marreta-bundle .bundle-marreta-valor,
             .linha-marreta-bundle .edit-bundle-marreta-valor { grid-area: valor; }
+            .linha-marreta-bundle .bundle-move-btns { grid-area: mover; }
             .linha-marreta-bundle .btn-remover-linha-marreta { grid-area: btn; }
 
             .linha-changelog-2col {
@@ -1390,6 +1423,17 @@
                         <option value="Dropping">Dropping</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Range (Valor Instável)</label>
+                    <select id="rangeAtivoItem" class="input-style" onchange="toggleRangeInput(this, 'rangeValorWrapperItem')">
+                        <option value="nao" selected>Sem Range</option>
+                        <option value="sim">Com Range</option>
+                    </select>
+                </div>
+                <div class="form-group" id="rangeValorWrapperItem" style="display:none;">
+                    <label class="form-label">Faixa de Valores (Ex: 110-150)</label>
+                    <input type="text" id="rangeValorItem" class="input-style" placeholder="Ex: 110-150">
+                </div>
             </div>
             <button type="button" class="btn-submit" onclick="criarNovoCard()">Adicionar Item Customizado ✨</button>
         </div>
@@ -1451,8 +1495,12 @@
                         <div class="bundle-marreta-preview-wrapper">
                             <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                         </div>
-                        <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="recalcularTotalBundle(); atualizarPreviewImagemBundle(this)">
+                        <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
                         <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
+                        <div class="bundle-move-btns">
+                            <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
+                            <button type="button" onclick="moverLinhaMarretaBundle(this, 'down')">▼</button>
+                        </div>
                         <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaMarretaBundle(this)">✕</button>
                     </div>
                 </div>
@@ -2301,6 +2349,12 @@
         }
     }
 
+    function toggleRangeInput(selectEl, wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+        wrapper.style.display = selectEl.value === 'sim' ? 'block' : 'none';
+    }
+
     function buscarImagemPorNome(nome) {
         if (!nome || !nome.trim()) return '';
         const alvo = nome.trim().toLowerCase();
@@ -2316,13 +2370,54 @@
         return encontrado ? (encontrado.imgSrc || '') : '';
     }
 
+    // Acha o valor atual (FV) de uma marreta já cadastrada pelo nome, pra
+    // preencher automaticamente o campo Valor de uma linha de bundle.
+    function buscarValorPorNome(nome) {
+        if (!nome || !nome.trim()) return '';
+        const alvo = nome.trim().toLowerCase();
+
+        let encontrado = listaDeMarretas.find(m => m.tipo !== 'bundles' && (m.nome || '').trim().toLowerCase() === alvo);
+
+        if (!encontrado) {
+            encontrado = listaDeMarretas.find(m => m.tipo !== 'bundles' && (m.nome || '').trim().toLowerCase().includes(alvo));
+        }
+
+        return encontrado ? (encontrado.valor || '') : '';
+    }
+
     function atualizarPreviewImagemBundle(inputNomeEl) {
         const linha = inputNomeEl.closest('.linha-marreta-bundle');
         if (!linha) return;
+
         const img = linha.querySelector('.bundle-marreta-preview-img, .edit-bundle-marreta-preview-img');
-        if (!img) return;
-        const imgEncontrada = buscarImagemPorNome(inputNomeEl.value);
-        img.src = imgEncontrada || 'https://placehold.co/60x60/0f1117/64748b?text=%3F';
+        if (img) {
+            const imgEncontrada = buscarImagemPorNome(inputNomeEl.value);
+            img.src = imgEncontrada || 'https://placehold.co/60x60/0f1117/64748b?text=%3F';
+        }
+
+        const inputValor = linha.querySelector('.bundle-marreta-valor, .edit-bundle-marreta-valor');
+        if (inputValor) {
+            const valorEncontrado = buscarValorPorNome(inputNomeEl.value);
+            if (valorEncontrado) {
+                inputValor.value = valorEncontrado;
+            }
+        }
+    }
+
+    // Move a linha de marreta (dentro do form de criar OU editar bundle) uma
+    // posição pra cima ou pra baixo.
+    function moverLinhaMarretaBundle(botao, direcao) {
+        const linha = botao.closest('.linha-marreta-bundle');
+        if (!linha) return;
+        const wrapper = linha.parentElement;
+
+        if (direcao === 'up') {
+            const anterior = linha.previousElementSibling;
+            if (anterior) wrapper.insertBefore(linha, anterior);
+        } else {
+            const proximo = linha.nextElementSibling;
+            if (proximo) wrapper.insertBefore(proximo, linha);
+        }
     }
 
     function adicionarLinhaMarretaBundle() {
@@ -2333,8 +2428,12 @@
             <div class="bundle-marreta-preview-wrapper">
                 <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
             </div>
-            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="recalcularTotalBundle(); atualizarPreviewImagemBundle(this)">
+            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
             <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
+            <div class="bundle-move-btns">
+                <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
+                <button type="button" onclick="moverLinhaMarretaBundle(this, 'down')">▼</button>
+            </div>
             <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaMarretaBundle(this)">✕</button>
         `;
         wrapper.appendChild(linha);
@@ -2371,8 +2470,12 @@
                 <div class="bundle-marreta-preview-wrapper">
                     <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                 </div>
-                <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="recalcularTotalBundle(); atualizarPreviewImagemBundle(this)">
+                <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
                 <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
+                <div class="bundle-move-btns">
+                    <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
+                    <button type="button" onclick="moverLinhaMarretaBundle(this, 'down')">▼</button>
+                </div>
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaMarretaBundle(this)">✕</button>
             </div>
         `;
@@ -2556,6 +2659,8 @@
         const evento = document.getElementById('eventoItem').value || 'Geral';
         const tipo = document.getElementById('tipoItem').value;
         const recente = document.getElementById('recenteItem').value;
+        const rangeAtivo = document.getElementById('rangeAtivoItem').value;
+        const rangeValor = document.getElementById('rangeValorItem').value.trim();
 
         if (!nome) return;
 
@@ -2571,7 +2676,9 @@
             imgSrc: urlImagem,
             evento: evento,
             tipo: tipo,
-            recente: recente
+            recente: recente,
+            rangeAtivo: rangeAtivo,
+            rangeValor: rangeValor
         };
         
         listaDeMarretas.push(novoObj);
@@ -2585,6 +2692,9 @@
         document.getElementById('linkImagem').value = '';
         document.getElementById('valorItem').value = '';
         document.getElementById('eventoItem').value = 'Geral'; // Corrigido aqui
+        document.getElementById('rangeAtivoItem').value = 'nao';
+        document.getElementById('rangeValorItem').value = '';
+        document.getElementById('rangeValorWrapperItem').style.display = 'none';
     }
 
     function abrirModalEdicaoCompleta(item) {
@@ -2670,9 +2780,20 @@
                 </select>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">STABILITY STATUS:</label>
-                <select id="edit-estabilidade" class="input-style" style="width:100%; margin-bottom:12px;">
+                <select id="edit-estabilidade" class="input-style" style="width:100%; margin-bottom:8px;">
                     ${["Rising","Doing Well","Improving","Stable","Fluctuating","Struggling","Receding","Dropping"].map(est => `<option value="${est}" ${item.templates === est ? 'selected':''}>${est}</option>`).join('')}
                 </select>
+
+                <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">RANGE (VALOR INSTÁVEL):</label>
+                <select id="edit-rangeAtivo" class="input-style" style="width:100%; margin-bottom:8px;" onchange="toggleRangeInput(this, 'edit-rangeValorWrapper')">
+                    <option value="nao" ${item.rangeAtivo !== 'sim' ? 'selected':''}>Sem Range</option>
+                    <option value="sim" ${item.rangeAtivo === 'sim' ? 'selected':''}>Com Range</option>
+                </select>
+
+                <div id="edit-rangeValorWrapper" style="display:${item.rangeAtivo === 'sim' ? 'block' : 'none'};">
+                    <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">FAIXA DE VALORES (EX: 110-150):</label>
+                    <input type="text" id="edit-rangeValor" class="input-style" style="width:100%; margin-bottom:12px;" value="${item.rangeValor || ''}" placeholder="Ex: 110-150">
+                </div>
 
                 <div style="display: flex; gap: 8px;">
                     <button id="modal-cancelar" style="flex:1; padding:8px; background:#222733; color:#fff; border:1px solid #2d3445; border-radius:4px; font-weight:600; cursor:pointer;">Cancel</button>
@@ -2697,6 +2818,8 @@
             item.tendencia = document.getElementById('edit-tendencia').value;
             item.status = document.getElementById('edit-status').value;
             item.templates = document.getElementById('edit-estabilidade').value;
+            item.rangeAtivo = document.getElementById('edit-rangeAtivo').value;
+            item.rangeValor = document.getElementById('edit-rangeValor').value.trim();
 
             salvarListaDeMarretas();
             carregarCardsSalvos();
@@ -2718,8 +2841,12 @@
                     <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
                         <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="${it.imgSrc || 'https://placehold.co/60x60/0f1117/64748b?text=%3F'}" alt="preview">
                     </div>
-                    <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" value="${it.nome || ''}" oninput="recalcularTotalBundleEdicao(); atualizarPreviewImagemBundle(this)">
+                    <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" value="${it.nome || ''}" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
                     <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" value="${it.valor || ''}" oninput="recalcularTotalBundleEdicao()">
+                    <div class="bundle-move-btns">
+                        <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
+                        <button type="button" onclick="moverLinhaMarretaBundle(this, 'down')">▼</button>
+                    </div>
                     <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaMarretaBundleEdicao(this)">✕</button>
                 </div>
             `).join('');
@@ -2818,8 +2945,12 @@
                 <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
                     <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                 </div>
-                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" oninput="recalcularTotalBundleEdicao(); atualizarPreviewImagemBundle(this)">
+                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
                 <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundleEdicao()">
+                <div class="bundle-move-btns">
+                    <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
+                    <button type="button" onclick="moverLinhaMarretaBundle(this, 'down')">▼</button>
+                </div>
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaMarretaBundleEdicao(this)">✕</button>
             `;
             wrapper.appendChild(linha);
@@ -3010,6 +3141,9 @@ function renderizarCardHTML(item) {
                         <span>${estabilidadeTexto}</span>
 
                     </span>
+
+                    ${item.rangeAtivo === 'sim' && item.rangeValor ? `<span class="txt-range-valor">Range: ${item.rangeValor}</span>` : ''}
+
                 </div>
 
             </div>
