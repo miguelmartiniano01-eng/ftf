@@ -963,8 +963,13 @@
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid #1a1e26;
-            padding-top: 2px;
-            margin-top: 0.5px;
+            padding-top: 4px;
+            margin-top: 2px;
+        }
+
+        .ftf-demand-row-compacta {
+            padding-top: 1px;
+            margin-top: -3px;
         }
 
         .txt-demanda-estrelas {
@@ -974,11 +979,14 @@
         }
 
         .txt-range-valor {
-            font-size: 6.5px;
+            display: block;
+            font-size: 9px;
+            line-height: 1;
             color: #94a3b8;
             font-weight: 700;
             letter-spacing: 0.2px;
             white-space: nowrap;
+            margin-top: 1px;
         }
 
         /* Action Configuration Controls Layer */
@@ -3141,6 +3149,8 @@ function renderizarCardHTML(item) {
 
                     <span class="box-valor-dinamico"></span>
 
+                    ${item.rangeAtivo === 'sim' && item.rangeValor ? `<span class="txt-range-valor">Range: ${item.rangeValor}</span>` : ''}
+
                 </div>
 
                 <div class="ftf-badges-direita">
@@ -3155,13 +3165,11 @@ function renderizarCardHTML(item) {
 
                     </span>
 
-                    ${item.rangeAtivo === 'sim' && item.rangeValor ? `<span class="txt-range-valor">Range: ${item.rangeValor}</span>` : ''}
-
                 </div>
 
             </div>
 
-            <div class="ftf-demand-row">
+            <div class="ftf-demand-row ftf-demand-row-compacta">
 
                 <span class="ftf-value-label">
                     Demand
