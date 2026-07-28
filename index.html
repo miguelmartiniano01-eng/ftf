@@ -562,6 +562,14 @@
             margin-bottom: 6px;
         }
 
+        .linha-changelog-1col {
+            display: grid;
+            grid-template-columns: 1fr 32px;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
         .linha-changelog-3col {
             display: grid;
             grid-template-columns: 1fr 100px 90px 32px;
@@ -969,7 +977,7 @@
 
         .ftf-demand-row-compacta {
             padding-top: 1px;
-            margin-top: -2px;
+            margin-top: -3px;
         }
 
         .txt-demanda-estrelas {
@@ -1540,9 +1548,8 @@
             <div style="margin-top: 14px;">
                 <label class="form-label" style="color:#47cc6a; margin-bottom:6px; display:block;">➕ New Items</label>
                 <div id="changelog-linhas-bundle_novo">
-                    <div class="linha-changelog-2col">
-                        <input type="text" class="input-style changelog-nome" placeholder="Nome do(s) Bundle(s)">
-                        <input type="text" class="input-style changelog-valor" placeholder="Ex: set to 130, Range [110-150]">
+                    <div class="linha-changelog-1col">
+                        <input type="text" class="input-style changelog-texto" placeholder="Ex: Phosphor Jellyfish, Pearl Piercer set to 150, Range [130-170], 4 stars, Fluctuating, High Tier">
                         <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
                     </div>
                 </div>
@@ -3741,10 +3748,9 @@ function renderizarCardHTML(item) {
         const linha = document.createElement('div');
 
         if (tipo === 'bundle_novo') {
-            linha.className = 'linha-changelog-2col';
+            linha.className = 'linha-changelog-1col';
             linha.innerHTML = `
-                <input type="text" class="input-style changelog-nome" placeholder="Nome do(s) Bundle(s)">
-                <input type="text" class="input-style changelog-valor" placeholder="Ex: set to 130, Range [110-150]">
+                <input type="text" class="input-style changelog-texto" placeholder="Ex: Phosphor Jellyfish, Pearl Piercer set to 150, Range [130-170], 4 stars, Fluctuating, High Tier">
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
             `;
         } else if (tipo === 'demanda') {
@@ -3816,6 +3822,15 @@ function renderizarCardHTML(item) {
     function coletarEntriesChangelog(tipo) {
         const wrapper = document.getElementById('changelog-linhas-' + tipo);
         const entries = [];
+
+        if (tipo === 'bundle_novo') {
+            wrapper.querySelectorAll('.linha-changelog-1col').forEach(linha => {
+                const texto = linha.querySelector('.changelog-texto').value.trim();
+                if (texto) entries.push({ tipo: tipo, texto: texto });
+            });
+            return entries;
+        }
+
         wrapper.querySelectorAll(`.linha-changelog-2col, .linha-changelog-3col`).forEach(linha => {
             const nome = linha.querySelector('.changelog-nome').value.trim();
             const valor = linha.querySelector('.changelog-valor').value.trim();
@@ -3969,6 +3984,13 @@ function renderizarCardHTML(item) {
             } else {
                 entriesDoTipo.forEach(e => {
                     adicionarLinhaChangelog(tipo);
+
+                    if (tipo === 'bundle_novo') {
+                        const linhasTexto = wrapper.querySelectorAll('.linha-changelog-1col');
+                        linhasTexto[linhasTexto.length - 1].querySelector('.changelog-texto').value = e.texto || '';
+                        return;
+                    }
+
                     const linhas = wrapper.querySelectorAll('.linha-changelog-2col, .linha-changelog-3col');
                     const ultimaLinha = linhas[linhas.length - 1];
                     ultimaLinha.querySelector('.changelog-nome').value = e.nome || '';
