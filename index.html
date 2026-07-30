@@ -977,7 +977,7 @@
 
         .ftf-demand-row-compacta {
             padding-top: 1px;
-            margin-top: -1.5px;
+            margin-top: -3px;
         }
 
         .txt-demanda-estrelas {
@@ -1410,12 +1410,16 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Change in Value (Tendência)</label>
-                    <select id="tendenciaValor" class="input-style">
+                    <select id="tendenciaValor" class="input-style" onchange="toggleTendenciaQuantidade(this, 'tendenciaQtdWrapperItem')">
                         <option value="none">Estável</option>
                         <option value="subiu">Subiu (↑ Verde)</option>
                         <option value="caiu">Caiu (↓ Vermelho)</option>
                         <option value="corrigido">Corrigido (* Amarelo)</option>
                     </select>
+                </div>
+                <div class="form-group" id="tendenciaQtdWrapperItem" style="display:none;">
+                    <label class="form-label">Quanto Subiu/Desceu (Ex: 10)</label>
+                    <input type="text" id="tendenciaQuantidadeItem" class="input-style" placeholder="Ex: 10">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Status Item Badge</label>
@@ -2383,6 +2387,12 @@
         wrapper.style.display = selectEl.value === 'sim' ? 'block' : 'none';
     }
 
+    function toggleTendenciaQuantidade(selectEl, wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+        wrapper.style.display = (selectEl.value === 'subiu' || selectEl.value === 'caiu') ? 'block' : 'none';
+    }
+
     function buscarImagemPorNome(nome) {
         if (!nome || !nome.trim()) return '';
         const alvo = nome.trim().toLowerCase();
@@ -2658,8 +2668,8 @@
                 windowWidth: 1400
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `FTF-Values-${raridadeAtual}.png`;
-                link.href = canvas.toDataURL('image/png');
+                link.download = `FTF-Values-${raridadeAtual}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.92);
                 link.click();
 
                 if (!jaEstavaEmPrint) {
@@ -2689,6 +2699,7 @@
         const recente = document.getElementById('recenteItem').value;
         const rangeAtivo = document.getElementById('rangeAtivoItem').value;
         const rangeValor = document.getElementById('rangeValorItem').value.trim();
+        const tendenciaQuantidade = document.getElementById('tendenciaQuantidadeItem').value.trim();
 
         if (!nome) return;
 
@@ -2699,6 +2710,7 @@
             raridade: raridade || 'legendary', 
             demanda: demanda, 
             tendencia: tendencia, 
+            tendenciaQuantidade: tendenciaQuantidade,
             status: status, 
             templates: estabilidade, 
             imgSrc: urlImagem,
@@ -2723,6 +2735,8 @@
         document.getElementById('rangeAtivoItem').value = 'nao';
         document.getElementById('rangeValorItem').value = '';
         document.getElementById('rangeValorWrapperItem').style.display = 'none';
+        document.getElementById('tendenciaQuantidadeItem').value = '';
+        document.getElementById('tendenciaQtdWrapperItem').style.display = 'none';
     }
 
     function abrirModalEdicaoCompleta(item) {
@@ -2792,12 +2806,17 @@
                 </select>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">CHANGE VALUE ARROW:</label>
-                <select id="edit-tendencia" class="input-style" style="width:100%; margin-bottom:8px;">
+                <select id="edit-tendencia" class="input-style" style="width:100%; margin-bottom:8px;" onchange="toggleTendenciaQuantidade(this, 'edit-tendenciaQtdWrapper')">
                     <option value="none" ${item.tendencia === 'none'?'selected':''}>Estável</option>
                     <option value="subiu" ${item.tendencia === 'subiu'?'selected':''}>Subiu (↑)</option>
                     <option value="caiu" ${item.tendencia === 'caiu'?'selected':''}>Caiu (↓)</option>
                     <option value="corrigido" ${item.tendencia === 'corrigido'?'selected':''}>Corrigido (*)</option>
                 </select>
+
+                <div id="edit-tendenciaQtdWrapper" style="display:${(item.tendencia === 'subiu' || item.tendencia === 'caiu') ? 'block' : 'none'};">
+                    <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">QUANTO SUBIU/DESCEU (EX: 10):</label>
+                    <input type="text" id="edit-tendenciaQuantidade" class="input-style" style="width:100%; margin-bottom:8px;" value="${item.tendenciaQuantidade || ''}" placeholder="Ex: 10">
+                </div>
 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">MARKET STATUS BADGE:</label>
                 <select id="edit-status" class="input-style" style="width:100%; margin-bottom:8px;">
@@ -2844,6 +2863,7 @@
             item.recente = document.getElementById('edit-recente').value; // Coleta o "New Items" do select novo
             item.demanda = document.getElementById('edit-demanda').value;
             item.tendencia = document.getElementById('edit-tendencia').value;
+            item.tendenciaQuantidade = document.getElementById('edit-tendenciaQuantidade').value.trim();
             item.status = document.getElementById('edit-status').value;
             item.templates = document.getElementById('edit-estabilidade').value;
             item.rangeAtivo = document.getElementById('edit-rangeAtivo').value;
@@ -3338,22 +3358,17 @@ function renderizarCardHTML(item) {
 
         let badgeTendencia = '';
         let valorExibido = item.valor || "10";
-        let corDinamica = '#ffb830'; 
 
         if (item.tendencia === 'subiu') { 
-            corDinamica = '#47cc6a'; 
-            badgeTendencia = ` <span>↑</span>`; 
+            badgeTendencia = ` <span style="font-size:12px; font-weight:700; color:#47cc6a;">↑${item.tendenciaQuantidade ? ' ' + item.tendenciaQuantidade : ''}</span>`; 
         }
         else if (item.tendencia === 'caiu') { 
-            corDinamica = '#ff4d4f'; 
-            badgeTendencia = ` <span>↓</span>`; 
+            badgeTendencia = ` <span style="font-size:12px; font-weight:700; color:#ff4d4f;">↓${item.tendenciaQuantidade ? ' ' + item.tendenciaQuantidade : ''}</span>`; 
         }
         else if (item.tendencia === 'corrigido') { 
-            corDinamica = '#f2be24'; 
-            badgeTendencia = ` <span>*</span>`; 
+            badgeTendencia = ` <span style="font-size:12px; font-weight:700; color:#f2be24;">*</span>`; 
         }
         
-        containerValor.style.color = corDinamica;
         containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
 
         if (containerBadge) {
