@@ -2077,12 +2077,15 @@
             raridade: item.raridade || 'legendary',
             demanda: item.demanda || '5',
             tendencia: item.tendencia || 'none',
+            tendenciaQuantidade: item.tendenciaQuantidade || '',
             status: item.status || 'none',
             templates: item.templates || 'Stable',
             imgSrc: item.imgSrc,
             evento: item.evento || mapearEventoAutomatico(item.nome),
             tipo: item.tipo || 'normal',
             recente: item.recente || 'nao',
+            rangeAtivo: item.rangeAtivo || 'nao',
+            rangeValor: item.rangeValor || '',
             bundleItens: Array.isArray(item.bundleItens) ? item.bundleItens : undefined
         }));
 
@@ -2215,12 +2218,15 @@
             raridade: m.raridade || 'legendary',
             demanda: m.demanda || '5', 
             tendencia: m.tendencia || 'none',
+            tendenciaQuantidade: m.tendenciaQuantidade || '',
             status: m.status || 'none',
             templates: m.templates || 'Stable',
             imgSrc: m.imgSrc,
             evento: mapearEventoAutomatico(m.nome),
             tipo: m.tipo || 'normal',
-            recente: 'nao'
+            recente: 'nao',
+            rangeAtivo: m.rangeAtivo || 'nao',
+            rangeValor: m.rangeValor || ''
         }));
         salvarListaDeMarretas();
     }
@@ -3629,12 +3635,15 @@ function renderizarCardHTML(item) {
                 raridade: item.raridade || 'legendary',
                 demanda: item.demanda || '5',
                 tendencia: item.tendencia || 'none',
+                tendenciaQuantidade: item.tendenciaQuantidade || '',
                 status: item.status || 'none',
                 templates: item.templates || 'Stable',
                 imgSrc: item.imgSrc,
                 evento: item.evento || mapearEventoAutomatico(item.nome),
                 tipo: item.tipo || 'normal',
                 recente: item.recente || 'nao',
+                rangeAtivo: item.rangeAtivo || 'nao',
+                rangeValor: item.rangeValor || '',
                 bundleItens: Array.isArray(item.bundleItens) ? item.bundleItens : undefined
             }));
 
