@@ -1301,6 +1301,7 @@
     </style>
 </head>
 <body id="capture-area">
+    <datalist id="lista-nomes-marretas"></datalist>
 
     <button class="btn-voltar-print" onclick="togglePrintMode()">⬅️ Voltar para Edição</button>
 
@@ -1515,7 +1516,7 @@
                         <div class="bundle-marreta-preview-wrapper">
                             <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                         </div>
-                        <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
+                        <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
                         <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
                         <div class="bundle-move-btns">
                             <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2018,6 +2019,19 @@
             safeStorage.setItem('ftf_custom_v5_backup', versaoAtualSalva);
         }
         safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
+        atualizarDatalistNomesMarretas();
+    }
+
+    // Preenche o <datalist> usado pelos campos de nome dentro dos bundles,
+    // pra autocompletar o nome inteiro da marreta assim que o usuário
+    // começa a digitar (útil pra nomes grandes).
+    function atualizarDatalistNomesMarretas() {
+        const datalist = document.getElementById('lista-nomes-marretas');
+        if (!datalist) return;
+        const nomesUnicos = [...new Set(
+            listaDeMarretas.filter(m => m.tipo !== 'bundles').map(m => (m.nome || '').trim()).filter(Boolean)
+        )];
+        datalist.innerHTML = nomesUnicos.map(nome => `<option value="${nome.replace(/"/g, '&quot;')}"></option>`).join('');
     }
 
     // Permite ao usuário comparar e restaurar manualmente a última cópia de
@@ -2171,12 +2185,15 @@
                 raridade: item.raridade || 'legendary',
                 demanda: item.demanda || '5', 
                 tendencia: item.tendencia || 'none',
+                tendenciaQuantidade: item.tendenciaQuantidade || '',
                 status: item.status || 'none',
                 templates: item.templates || 'Stable',
                 imgSrc: item.imgSrc,
                 evento: item.evento || mapearEventoAutomatico(item.nome),
                 tipo: item.tipo || 'normal',
                 recente: item.recente || 'nao',
+                rangeAtivo: item.rangeAtivo || 'nao',
+                rangeValor: item.rangeValor || '',
                 bundleItens: Array.isArray(item.bundleItens) ? item.bundleItens : undefined
             }));
         }
@@ -2466,7 +2483,7 @@
             <div class="bundle-marreta-preview-wrapper">
                 <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
             </div>
-            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
+            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
             <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
             <div class="bundle-move-btns">
                 <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2508,7 +2525,7 @@
                 <div class="bundle-marreta-preview-wrapper">
                     <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                 </div>
-                <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
+                <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
                 <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
                 <div class="bundle-move-btns">
                     <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2889,7 +2906,7 @@
                     <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
                         <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="${it.imgSrc || 'https://placehold.co/60x60/0f1117/64748b?text=%3F'}" alt="preview">
                     </div>
-                    <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" value="${it.nome || ''}" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
+                    <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" value="${it.nome || ''}" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
                     <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" value="${it.valor || ''}" oninput="recalcularTotalBundleEdicao()">
                     <div class="bundle-move-btns">
                         <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2993,7 +3010,7 @@
                 <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
                     <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                 </div>
-                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
+                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
                 <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundleEdicao()">
                 <div class="bundle-move-btns">
                     <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
