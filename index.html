@@ -531,6 +531,37 @@
             align-items: center;
         }
 
+        .bundle-nome-wrapper {
+            position: relative;
+        }
+
+        .bundle-sugestoes-nome {
+            display: none;
+            position: fixed;
+            background: #161920;
+            border: 1px solid #2d3445;
+            border-radius: 4px;
+            max-height: 160px;
+            overflow-y: auto;
+            z-index: 999999;
+        }
+
+        .bundle-sugestoes-nome div {
+            padding: 6px 8px;
+            font-size: 12px;
+            color: #e5e7eb;
+            cursor: pointer;
+            border-bottom: 1px solid #1f2430;
+        }
+
+        .bundle-sugestoes-nome div:last-child {
+            border-bottom: none;
+        }
+
+        .bundle-sugestoes-nome div:hover {
+            background: #20263a;
+        }
+
         .bundle-move-btns {
             display: flex;
             flex-direction: column;
@@ -1269,8 +1300,7 @@
             }
             .linha-marreta-bundle .bundle-marreta-preview-wrapper,
             .linha-marreta-bundle .edit-bundle-marreta-preview-wrapper { grid-area: img; }
-            .linha-marreta-bundle .bundle-marreta-nome,
-            .linha-marreta-bundle .edit-bundle-marreta-nome { grid-area: nome; }
+            .linha-marreta-bundle .bundle-nome-wrapper { grid-area: nome; }
             .linha-marreta-bundle .bundle-marreta-valor,
             .linha-marreta-bundle .edit-bundle-marreta-valor { grid-area: valor; }
             .linha-marreta-bundle .bundle-move-btns { grid-area: mover; }
@@ -1301,8 +1331,6 @@
     </style>
 </head>
 <body id="capture-area">
-    <datalist id="lista-nomes-marretas"></datalist>
-
     <button class="btn-voltar-print" onclick="togglePrintMode()">⬅️ Voltar para Edição</button>
 
     <div class="ftf-header">
@@ -1516,7 +1544,10 @@
                         <div class="bundle-marreta-preview-wrapper">
                             <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                         </div>
-                        <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
+                        <div class="bundle-nome-wrapper">
+                            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle(); mostrarSugestoesNomeBundle(this)" onfocus="mostrarSugestoesNomeBundle(this)" onblur="esconderSugestoesNomeBundle(this)">
+                            <div class="bundle-sugestoes-nome"></div>
+                        </div>
                         <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
                         <div class="bundle-move-btns">
                             <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2019,19 +2050,70 @@
             safeStorage.setItem('ftf_custom_v5_backup', versaoAtualSalva);
         }
         safeStorage.setItem('ftf_custom_v5', JSON.stringify(listaDeMarretas));
-        atualizarDatalistNomesMarretas();
     }
 
-    // Preenche o <datalist> usado pelos campos de nome dentro dos bundles,
-    // pra autocompletar o nome inteiro da marreta assim que o usuário
-    // começa a digitar (útil pra nomes grandes).
-    function atualizarDatalistNomesMarretas() {
-        const datalist = document.getElementById('lista-nomes-marretas');
-        if (!datalist) return;
+    // Dropdown customizado de sugestão de nome dentro das linhas de bundle
+    // (criar e editar). Usado no lugar do <datalist> nativo, que em muitos
+    // navegadores de celular simplesmente não mostra sugestão nenhuma.
+    function mostrarSugestoesNomeBundle(inputEl) {
+        const wrapper = inputEl.closest('.bundle-nome-wrapper');
+        if (!wrapper) return;
+        const caixa = wrapper.querySelector('.bundle-sugestoes-nome');
+        const termo = inputEl.value.trim().toLowerCase();
+
+        if (!termo) {
+            caixa.style.display = 'none';
+            caixa.innerHTML = '';
+            return;
+        }
+
         const nomesUnicos = [...new Set(
-            listaDeMarretas.filter(m => m.tipo !== 'bundles').map(m => (m.nome || '').trim()).filter(Boolean)
-        )];
-        datalist.innerHTML = nomesUnicos.map(nome => `<option value="${nome.replace(/"/g, '&quot;')}"></option>`).join('');
+            listaDeMarretas
+                .filter(m => m.tipo !== 'bundles' && (m.nome || '').toLowerCase().includes(termo))
+                .map(m => (m.nome || '').trim())
+                .filter(Boolean)
+        )].slice(0, 8);
+
+        if (nomesUnicos.length === 0) {
+            caixa.style.display = 'none';
+            caixa.innerHTML = '';
+            return;
+        }
+
+        caixa.innerHTML = nomesUnicos.map(nome =>
+            `<div onmousedown="event.preventDefault(); selecionarSugestaoNomeBundle(this, '${nome.replace(/'/g, "\\'").replace(/"/g, '&quot;')}')">${nome}</div>`
+        ).join('');
+
+        const rect = inputEl.getBoundingClientRect();
+        caixa.style.left = rect.left + 'px';
+        caixa.style.top = (rect.bottom + 2) + 'px';
+        caixa.style.width = rect.width + 'px';
+        caixa.style.display = 'block';
+    }
+
+    function selecionarSugestaoNomeBundle(divEl, nome) {
+        const wrapper = divEl.closest('.bundle-nome-wrapper');
+        if (!wrapper) return;
+        const input = wrapper.querySelector('input');
+        input.value = nome;
+        wrapper.querySelector('.bundle-sugestoes-nome').style.display = 'none';
+
+        atualizarPreviewImagemBundle(input);
+        if (input.classList.contains('edit-bundle-marreta-nome')) {
+            recalcularTotalBundleEdicao();
+        } else {
+            recalcularTotalBundle();
+        }
+        input.focus();
+    }
+
+    function esconderSugestoesNomeBundle(inputEl) {
+        const wrapper = inputEl.closest('.bundle-nome-wrapper');
+        if (!wrapper) return;
+        const caixa = wrapper.querySelector('.bundle-sugestoes-nome');
+        // pequeno atraso pra dar tempo do onmousedown da sugestão disparar
+        // antes do dropdown sumir
+        setTimeout(() => { caixa.style.display = 'none'; }, 150);
     }
 
     // Permite ao usuário comparar e restaurar manualmente a última cópia de
@@ -2489,7 +2571,10 @@
             <div class="bundle-marreta-preview-wrapper">
                 <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
             </div>
-            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
+            <div class="bundle-nome-wrapper">
+                            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle(); mostrarSugestoesNomeBundle(this)" onfocus="mostrarSugestoesNomeBundle(this)" onblur="esconderSugestoesNomeBundle(this)">
+                            <div class="bundle-sugestoes-nome"></div>
+                        </div>
             <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
             <div class="bundle-move-btns">
                 <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2531,7 +2616,10 @@
                 <div class="bundle-marreta-preview-wrapper">
                     <img class="bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                 </div>
-                <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle()">
+                <div class="bundle-nome-wrapper">
+                            <input type="text" class="input-style bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundle(); mostrarSugestoesNomeBundle(this)" onfocus="mostrarSugestoesNomeBundle(this)" onblur="esconderSugestoesNomeBundle(this)">
+                            <div class="bundle-sugestoes-nome"></div>
+                        </div>
                 <input type="text" class="input-style bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundle()">
                 <div class="bundle-move-btns">
                     <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -2912,7 +3000,10 @@
                     <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
                         <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="${it.imgSrc || 'https://placehold.co/60x60/0f1117/64748b?text=%3F'}" alt="preview">
                     </div>
-                    <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" value="${it.nome || ''}" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
+                    <div class="bundle-nome-wrapper">
+                        <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" value="${it.nome || ''}" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao(); mostrarSugestoesNomeBundle(this)" onfocus="mostrarSugestoesNomeBundle(this)" onblur="esconderSugestoesNomeBundle(this)">
+                        <div class="bundle-sugestoes-nome"></div>
+                    </div>
                     <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" value="${it.valor || ''}" oninput="recalcularTotalBundleEdicao()">
                     <div class="bundle-move-btns">
                         <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
@@ -3016,7 +3107,10 @@
                 <div class="edit-bundle-marreta-preview-wrapper bundle-marreta-preview-wrapper">
                     <img class="edit-bundle-marreta-preview-img bundle-marreta-preview-img" src="https://placehold.co/60x60/0f1117/64748b?text=%3F" alt="preview">
                 </div>
-                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" list="lista-nomes-marretas" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao()">
+                <div class="bundle-nome-wrapper">
+                <input type="text" class="input-style edit-bundle-marreta-nome" placeholder="Nome da marreta" oninput="atualizarPreviewImagemBundle(this); recalcularTotalBundleEdicao(); mostrarSugestoesNomeBundle(this)" onfocus="mostrarSugestoesNomeBundle(this)" onblur="esconderSugestoesNomeBundle(this)">
+                <div class="bundle-sugestoes-nome"></div>
+            </div>
                 <input type="text" class="input-style edit-bundle-marreta-valor" placeholder="Valor" oninput="recalcularTotalBundleEdicao()">
                 <div class="bundle-move-btns">
                     <button type="button" onclick="moverLinhaMarretaBundle(this, 'up')">▲</button>
