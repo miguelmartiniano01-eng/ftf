@@ -902,7 +902,7 @@
 
         .ftf-item-name {
             margin: 0;
-            font-size: 10px;
+            font-size: 11.5px;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
@@ -912,7 +912,7 @@
         }
 
         .ftf-item-rarity {
-            font-size: 7px;
+            font-size: 8px;
             font-weight: 700;
             text-transform: uppercase;
             margin-top: 1px;
@@ -937,7 +937,7 @@
         }
 
         .box-valor-dinamico {
-            font-size: 10px;
+            font-size: 16px;
             font-weight: 900;
             color: #ffb830;
             line-height: 1;
@@ -963,7 +963,7 @@
             gap: 2px;
             padding: 1px 3px;
             border-radius: 3px;
-            font-size: 4.75px;
+            font-size: 5.5px;
             font-weight: 700;
             white-space: normal;
             text-align: right;
@@ -984,7 +984,7 @@
         }
 
         .ftf-badge {
-            font-size: 4.5px;
+            font-size: 5px;
             font-weight: 800;
             padding: 1px 2px;
             border-radius: 2px;
@@ -1007,8 +1007,8 @@
         }
 
         .ftf-demand-row-compacta {
-            padding-top: 1px;
-            margin-top: -3px;
+            padding-top: 3px;
+            margin-top: 0px;
         }
 
         .txt-demanda-estrelas {
@@ -1019,13 +1019,13 @@
 
         .txt-range-valor {
             display: block;
-            font-size: 7px;
-            line-height: 0.5;
-            color: #8a99ad;
-            font-weight: 500;
+            font-size: 8px;
+            line-height: 1;
+            color: #94a3b8;
+            font-weight: 700;
             letter-spacing: 0.2px;
             white-space: nowrap;
-            margin-top: 3px;
+            margin-top: 5px;
         }
 
         /* Action Configuration Controls Layer */
@@ -1682,9 +1682,8 @@
             <div style="margin-top: 8px;">
                 <label class="form-label" style="color:#94a3b8; margin-bottom:6px; display:block;">💬 Outras Informações</label>
                 <div id="changelog-linhas-outros">
-                    <div class="linha-changelog-2col">
-                        <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou assunto)">
-                        <input type="text" class="input-style changelog-valor" placeholder="Ex: corrected to 20">
+                    <div class="linha-changelog-1col">
+                        <input type="text" class="input-style changelog-texto" placeholder="Ex: FTF Values agora suporta bundles com Range">
                         <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
                     </div>
                 </div>
@@ -3141,7 +3140,51 @@
             return total;
         }
 
-        function renderizarCardBundle(item) {
+        // Busca o valor ATUAL de uma marreta (não o valor salvo dentro do bundle),
+    // pra que o bundle sempre reflita mudanças feitas no item depois de criado.
+    function obterValorAtualDoItem(nome, valorFallback) {
+        const alvo = (nome || '').trim().toLowerCase();
+        const encontrado = listaDeMarretas.find(m => m.tipo !== 'bundles' && (m.nome || '').trim().toLowerCase() === alvo);
+        return encontrado ? (encontrado.valor || valorFallback || '0') : (valorFallback || '0');
+    }
+
+    // Sempre que um bundle vai ser exibido, atualiza o valor (e imagem) de
+    // cada marreta dentro dele com base no item atual da lista (procurado
+    // pelo nome) — assim, se você editar o valor de uma marreta que também
+    // está dentro de um bundle, o bundle reflete isso automaticamente, sem
+    // precisar editar o bundle na mão. Se a marreta não for mais encontrada
+    // (ex: foi renomeada ou excluída), mantém o último valor conhecido.
+    function sincronizarValoresBundle(item) {
+        if (!Array.isArray(item.bundleItens)) return false;
+        let mudou = false;
+
+        item.bundleItens.forEach(it => {
+            const valorAtual = buscarValorPorNome(it.nome);
+            if (valorAtual && valorAtual !== it.valor) {
+                it.valor = valorAtual;
+                mudou = true;
+            }
+            const imgAtual = buscarImagemPorNome(it.nome);
+            if (imgAtual && imgAtual !== it.imgSrc) {
+                it.imgSrc = imgAtual;
+                mudou = true;
+            }
+        });
+
+        if (mudou) {
+            const novoTotal = item.bundleItens.reduce((acc, it) => {
+                return acc + (parseFloat((it.valor || "0").toString().replace(/[^0-9.]/g, '')) || 0);
+            }, 0);
+            item.valor = novoTotal.toString();
+            salvarListaDeMarretas();
+        }
+
+        return mudou;
+    }
+
+    function renderizarCardBundle(item) {
+            sincronizarValoresBundle(item);
+
             const container = document.getElementById('container-cards');
             const card = document.createElement("div");
             card.className = "ftf-item-card ftf-bundle-card";
@@ -3157,7 +3200,7 @@
                         <img src="${it.imgSrc || 'https://placehold.co/80x60/0f1117/ffffff?text=No+Image'}" loading="lazy" alt="${it.nome}" onerror="this.src='https://placehold.co/80x60/0f1117/ffffff?text=No+Image'">
                     </div>
                     <span class="mini-nome">${it.nome}</span>
-                    <span class="mini-valor">${it.valor}</span>
+                    <span class="mini-valor">${obterValorAtualDoItem(it.nome, it.valor)}</span>
                 </div>
             `).join('');
 
@@ -3502,7 +3545,7 @@ function renderizarCardHTML(item) {
         
         let notaNum = parseFloat(notaEstrelas) || 0;
         let estrelasHTML = '';
-        const TAMANHO_ESTRELA = '8.5px'; 
+        const TAMANHO_ESTRELA = '9px'; 
         const PATH_ESTRELA_GORDINHA = "M 9.33,5.25 L 10.96,2.65 Q 12.00,1.00 13.04,2.65 L 14.67,5.25 Q 15.70,6.90 17.60,7.38 L 20.57,8.13 Q 22.46,8.60 21.21,10.10 L 19.24,12.45 Q 17.99,13.95 18.12,15.89 L 18.33,18.95 Q 18.47,20.90 16.66,20.17 L 13.81,19.03 Q 12.00,18.30 10.19,19.03 L 7.34,20.17 Q 5.53,20.90 5.67,18.95 L 5.88,15.89 Q 6.01,13.95 4.76,12.45 L 2.79,10.10 Q 1.54,8.60 3.43,8.13 L 6.40,7.38 Q 8.30,6.90 9.33,5.25 Z";
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
@@ -3926,10 +3969,9 @@ function renderizarCardHTML(item) {
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
             `;
         } else if (tipo === 'outros') {
-            linha.className = 'linha-changelog-2col';
+            linha.className = 'linha-changelog-1col';
             linha.innerHTML = `
-                <input type="text" class="input-style changelog-nome" placeholder="Nome da marreta (ou assunto)">
-                <input type="text" class="input-style changelog-valor" placeholder="Ex: corrected to 20">
+                <input type="text" class="input-style changelog-texto" placeholder="Ex: FTF Values agora suporta bundles com Range">
                 <button type="button" class="btn-remover-linha-marreta" onclick="removerLinhaChangelog(this)">✕</button>
             `;
         } else {
@@ -3958,7 +4000,7 @@ function renderizarCardHTML(item) {
         const wrapper = document.getElementById('changelog-linhas-' + tipo);
         const entries = [];
 
-        if (tipo === 'bundle_novo') {
+        if (tipo === 'bundle_novo' || tipo === 'outros') {
             wrapper.querySelectorAll('.linha-changelog-1col').forEach(linha => {
                 const texto = linha.querySelector('.changelog-texto').value.trim();
                 if (texto) entries.push({ tipo: tipo, texto: texto });
@@ -4106,42 +4148,50 @@ function renderizarCardHTML(item) {
     function editarChangelogVersao(id) {
         const item = listaChangelog.find(c => c.id === id);
         if (!item) return;
+        if (!Array.isArray(item.entries)) item.entries = [];
 
         document.getElementById('changelogVersao').value = item.versao || '';
         document.getElementById('changelogData').value = item.data || '';
 
-        ['bundle_novo', 'valor_sobe', 'valor_desce', 'demanda', 'status', 'outros'].forEach(tipo => {
-            const wrapper = document.getElementById('changelog-linhas-' + tipo);
-            wrapper.innerHTML = '';
-            const entriesDoTipo = item.entries.filter(e => e.tipo === tipo);
-            if (entriesDoTipo.length === 0) {
-                adicionarLinhaChangelog(tipo);
-            } else {
-                entriesDoTipo.forEach(e => {
+        try {
+            ['bundle_novo', 'valor_sobe', 'valor_desce', 'demanda', 'status', 'outros'].forEach(tipo => {
+                const wrapper = document.getElementById('changelog-linhas-' + tipo);
+                wrapper.innerHTML = '';
+                const entriesDoTipo = item.entries.filter(e => e.tipo === tipo);
+                if (entriesDoTipo.length === 0) {
                     adicionarLinhaChangelog(tipo);
+                } else {
+                    entriesDoTipo.forEach(e => {
+                        adicionarLinhaChangelog(tipo);
 
-                    if (tipo === 'bundle_novo') {
-                        const linhasTexto = wrapper.querySelectorAll('.linha-changelog-1col');
-                        linhasTexto[linhasTexto.length - 1].querySelector('.changelog-texto').value = e.texto || '';
-                        return;
-                    }
+                        if (tipo === 'bundle_novo' || tipo === 'outros') {
+                            const linhasTexto = wrapper.querySelectorAll('.linha-changelog-1col');
+                            linhasTexto[linhasTexto.length - 1].querySelector('.changelog-texto').value = e.texto || '';
+                            return;
+                        }
 
-                    const linhas = wrapper.querySelectorAll('.linha-changelog-2col, .linha-changelog-3col');
-                    const ultimaLinha = linhas[linhas.length - 1];
-                    ultimaLinha.querySelector('.changelog-nome').value = e.nome || '';
-                    const selectVerbo = ultimaLinha.querySelector('.changelog-verbo');
-                    if (selectVerbo && e.verbo) {
-                        selectVerbo.value = e.verbo;
-                        if (tipo === 'status') atualizarOpcoesStatusChangelog(selectVerbo);
-                    }
-                    ultimaLinha.querySelector('.changelog-valor').value = e.valor || '';
-                });
-            }
-        });
+                        const linhas = wrapper.querySelectorAll('.linha-changelog-2col, .linha-changelog-3col');
+                        const ultimaLinha = linhas[linhas.length - 1];
+                        ultimaLinha.querySelector('.changelog-nome').value = e.nome || '';
+                        const selectVerbo = ultimaLinha.querySelector('.changelog-verbo');
+                        if (selectVerbo && e.verbo) {
+                            selectVerbo.value = e.verbo;
+                            if (tipo === 'status') atualizarOpcoesStatusChangelog(selectVerbo);
+                        }
+                        ultimaLinha.querySelector('.changelog-valor').value = e.valor || '';
+                    });
+                }
+            });
 
-        document.getElementById('changelogBugFix').value = item.entries.filter(e => e.tipo === 'bug_fix').map(e => e.texto).join('\n');
-        document.getElementById('changelogEditandoId').value = item.id;
+            document.getElementById('changelogBugFix').value = item.entries.filter(e => e.tipo === 'bug_fix').map(e => e.texto).join('\n');
+            document.getElementById('changelogEditandoId').value = item.id;
+        } catch (erro) {
+            console.error('[FTF Values] Erro ao preencher formulário de edição do changelog:', erro);
+        }
 
+        // Independente de erro ao preencher algum campo específico, sempre
+        // troca pra aba de Changelog e rola até ela — assim o usuário nunca
+        // fica com a impressão de que o botão "Editar" não fez nada.
         mudarAbaForm('changelog');
         document.getElementById('criador-form').scrollIntoView({ behavior: 'smooth' });
     }
