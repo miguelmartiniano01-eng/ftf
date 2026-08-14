@@ -443,6 +443,51 @@
             margin: 0 auto 12px auto;
         }
 
+        .backdrop-changelog-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 99998;
+        }
+
+        .btn-fechar-modal-changelog {
+            display: none;
+        }
+
+        .editando-changelog-modal .backdrop-changelog-modal {
+            display: block;
+        }
+
+        .editando-changelog-modal #criador-form {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 99999;
+            width: 92%;
+            max-width: 600px;
+            max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+
+        .editando-changelog-modal .btn-fechar-modal-changelog {
+            display: block;
+            margin-left: auto;
+            margin-bottom: 8px;
+            background: #2a1418;
+            color: #ef4444;
+            border: 1px solid #4a1f24;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         .form-tabs {
             display: flex;
             gap: 4px;
@@ -1331,6 +1376,7 @@
     </style>
 </head>
 <body id="capture-area">
+    <div id="backdrop-changelog-modal" class="backdrop-changelog-modal" onclick="fecharEdicaoChangelogModal()"></div>
     <button class="btn-voltar-print" onclick="togglePrintMode()">⬅️ Voltar para Edição</button>
 
     <div class="ftf-header">
@@ -1361,6 +1407,7 @@
     </div>
 
     <div id="criador-form">
+        <button type="button" class="btn-fechar-modal-changelog" onclick="fecharEdicaoChangelogModal()">✕ Fechar</button>
         <div class="form-tabs">
             <button class="form-tab-btn active" id="tab-unico" onclick="mudarAbaForm('unico')">Individual Card</button>
             <button class="form-tab-btn" id="tab-bundle" onclick="mudarAbaForm('bundle')">➕ Bundle</button>
@@ -4150,6 +4197,7 @@ function renderizarCardHTML(item) {
         ordenarListaChangelogPorData();
         salvarListaChangelog();
         renderizarChangelog();
+        document.body.classList.remove('editando-changelog-modal');
         mostrarChangelog();
     }
 
@@ -4211,10 +4259,18 @@ function renderizarCardHTML(item) {
         }
 
         // Independente de erro ao preencher algum campo específico, sempre
-        // troca pra aba de Changelog e rola até ela — assim o usuário nunca
-        // fica com a impressão de que o botão "Editar" não fez nada.
+        // troca pra aba de Changelog e abre como uma janelinha (modal) por
+        // cima da página — assim o usuário nunca fica com a impressão de
+        // que o botão "Editar" não fez nada.
         mudarAbaForm('changelog');
-        document.getElementById('criador-form').scrollIntoView({ behavior: 'smooth' });
+        document.body.classList.add('editando-changelog-modal');
+    }
+
+    // Fecha a "janelinha" de edição do changelog sem publicar nada, e limpa
+    // o formulário pra não ficar com dados de uma edição cancelada.
+    function fecharEdicaoChangelogModal() {
+        document.body.classList.remove('editando-changelog-modal');
+        limparFormularioChangelog();
     }
 
     function excluirChangelogVersao(id) {
