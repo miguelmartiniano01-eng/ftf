@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -754,8 +753,8 @@
         /* Strict FTF Cards Container System Grid */
         #container-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+            gap: 14px;
             max-width: 1180px;
             margin: 0 auto;
             width: 100%;
@@ -766,29 +765,29 @@
            pular direto para um número fixo de colunas). */
         @media (max-width: 980px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 10px;
             }
         }
 
         @media (max-width: 680px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
-                gap: 5px;
+                grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+                gap: 8px;
             }
         }
 
         @media (max-width: 480px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
-                gap: 5px;
+                grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+                gap: 7px;
             }
         }
 
         @media (max-width: 340px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-                gap: 4px;
+                grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+                gap: 6px;
             }
         }
 
@@ -796,8 +795,8 @@
         .ftf-item-card {
             background-color: #14171f;
             border: 1px solid #1f2430;
-            border-radius: 5px;
-            padding: 5px;
+            border-radius: 8px;
+            padding: 10px;
             width: 100%;
             position: relative;
             display: flex;
@@ -820,38 +819,38 @@
         }
 
         .ftf-bundle-includes-label {
-            font-size: 8px;
+            font-size: 10px;
             color: #64748b;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            margin: 4px 0 3px 0;
+            margin: 6px 0 5px 0;
         }
 
         .ftf-bundle-includes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 4px;
-            margin-bottom: 4px;
+            grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         .ftf-bundle-mini-item {
             background: #0f1117;
             border: 1px solid #1a1e26;
-            border-radius: 4px;
-            padding: 4px;
+            border-radius: 5px;
+            padding: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 2px;
+            gap: 3px;
         }
 
         .ftf-bundle-mini-img-wrapper {
             width: 100%;
-            height: 44px;
+            height: 56px;
             background: #14171f;
-            border-radius: 3px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -866,10 +865,10 @@
         }
 
         .ftf-bundle-mini-item .mini-nome {
-            font-size: 8.5px;
+            font-size: 10.5px;
             font-weight: 700;
             color: #cbd5e1;
-            line-height: 1.15;
+            line-height: 1.2;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -877,22 +876,22 @@
         }
 
         .ftf-bundle-mini-item .mini-valor {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 800;
             color: #ffb830;
         }
 
         /* 60% Card Height Image Container Slot */
         .ftf-card-img-wrapper {
-            height: 120px;
+            height: 150px;
             background: #0f1117;
-            border-radius: 4px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             border: 1px solid #1a1e26;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             position: relative;
         }
 
@@ -947,7 +946,7 @@
 
         .ftf-item-name {
             margin: 0;
-            font-size: 11.5px;
+            font-size: 15px;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
@@ -957,11 +956,11 @@
         }
 
         .ftf-item-rarity {
-            font-size: 8px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            margin-top: 1px;
-            margin-bottom: 4px;
+            margin-top: 2px;
+            margin-bottom: 8px;
             letter-spacing: 0.3px;
         }
 
@@ -970,25 +969,25 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .ftf-value-label {
-            font-size: 7px;
-            color: #475569;
+            font-size: 10px;
+            color: #64748b;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
 
         .box-valor-dinamico {
-            font-size: 16px;
+            font-size: 26px;
             font-weight: 900;
             color: #ffb830;
             line-height: 1;
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 4px;
         }
 
         /* Selos de estabilidade + status, alinhados à direita, na mesma
@@ -997,7 +996,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 2px;
+            gap: 3px;
             flex: none;
             max-width: 58%;
         }
@@ -1005,10 +1004,10 @@
         .txt-estabilidade {
             display: flex;
             align-items: center;
-            gap: 2px;
-            padding: 1px 3px;
-            border-radius: 3px;
-            font-size: 5.5px;
+            gap: 3px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: 700;
             white-space: normal;
             text-align: right;
@@ -1016,8 +1015,8 @@
         }
 
         .txt-estabilidade svg {
-            width: 7px;
-            height: 7px;
+            width: 11px;
+            height: 11px;
             flex: none;
         }
 
@@ -1029,14 +1028,14 @@
         }
 
         .ftf-badge {
-            font-size: 5px;
+            font-size: 10px;
             font-weight: 800;
-            padding: 1px 2px;
-            border-radius: 2px;
+            padding: 2px 5px;
+            border-radius: 4px;
             text-transform: none;
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
             white-space: normal;
             text-align: right;
             max-width: 100%;
@@ -1047,13 +1046,13 @@
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid #1a1e26;
-            padding-top: 4px;
-            margin-top: 2px;
+            padding-top: 8px;
+            margin-top: 6px;
         }
 
         .ftf-demand-row-compacta {
-            padding-top: 3px;
-            margin-top: 0px;
+            padding-top: 6px;
+            margin-top: 3px;
         }
 
         .txt-demanda-estrelas {
@@ -1064,13 +1063,13 @@
 
         .txt-range-valor {
             display: block;
-            font-size: 8px;
+            font-size: 11px;
             line-height: 1;
             color: #94a3b8;
             font-weight: 700;
             letter-spacing: 0.2px;
             white-space: nowrap;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         /* Action Configuration Controls Layer */
@@ -1092,9 +1091,9 @@
             background: #1c202b;
             color: #94a3b8;
             border: 1px solid #282f40;
-            font-size: 9px;
-            padding: 3px;
-            border-radius: 3px;
+            font-size: 11px;
+            padding: 5px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
         }
@@ -3588,13 +3587,13 @@ function renderizarCardHTML(item) {
         let valorExibido = item.valor || "10";
 
         if (item.tendencia === 'subiu') { 
-            badgeTendencia = ` <span style="font-size:12px; font-weight:700; color:#47cc6a;">↑${item.tendenciaQuantidade ? ' ' + item.tendenciaQuantidade : ''}</span>`; 
+            badgeTendencia = ` <span style="font-size:16px; font-weight:700; color:#47cc6a;">↑${item.tendenciaQuantidade ? ' ' + item.tendenciaQuantidade : ''}</span>`; 
         }
         else if (item.tendencia === 'caiu') { 
-            badgeTendencia = ` <span style="font-size:12px; font-weight:700; color:#ff4d4f;">↓${item.tendenciaQuantidade ? ' ' + item.tendenciaQuantidade : ''}</span>`; 
+            badgeTendencia = ` <span style="font-size:16px; font-weight:700; color:#ff4d4f;">↓${item.tendenciaQuantidade ? ' ' + item.tendenciaQuantidade : ''}</span>`; 
         }
         else if (item.tendencia === 'corrigido') { 
-            badgeTendencia = ` <span style="font-size:12px; font-weight:700; color:#f2be24;">*</span>`; 
+            badgeTendencia = ` <span style="font-size:16px; font-weight:700; color:#f2be24;">*</span>`; 
         }
         
         containerValor.innerHTML = `${valorExibido}${badgeTendencia}`;
@@ -3613,7 +3612,7 @@ function renderizarCardHTML(item) {
         
         let notaNum = parseFloat(notaEstrelas) || 0;
         let estrelasHTML = '';
-        const TAMANHO_ESTRELA = '9px'; 
+        const TAMANHO_ESTRELA = '14px'; 
         const PATH_ESTRELA_GORDINHA = "M 9.33,5.25 L 10.96,2.65 Q 12.00,1.00 13.04,2.65 L 14.67,5.25 Q 15.70,6.90 17.60,7.38 L 20.57,8.13 Q 22.46,8.60 21.21,10.10 L 19.24,12.45 Q 17.99,13.95 18.12,15.89 L 18.33,18.95 Q 18.47,20.90 16.66,20.17 L 13.81,19.03 Q 12.00,18.30 10.19,19.03 L 7.34,20.17 Q 5.53,20.90 5.67,18.95 L 5.88,15.89 Q 6.01,13.95 4.76,12.45 L 2.79,10.10 Q 1.54,8.60 3.43,8.13 L 6.40,7.38 Q 8.30,6.90 9.33,5.25 Z";
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
@@ -4439,4 +4438,3 @@ function renderizarCardHTML(item) {
 </script>
 </body>
     </html>
-
