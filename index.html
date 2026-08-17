@@ -11,8 +11,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="FTF Values">
     <meta name="apple-mobile-web-app-title" content="FTF Values">
-    <meta name="theme-color" content="#0f1117">
-    <meta name="msapplication-navbutton-color" content="#0f1117">
+    <meta name="theme-color" content="#020203">
+    <meta name="msapplication-navbutton-color" content="#020203">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link rel="icon" sizes="192x192" href="https://via.placeholder.com/192">
@@ -29,7 +29,7 @@
         }
 
         body {
-            background-color: #0f1117;
+            background-color: #020203;
             color: #ffffff;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             padding: 12px;
@@ -38,9 +38,9 @@
 
         /* Top Header Navigation style FTF */
         .ftf-header {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
-            background: #161920;
+            background: #0a0a0c;
             border-bottom: 1px solid #232836;
             padding: 10px 16px;
             display: flex;
@@ -87,9 +87,9 @@
 
         /* Controls Toggle Area */
         .toolbar-container {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
-            background: #161920;
+            background: #0a0a0c;
             padding: 8px 12px;
             border-radius: 6px;
             display: flex;
@@ -130,9 +130,9 @@
 
         /* Dashboard Overview Area style FTF */
         .ftf-dashboard {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
-            background: #161920;
+            background: #0a0a0c;
             border-radius: 6px;
             padding: 12px 16px;
             display: flex;
@@ -145,7 +145,7 @@
 
         /* ===== Banner colorido de Raridade (nome + total + valor + data) ===== */
         .ftf-rarity-banner {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
             border-radius: 8px;
             padding: 14px 18px;
@@ -281,7 +281,7 @@
         }
 
         .dash-date-input {
-            background: #0f1117;
+            background: #020203;
             color: #94a3b8;
             border: 1px solid #232836;
             padding: 4px 8px;
@@ -295,7 +295,7 @@
 
         /* Main Search & Sorting Inputs Row */
         .search-wrapper {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
             display: flex;
             gap: 8px;
@@ -303,7 +303,7 @@
         }
 
         .input-style {
-            background: #161920;
+            background: #0a0a0c;
             color: #fff;
             border: 1px solid #232836;
             border-radius: 4px;
@@ -330,9 +330,9 @@
 
         /* Filter Tab Buttons Style */
         .btn-aba-container, .event-filter-wrapper, .subtabs-container {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 8px auto;
-            background: #161920;
+            background: #0a0a0c;
             padding: 6px;
             border-radius: 6px;
             display: flex;
@@ -374,7 +374,7 @@
         }
 
         .select-event {
-            background: #0f1117;
+            background: #020203;
             color: #fff;
             border: 1px solid #232836;
             padding: 4px 8px;
@@ -386,9 +386,9 @@
 
         /* Event Filter Buttons */
         .event-filter-container {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 8px auto;
-            background: #161920;
+            background: #0a0a0c;
             padding: 6px;
             border-radius: 6px;
             display: flex;
@@ -434,11 +434,11 @@
 
         /* Item Creator Layout Panel Form */
         #criador-form {
-            background-color: #161920;
+            background-color: #0a0a0c;
             padding: 14px;
             border-radius: 6px;
             border: 1px solid #232836;
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
         }
 
@@ -582,7 +582,7 @@
         .bundle-sugestoes-nome {
             display: none;
             position: fixed;
-            background: #161920;
+            background: #0a0a0c;
             border: 1px solid #2d3445;
             border-radius: 4px;
             max-height: 160px;
@@ -656,7 +656,7 @@
         .bundle-marreta-preview-wrapper {
             width: 40px;
             height: 34px;
-            background: #0f1117;
+            background: #020203;
             border: 1px solid #232836;
             border-radius: 4px;
             display: flex;
@@ -704,7 +704,7 @@
         }
 
         .bundle-total-preview {
-            background: #0f1117;
+            background: #020203;
             border: 1px solid #232836;
             border-radius: 4px;
             padding: 8px 12px;
@@ -729,7 +729,7 @@
 
         /* Section Category Title Header Layout */
         #titulo-secao {
-            max-width: 700px;
+            max-width: 850px;
             margin: 16px auto 10px auto;
             color: #fff;
             font-size: 13px;
@@ -753,50 +753,51 @@
         /* Strict FTF Cards Container System Grid */
         #container-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
-            gap: 12px;
-            max-width: 700px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            max-width: 850px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Vai reduzindo o tamanho mínimo do card em telas mais estreitas,
-           pra a quantidade de colunas ir diminuindo aos poucos (em vez de
-           pular direto para um número fixo de colunas). */
+        /* Número FIXO de colunas por faixa de largura de tela (em vez de
+           deixar o navegador calcular sozinho via auto-fill) — assim o
+           layout fica sempre igual ao original, sem depender de cálculo
+           de pixel que pode variar de aparelho pra aparelho. */
         @media (max-width: 980px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-                gap: 8px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
             }
         }
 
         @media (max-width: 680px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
             }
         }
 
         @media (max-width: 480px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5px;
             }
         }
 
         @media (max-width: 340px) {
             #container-cards {
-                grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-                gap: 5px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
             }
         }
 
         /* Strict Official FTF Card UI Style Concept */
         .ftf-item-card {
-            background-color: #14171f;
+            background-color: #08080a;
             border: 1px solid #1f2430;
             border-radius: 8px;
-            padding: 10px;
+            padding: 8px;
             width: 100%;
             position: relative;
             display: flex;
@@ -835,7 +836,7 @@
         }
 
         .ftf-bundle-mini-item {
-            background: #0f1117;
+            background: #020203;
             border: 1px solid #1a1e26;
             border-radius: 5px;
             padding: 6px;
@@ -849,7 +850,7 @@
         .ftf-bundle-mini-img-wrapper {
             width: 100%;
             height: 56px;
-            background: #14171f;
+            background: #08080a;
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -883,8 +884,8 @@
 
         /* 60% Card Height Image Container Slot */
         .ftf-card-img-wrapper {
-            height: 150px;
-            background: #0f1117;
+            height: 175px;
+            background: #020203;
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -1063,7 +1064,7 @@
 
         .txt-range-valor {
             display: block;
-            font-size: 5.25px;
+            font-size: 8px;
             line-height: 1;
             color: #94a3b8;
             font-weight: 700;
@@ -1224,7 +1225,7 @@
         }
 
         #btn-exportar-container {
-            max-width: 700px;
+            max-width: 850px;
             margin: 0 auto 12px auto;
             text-align: right;
         }
@@ -1237,7 +1238,7 @@
         }
 
         .changelog-version-block {
-            background: #14171f;
+            background: #08080a;
             border: 1px solid #232836;
             border-radius: 6px;
             padding: 16px;
@@ -2818,7 +2819,7 @@
         setTimeout(() => {
             const areaCaptura = document.getElementById('capture-area');
             html2canvas(areaCaptura, {
-                backgroundColor: "#0f1117",
+                backgroundColor: "#020203",
                 useCORS: true, 
                 scale: 1.2,
                 windowWidth: 1400
@@ -2919,7 +2920,7 @@
         ];
 
         modal.innerHTML = `
-            <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 440px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
+            <div style="background: #0a0a0c; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 440px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
                 <h3 style="color:#ffb830; margin-bottom:12px; font-size:14px; font-weight:700; text-transform:uppercase;">✏️ Edit Item Parameters</h3>
                 
                 <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">ITEM NAME:</label>
@@ -3072,7 +3073,7 @@
             `).join('');
 
             modal.innerHTML = `
-                <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 460px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
+                <div style="background: #0a0a0c; border: 1px solid #232836; border-radius: 6px; width: 90%; max-width: 460px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
                     <h3 style="color:#ffb830; margin-bottom:12px; font-size:14px; font-weight:700; text-transform:uppercase;">✏️ Editar Bundle</h3>
 
                     <label style="color:#64748b; font-size:10px; font-weight:700; display:block; margin: 6px 0 2px 0;">NOME DO BUNDLE:</label>
@@ -3373,7 +3374,7 @@ function renderizarCardHTML(item) {
     card.innerHTML = `
         <button class="btn-deletar">✕</button>
 
-        <div class="ftf-card-img-wrapper" style="border-color:${corRaridade}80;">
+        <div class="ftf-card-img-wrapper">
             <span class="txt-posicao-automatica">#--</span>
 
             <img
@@ -3791,7 +3792,7 @@ function renderizarCardHTML(item) {
         modal.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:99999;";
 
         modal.innerHTML = `
-            <div style="background: #161920; border: 1px solid #232836; border-radius: 6px; width: 92%; max-width: 500px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
+            <div style="background: #0a0a0c; border: 1px solid #232836; border-radius: 6px; width: 92%; max-width: 500px; padding: 16px; color: white; max-height: 90vh; overflow-y: auto;">
                 <h3 style="color:#45aaf2; margin-bottom:10px; font-size:14px; font-weight:700; text-transform:uppercase;">📋 Importar Backup Colado</h3>
                 <p style="color:#94a3b8; font-size:12px; margin-bottom:10px; line-height:1.4;">
                     Vá na aba/navegador que ainda tem os itens completos, clique em
