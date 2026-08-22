@@ -797,7 +797,7 @@
             background-color: #08080a;
             border: 1px solid #1f2430;
             border-radius: 8px;
-            padding: 8px;
+            padding: 6px;
             width: 100%;
             position: relative;
             display: flex;
@@ -892,13 +892,13 @@
             justify-content: center;
             overflow: hidden;
             border: 1px solid #1a1e26;
-            margin-bottom: 8px;
+            margin-bottom: 3px;
             position: relative;
         }
 
         .ftf-card-img-wrapper img {
             width: 100%;
-            height: 80%;
+            height: 90%;
             object-fit: contain;
             display: block;
             margin: 0 auto;
@@ -922,7 +922,7 @@
             display: flex;
             flex-direction: column;
             text-align: left;
-            padding: 1px 2px;
+            padding: 0px 2px;
         }
 
         .ftf-card-header-row {
@@ -945,7 +945,7 @@
 
         .ftf-item-name {
             margin: 0;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
@@ -955,7 +955,7 @@
         }
 
         .ftf-item-rarity {
-            font-size: 8px;
+            font-size: 7.5px;
             font-weight: 700;
             text-transform: uppercase;
             margin-top: 2px;
@@ -980,7 +980,7 @@
         }
 
         .box-valor-dinamico {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
             color: #ffb830;
             line-height: 1;
@@ -3611,7 +3611,7 @@ function renderizarCardHTML(item) {
         
         let notaNum = parseFloat(notaEstrelas) || 0;
         let estrelasHTML = '';
-        const TAMANHO_ESTRELA = '8px'; 
+        const TAMANHO_ESTRELA = '9px'; 
         const PATH_ESTRELA_GORDINHA = "M 9.33,5.25 L 10.96,2.65 Q 12.00,1.00 13.04,2.65 L 14.67,5.25 Q 15.70,6.90 17.60,7.38 L 20.57,8.13 Q 22.46,8.60 21.21,10.10 L 19.24,12.45 Q 17.99,13.95 18.12,15.89 L 18.33,18.95 Q 18.47,20.90 16.66,20.17 L 13.81,19.03 Q 12.00,18.30 10.19,19.03 L 7.34,20.17 Q 5.53,20.90 5.67,18.95 L 5.88,15.89 Q 6.01,13.95 4.76,12.45 L 2.79,10.10 Q 1.54,8.60 3.43,8.13 L 6.40,7.38 Q 8.30,6.90 9.33,5.25 Z";
 
         const svgEstrelaCheia = `<svg viewBox="0 0 24 24" style="width:${TAMANHO_ESTRELA}; height:${TAMANHO_ESTRELA}; fill:#ffb830;"><path d="${PATH_ESTRELA_GORDINHA}"/></svg>`;
