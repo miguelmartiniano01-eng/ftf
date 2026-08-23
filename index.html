@@ -934,13 +934,18 @@
             overflow: hidden;
         }
 
-        .ftf-card-header-row .ftf-info-nome-raridade {
+        .ftf-card-header-row .ftf-info-nome-rari ade {
             flex: 1 1 auto;
             min-width: 0;
         }
 
         .ftf-card-header-row .ftf-item-name {
             white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 27px;
         }
 
         .ftf-item-name {
@@ -961,7 +966,7 @@
             font-size: 7.5px;
             font-weight: 700;
             text-transform: uppercase;
-            margin: 1px 0 3px 0;
+            margin: -4px 0 3px 0;
             letter-spacing: 0.3px;
             line-height: 8px;
             height: 8px;
