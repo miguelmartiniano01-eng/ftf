@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -930,13 +931,16 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 4px;
-            margin-bottom: 2px;
+            margin-bottom: -6px;
             overflow: hidden;
         }
 
-        .ftf-card-header-row .ftf-info-nome-rari ade {
+        .ftf-card-header-row .ftf-info-nome-raridade {
             flex: 1 1 auto;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .ftf-card-header-row .ftf-item-name {
@@ -945,6 +949,8 @@
 
         .ftf-item-name {
     margin: 0;
+    width: 100%;
+    padding-top: 5px;
     font-size: 11.5px;
     font-weight: 700;
     color: #ffffff;
@@ -955,7 +961,9 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    min-height: 27.6px;
+    height: 30.6px;
+    max-height: 30.6px;
+    align-self: flex-start;
         }
 
        .ftf-item-rarity {
@@ -963,7 +971,7 @@
     font-size: 7.5px;
     font-weight: 700;
     text-transform: uppercase;
-    margin: -3px 0 3px 0;
+    margin: 1px 0 2px 0;
     letter-spacing: 0.3px;
     line-height: 8px;
     height: 8px;
@@ -1847,7 +1855,7 @@
 
     const SVG_ESTABILIDADE = {
         Rising: `<svg viewBox="0 0 24 24" fill="none" stroke="#36D8B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
-        "Doing Well": `<svg viewBox="0 0 24 24" fill="none" stroke="#47CC6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 11.5 2 18"></polyline></svg>`,
+        "Doing Well": `<svg viewBox="0 0 24 24" fill="none" stroke="#47CC6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 11.5 2 18"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>`,
         Improving: `<svg viewBox="0 0 24 24" fill="none" stroke="#8BCC14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>`,
         Stable: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
         Fluctuating: `<svg viewBox="0 0 24 24" fill="none" stroke="#F2BE24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-9 6 18 3-9h3"></path></svg>`,
