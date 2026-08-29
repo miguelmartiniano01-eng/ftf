@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -801,7 +803,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
             transition: transform 0.15s;
             overflow: hidden;
@@ -920,6 +922,8 @@
         .ftf-card-info {
             display: flex;
             flex-direction: column;
+            flex: 1 1 auto;
+            justify-content: space-between;
             text-align: left;
             padding: 0px 2px;
         }
@@ -929,7 +933,7 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 4px;
-            margin-bottom: -5px;
+            margin-bottom: -8px;
             overflow: hidden;
         }
 
@@ -956,9 +960,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    display: block;
     height: 30.6px;
     max-height: 30.6px;
     align-self: flex-start;
@@ -969,7 +971,7 @@
     font-size: 7.5px;
     font-weight: 700;
     text-transform: uppercase;
-    margin: -15px 0 2px 0;
+    margin: -10px 0 0px 0;
     letter-spacing: 0.3px;
     line-height: 8px;
     height: 8px;
@@ -981,7 +983,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-bottom: 3px;
+            margin-bottom: 1px;
         }
 
         .ftf-value-label {
@@ -1058,13 +1060,13 @@
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid #1a1e26;
-            padding-top: 8px;
-            margin-top: 6px;
+            padding-top: 5px;
+            margin-top: 3px;
         }
 
         .ftf-demand-row-compacta {
-            padding-top: 6px;
-            margin-top: 3px;
+            padding-top: 3px;
+            margin-top: 1px;
         }
 
         .txt-demanda-estrelas {
