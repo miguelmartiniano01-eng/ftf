@@ -1212,7 +1212,8 @@
         }
 
         .ocultar-controles-cards .btn-acoes-card,
-        .ocultar-controles-cards .btn-deletar {
+        .ocultar-controles-cards .btn-deletar,
+        .ocultar-controles-cards .changelog-version-acoes {
             display: none !important;
         }
 
@@ -1826,6 +1827,10 @@
 
     <div id="btn-exportar-container">
         <button type="button" class="ui-btn" onclick="exportarLista()">Copiar código de Backup 📋</button>
+    </div>
+
+    <div id="btn-exportar-changelog-container" style="max-width:850px; margin:0 auto 12px auto; text-align:right; display:none;">
+        <button type="button" class="ui-btn" onclick="copiarChangelogFormatado()">📋 Copiar Changelog (Texto Limpo)</button>
     </div>
 
     <div id="container-cards"></div>
@@ -3792,6 +3797,32 @@ function renderizarCardHTML(item) {
         });
     }
 
+    function copiarChangelogFormatado() {
+        if (!listaChangelog || listaChangelog.length === 0) {
+            alert('Não há nenhuma versão no changelog para copiar.');
+            return;
+        }
+
+        const blocosVersao = listaChangelog.map(versaoItem => {
+            const linhasEntries = (versaoItem.entries || []).map(entry => {
+                const cfg = CHANGELOG_TIPOS[entry.tipo] || CHANGELOG_TIPOS.outros;
+                const texto = textoDaEntryChangelog(entry);
+                return `${cfg.label}\n\n${texto}`;
+            });
+
+            const cabecalho = `Version ${versaoItem.versao}\n${versaoItem.data || ''}`;
+            return [cabecalho, ...linhasEntries].join('\n\n');
+        });
+
+        const textoFinal = blocosVersao.join('\n\n\n');
+
+        navigator.clipboard.writeText(textoFinal).then(() => {
+            alert('Changelog copiado! Já formatado, sem botões, pronto pra colar.');
+        }).catch(() => {
+            alert('Não consegui copiar. Talvez o navegador tenha bloqueado o acesso à área de transferência.');
+        });
+    }
+
     // Abre uma janela pra colar um backup exportado (via "Copiar código de
     // Backup") de outra aba/navegador/aparelho e restaurar os itens a partir
     // dele. Essencial pra recuperar dados quando o backup automático local
@@ -3939,6 +3970,9 @@ function renderizarCardHTML(item) {
         const navChangelog = Array.from(document.querySelectorAll('.ftf-nav-item')).find(el => el.textContent.trim() === 'Changelog');
         if (navChangelog) navChangelog.classList.add('active');
 
+        document.getElementById('btn-exportar-container').style.display = 'none';
+        document.getElementById('btn-exportar-changelog-container').style.display = 'block';
+
         renderizarChangelog();
     }
 
@@ -3950,6 +3984,9 @@ function renderizarCardHTML(item) {
         document.querySelector('.btn-aba-container').style.display = 'flex';
         document.querySelector('.subtabs-container').style.display = 'flex';
         document.querySelector('.event-filter-container').style.display = 'flex';
+
+        document.getElementById('btn-exportar-container').style.display = 'block';
+        document.getElementById('btn-exportar-changelog-container').style.display = 'none';
     }
 
     function irParaBundles() {
