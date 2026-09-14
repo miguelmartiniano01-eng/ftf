@@ -1427,6 +1427,7 @@
             <button class="form-tab-btn" id="tab-bundle" onclick="mudarAbaForm('bundle')">➕ Bundle</button>
             <button class="form-tab-btn" id="tab-changelog" onclick="mudarAbaForm('changelog')">➕ Changelog</button>
             <button class="form-tab-btn" id="tab-massa" onclick="mudarAbaForm('massa')">Adicionar Links Extra (Massa)</button>
+            <button class="form-tab-btn" id="tab-parser" onclick="mudarAbaForm('parser')">🪄 Parser (Auto)</button>
         </div>
 
         <div id="form-individual" class="form-section">
@@ -1759,6 +1760,27 @@
             <h3>Importação em Bloco</h3>
             <textarea id="listaLinksMassa" class="input-style form-input-full" rows="6" placeholder="Cole uma lista de URLs separadas por quebra de linha..." style="resize: vertical; font-family: monospace; font-size: 11px;"></textarea>
             <button type="button" class="btn-submit" style="background: #2ed573; color: #fff;" onclick="importarLinksEmMassa()">Injetar Links Extra 🚀</button>
+        </div>
+
+        <div id="form-parser" class="form-section" style="display: none;">
+            <h3>🪄 Parser Automático de Rascunho</h3>
+            <p style="color:#94a3b8; font-size:12px; margin-bottom:8px; line-height:1.4;">
+                Cole abaixo o rascunho de texto com as mudanças (uma por linha). O sistema
+                identifica sozinho Novos Itens, Aumento/Queda de Valor, Mudança de Demanda
+                e Mudança de Status — já atualiza o banco de dados dos itens encontrados
+                pelo nome e publica uma nova versão pronta no Changelog.
+            </p>
+            <p style="color:#64748b; font-size:11px; margin-bottom:8px; line-height:1.4;">
+                Padrões reconhecidos (uma linha por mudança):<br>
+                • <code>Nome set to 150, Range [130-170], 4 stars, Fluctuating</code> → Novo Item<br>
+                • <code>Nome increased to 700</code> / <code>Nome decreased to 55</code> → Valor<br>
+                • <code>Nome increased to 2.5 stars</code> → Demanda<br>
+                • <code>Nome set to Doing Well</code> → Estabilidade<br>
+                • <code>Nome labeled to Overpaid For</code> → Selo de Status<br>
+                Vários nomes na mesma linha: separe com <code>,</code> ou <code>&amp;</code>.
+            </p>
+            <textarea id="parserRascunhoTexto" class="input-style form-input-full" rows="10" style="font-family: monospace; font-size:12px; resize:vertical;" placeholder="Cole o rascunho aqui, uma linha por mudança..."></textarea>
+            <button type="button" class="btn-submit" style="margin-top:10px; background:#a55eea; color:#fff;" onclick="processarRascunhoColado()">🪄 Processar e Atualizar Tudo</button>
         </div>
     </div>
 
@@ -2530,10 +2552,12 @@
         document.getElementById('tab-bundle').classList.remove('active');
         document.getElementById('tab-changelog').classList.remove('active');
         document.getElementById('tab-massa').classList.remove('active');
+        document.getElementById('tab-parser').classList.remove('active');
         document.getElementById('form-individual').style.display = 'none';
         document.getElementById('form-bundle').style.display = 'none';
         document.getElementById('form-changelog').style.display = 'none';
         document.getElementById('form-massa').style.display = 'none';
+        document.getElementById('form-parser').style.display = 'none';
 
         if(aba === 'unico') {
             document.getElementById('tab-unico').classList.add('active');
@@ -2544,6 +2568,9 @@
         } else if(aba === 'changelog') {
             document.getElementById('tab-changelog').classList.add('active');
             document.getElementById('form-changelog').style.display = 'block';
+        } else if(aba === 'parser') {
+            document.getElementById('tab-parser').classList.add('active');
+            document.getElementById('form-parser').style.display = 'block';
         } else {
             document.getElementById('tab-massa').classList.add('active');
             document.getElementById('form-massa').style.display = 'block';
@@ -4152,6 +4179,379 @@ function renderizarCardHTML(item) {
         const wrapper = document.getElementById('changelog-linhas-' + tipo);
         wrapper.innerHTML = '';
         adicionarLinhaChangelog(tipo);
+    }
+
+    // ==========================================================================
+    // ===== PARSER AUTOMÁTICO DE RASCUNHO (Texto solto -> Banco + Changelog) =====
+    // ==========================================================================
+    // Ideia geral: cada linha do rascunho colado representa UMA mudança.
+    // Usamos Regex pra separar "quem" (nomes) de "o quê" (verbo + valor +
+    // atributos extras), decidir a categoria da mudança, atualizar os itens
+    // já existentes em listaDeMarretas por nome, e montar a entrada de
+    // Changelog no MESMO formato que o formulário manual já usa — assim toda
+    // a lógica de exibição (CHANGELOG_TIPOS, textoDaEntryChangelog, etc.)
+    // continua funcionando sem precisar de nenhuma mudança extra.
+
+    // Verbos-gatilho reconhecidos no rascunho (em inglês, como o changelog
+    // real é escrito). A ordem não importa pro regex, mas todos precisam
+    // estar cercados por espaço pra não confundir com nomes de itens.
+    const REGEX_LINHA_DRAFT = /^(.+?)\s+(set to|increased to|decreased to|corrected to|labeled to)\s+(.+)$/i;
+
+    // "Range [130-170]" ou "Range 130-170" (colchetes são opcionais)
+    const REGEX_RANGE_DRAFT = /^range\s*\[?\s*(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\s*\]?$/i;
+
+    // "4 stars", "2.5 star"
+    const REGEX_STARS_DRAFT = /^(\d+(?:\.\d+)?)\s*stars?$/i;
+
+    // "High Tier", "Mid Tier", "Low Tier" — é só informativo (a própria app já
+    // calcula o tier sozinha a partir do valor), então nunca vira um campo do
+    // banco de dados — só é usado pra não cair na categoria "Other" à toa.
+    const REGEX_TIER_DRAFT = /^(high|mid|low)\s*tier$/i;
+
+    const LISTA_ESTABILIDADE_DRAFT = ['rising', 'doing well', 'improving', 'stable', 'fluctuating', 'struggling', 'receding', 'dropping'];
+    const LISTA_BADGE_DRAFT = ['overpaid for', 'underpaid for', 'niche'];
+
+    // Divide o pedaço de nomes da linha ("Fudge Bunny & Cuddly Bunny", ou
+    // "A, B, C") numa lista simples, aceitando tanto vírgula quanto "&".
+    function dividirNomesDraft(segmentoNomes) {
+        return segmentoNomes
+            .split(/,|&/)
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+
+    // Junta os nomes de volta numa frase legível pro Changelog, no padrão
+    // "A, B & C" (vírgula entre a maioria, "&" só antes do último).
+    function juntarNomesParaChangelog(nomes) {
+        if (nomes.length <= 1) return nomes.join('');
+        return nomes.slice(0, -1).join(', ') + ' & ' + nomes[nomes.length - 1];
+    }
+
+    // Traduz o verbo bruto do rascunho ("increased to" etc.) pro valor que o
+    // <select> de Demanda/Status do formulário manual já usa internamente.
+    function mapearVerboParaChangelogDraft(verboBruto) {
+        if (verboBruto === 'increased to') return 'increased';
+        if (verboBruto === 'decreased to') return 'decreased';
+        if (verboBruto === 'labeled to') return 'labeled to';
+        return 'corrected'; // "corrected to" e "set to" (numérico) caem aqui
+    }
+
+    // Selo de status ("Overpaid For" etc.) -> chave interna usada em item.status
+    function mapearBadgeParaChaveDraft(textoBadge) {
+        const t = textoBadge.trim().toLowerCase();
+        if (t === 'overpaid for') return 'overpaid';
+        if (t === 'underpaid for') return 'underpaid';
+        if (t === 'niche') return 'niche';
+        return 'none';
+    }
+
+    // Data de hoje já formatada por extenso, no mesmo padrão usado nos
+    // campos "Last Updated" do app (ex: "September 10th, 2026").
+    function formatarDataAtualPorExtenso() {
+        const MESES_EXTENSO = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const agora = new Date();
+        const dia = agora.getDate();
+        const sufixo = (dia % 10 === 1 && dia !== 11) ? 'st'
+                     : (dia % 10 === 2 && dia !== 12) ? 'nd'
+                     : (dia % 10 === 3 && dia !== 13) ? 'rd'
+                     : 'th';
+        return `${MESES_EXTENSO[agora.getMonth()]} ${dia}${sufixo}, ${agora.getFullYear()}`;
+    }
+
+    // Interpreta os atributos "extras" de uma linha (tudo depois do valor
+    // principal, separado por vírgula) e devolve um objeto estruturado.
+    // Ex: ["Range [130-170]", "4 stars", "Fluctuating"] ->
+    //     { range: "130-170", demanda: "4", estabilidade: "Fluctuating", badge: null }
+    function interpretarExtrasDraft(partesExtras) {
+        const info = { range: null, demanda: null, estabilidade: null, badge: null, ignoradas: [] };
+        partesExtras.forEach(parte => {
+            const matchRange = parte.match(REGEX_RANGE_DRAFT);
+            const matchStars = parte.match(REGEX_STARS_DRAFT);
+            if (matchRange) {
+                info.range = `${matchRange[1]}-${matchRange[2]}`;
+            } else if (matchStars) {
+                info.demanda = matchStars[1];
+            } else if (LISTA_ESTABILIDADE_DRAFT.includes(parte.toLowerCase())) {
+                info.estabilidade = parte;
+            } else if (LISTA_BADGE_DRAFT.includes(parte.toLowerCase())) {
+                info.badge = parte;
+            } else {
+                // Inclui frases de Tier (High/Mid/Low Tier) e qualquer outra
+                // coisa não reconhecida — apenas ignoradas pro banco de dados.
+                info.ignoradas.push(parte);
+            }
+        });
+        return info;
+    }
+
+    // Transforma o objeto de extras em uma lista plana de atualizações de
+    // campo (usado tanto por linhas de Valor quanto por linhas de Novo Item).
+    function extrasParaAtualizacoesBanco(atualizacoesBanco, infoExtra) {
+        if (infoExtra.range) {
+            atualizacoesBanco.push({ campo: 'rangeAtivo', valor: 'sim' });
+            atualizacoesBanco.push({ campo: 'rangeValor', valor: infoExtra.range });
+        }
+        if (infoExtra.demanda) {
+            atualizacoesBanco.push({ campo: 'demanda', valor: infoExtra.demanda });
+        }
+        if (infoExtra.estabilidade) {
+            atualizacoesBanco.push({ campo: 'templates', valor: infoExtra.estabilidade });
+        }
+        if (infoExtra.badge) {
+            atualizacoesBanco.push({ campo: 'status', valor: mapearBadgeParaChaveDraft(infoExtra.badge) });
+        }
+    }
+
+    /**
+     * Processa UMA linha do rascunho e devolve um objeto padronizado:
+     * {
+     *   nomes: string[],                 // nomes citados na linha (vazio = linha "Other")
+     *   entradaChangelog: {...},         // pronta pra entrar em listaChangelog[].entries
+     *   atualizacoesBanco: [{campo,valor}, ...] // aplicado em CADA item de `nomes`
+     * }
+     * Linhas que não batem com nenhum padrão reconhecido viram uma nota livre
+     * na categoria "Other" (outros), sem nenhuma atualização de banco.
+     */
+    function processarLinhaDraft(linhaBruta) {
+        const linha = linhaBruta.trim();
+        if (!linha) return null;
+
+        const match = linha.match(REGEX_LINHA_DRAFT);
+        if (!match) {
+            return { nomes: [], entradaChangelog: { tipo: 'outros', texto: linha }, atualizacoesBanco: [] };
+        }
+
+        const nomes = dividirNomesDraft(match[1].trim());
+        const verboBruto = match[2].toLowerCase().trim();
+        const restante = match[3].trim();
+
+        // O "Range [x-y]" não tem vírgula dentro dos colchetes, então dividir
+        // o restante por vírgula não quebra esse atributo ao meio.
+        const partes = restante.split(',').map(p => p.trim()).filter(Boolean);
+        const valorPrincipal = partes[0] || '';
+        const infoExtra = interpretarExtrasDraft(partes.slice(1));
+
+        const numeroPrincipal = parseFloat(valorPrincipal);
+        const valorPrincipalEhNumero = /^\d+(\.\d+)?$/.test(valorPrincipal) && !isNaN(numeroPrincipal);
+        const nomeParaChangelog = juntarNomesParaChangelog(nomes);
+
+        // ----- Caso 1: valor principal NÃO é número -----
+        // Pode ser estrelas ("2.5 stars"), estabilidade ("Doing Well"),
+        // selo ("Overpaid For") ou um "Tier" solto (vira nota Other).
+        if (!valorPrincipalEhNumero) {
+            const matchStarsDireto = valorPrincipal.match(REGEX_STARS_DRAFT);
+            if (matchStarsDireto) {
+                return {
+                    nomes,
+                    entradaChangelog: { tipo: 'demanda', nome: nomeParaChangelog, valor: matchStarsDireto[1], verbo: mapearVerboParaChangelogDraft(verboBruto) },
+                    atualizacoesBanco: [{ campo: 'demanda', valor: matchStarsDireto[1] }]
+                };
+            }
+            if (LISTA_ESTABILIDADE_DRAFT.includes(valorPrincipal.toLowerCase())) {
+                return {
+                    nomes,
+                    entradaChangelog: { tipo: 'status', nome: nomeParaChangelog, valor: valorPrincipal, verbo: verboBruto === 'labeled to' ? 'labeled to' : 'set to' },
+                    atualizacoesBanco: [{ campo: 'templates', valor: valorPrincipal }]
+                };
+            }
+            if (LISTA_BADGE_DRAFT.includes(valorPrincipal.toLowerCase())) {
+                return {
+                    nomes,
+                    entradaChangelog: { tipo: 'status', nome: nomeParaChangelog, valor: valorPrincipal, verbo: verboBruto === 'labeled to' ? 'labeled to' : 'set to' },
+                    atualizacoesBanco: [{ campo: 'status', valor: mapearBadgeParaChaveDraft(valorPrincipal) }]
+                };
+            }
+            // "High/Mid/Low Tier" solto, ou qualquer outro texto não mapeado
+            // -> vira só uma nota informativa, sem mexer no banco de dados.
+            return { nomes: [], entradaChangelog: { tipo: 'outros', texto: linha }, atualizacoesBanco: [] };
+        }
+
+        // ----- Caso 2: valor principal é número -----
+        if (verboBruto === 'increased to' || verboBruto === 'decreased to') {
+            // Mudança de valor normal de um item já existente
+            const subiu = verboBruto === 'increased to';
+            const atualizacoesBanco = [
+                { campo: 'valor', valor: valorPrincipal },
+                { campo: 'tendencia', valor: subiu ? 'subiu' : 'caiu' }
+            ];
+            extrasParaAtualizacoesBanco(atualizacoesBanco, infoExtra);
+            return {
+                nomes,
+                entradaChangelog: { tipo: subiu ? 'valor_sobe' : 'valor_desce', nome: nomeParaChangelog, valor: valorPrincipal },
+                atualizacoesBanco
+            };
+        }
+
+        // "set to <número>" ou "corrected to <número>" com atributos extras
+        // (Range, estrelas, estabilidade) junto -> tratado como Novo Item /
+        // correção completa, e cai na categoria "New Items" do Changelog.
+        const atualizacoesBanco = [{ campo: 'valor', valor: valorPrincipal }];
+        extrasParaAtualizacoesBanco(atualizacoesBanco, infoExtra);
+        return {
+            nomes,
+            entradaChangelog: { tipo: 'bundle_novo', texto: linha },
+            atualizacoesBanco
+        };
+    }
+
+    // Acha um item em `lista` pelo nome — primeiro tenta bater exatamente
+    // (ignorando maiúsculas/minúsculas e espaços nas pontas), e só se não
+    // achar nada tenta um match parcial (contém), igual à lógica que
+    // buscarImagemPorNome() já usa em outras partes do sistema.
+    function encontrarItemPorNomeDraft(lista, nomeCitado) {
+        const alvo = nomeCitado.trim().toLowerCase();
+        let encontrado = lista.find(m => m.tipo !== 'bundles' && (m.nome || '').trim().toLowerCase() === alvo);
+        if (!encontrado) {
+            encontrado = lista.find(m => m.tipo !== 'bundles' && (m.nome || '').trim().toLowerCase().includes(alvo));
+        }
+        return encontrado || null;
+    }
+
+    /**
+     * ==========================================================================
+     * processDraft(textoColado, listaItensAtual)
+     * ==========================================================================
+     * Função PRINCIPAL do parser — pura (não mexe em listaDeMarretas nem no
+     * localStorage): recebe o texto colado e um snapshot da lista de itens, e
+     * devolve tudo já calculado, pronto pra ser aplicado.
+     *
+     * @param {string} textoColado     - o rascunho colado na textarea, uma mudança por linha
+     * @param {Array}  listaItensAtual - snapshot de listaDeMarretas (não é alterado)
+     * @returns {{
+     *   itensAtualizados: Array,        // cópia da lista de itens já com os campos novos
+     *   idsAtualizados: number[],       // ids que foram tocados por alguma linha
+     *   nomesNaoEncontrados: string[],  // nomes citados no rascunho que não existem no banco
+     *   entradasChangelog: Array,       // prontas pra virar listaChangelog[].entries
+     *   dataFormatada: string           // data de hoje, ex: "September 10th, 2026"
+     * }}
+     */
+    function processDraft(textoColado, listaItensAtual) {
+        const dataFormatada = formatarDataAtualPorExtenso();
+
+        // Trabalha sobre uma CÓPIA da lista — o banco de dados real só é
+        // tocado quando aplicarResultadoDoParser() for chamada de fato.
+        const itensAtualizados = listaItensAtual.map(item => ({ ...item }));
+
+        const idsAtualizadosSet = new Set();
+        const nomesNaoEncontrados = [];
+        const entradasChangelog = [];
+
+        const linhas = (textoColado || '').split('\n').map(l => l.trim()).filter(Boolean);
+
+        linhas.forEach(linha => {
+            const resultadoLinha = processarLinhaDraft(linha);
+            if (!resultadoLinha) return;
+
+            entradasChangelog.push(resultadoLinha.entradaChangelog);
+
+            // Linhas "Other" não citam nomes reconhecidos -> nada a atualizar
+            if (resultadoLinha.nomes.length === 0) return;
+
+            resultadoLinha.nomes.forEach(nomeCitado => {
+                const itemEncontrado = encontrarItemPorNomeDraft(itensAtualizados, nomeCitado);
+                if (!itemEncontrado) {
+                    nomesNaoEncontrados.push(nomeCitado);
+                    return;
+                }
+
+                resultadoLinha.atualizacoesBanco.forEach(({ campo, valor }) => {
+                    itemEncontrado[campo] = valor;
+                });
+                itemEncontrado.lastUpdated = dataFormatada;
+                idsAtualizadosSet.add(itemEncontrado.id);
+            });
+        });
+
+        return {
+            itensAtualizados,
+            idsAtualizados: Array.from(idsAtualizadosSet),
+            nomesNaoEncontrados: [...new Set(nomesNaoEncontrados)],
+            entradasChangelog,
+            dataFormatada
+        };
+    }
+
+    // Sugere o próximo número de versão do Changelog somando 0.1 à maior
+    // versão numérica já publicada (ex: 4.9 -> 5.0). Se não conseguir achar
+    // nenhuma versão numérica anterior, começa do "1.0".
+    function sugerirProximaVersaoChangelog() {
+        const versoesNumericas = listaChangelog.map(v => parseFloat(v.versao)).filter(n => !isNaN(n));
+        if (versoesNumericas.length === 0) return '1.0';
+        const maior = Math.max(...versoesNumericas);
+        return (Math.round((maior + 0.1) * 10) / 10).toFixed(1);
+    }
+
+    // Aplica de fato o resultado de processDraft(): substitui listaDeMarretas,
+    // salva, atualiza a data "Last Updated" das raridades afetadas, e publica
+    // uma nova versão no Changelog com todas as entradas já geradas.
+    function aplicarResultadoDoParser(resultado) {
+        listaDeMarretas = resultado.itensAtualizados;
+        salvarListaDeMarretas();
+
+        // Atualiza a data de "Last Updated" pra cada raridade que teve pelo
+        // menos um item tocado nessa leva de mudanças.
+        const raridadesAfetadas = new Set(
+            listaDeMarretas
+                .filter(item => resultado.idsAtualizados.includes(item.id))
+                .map(item => (item.raridade || 'legendary').toLowerCase())
+        );
+        let datasSalvas = JSON.parse(safeStorage.getItem('ftf_datas_att')) || {};
+        raridadesAfetadas.forEach(r => { datasSalvas[r] = resultado.dataFormatada; });
+        safeStorage.setItem('ftf_datas_att', JSON.stringify(datasSalvas));
+        if (raridadesAfetadas.has((raridadeAtual || '').toLowerCase())) {
+            const inputData = document.getElementById('input-data-att');
+            if (inputData) inputData.value = resultado.dataFormatada;
+        }
+
+        // Publica uma nova versão no Changelog com todas as entradas geradas
+        if (resultado.entradasChangelog.length > 0) {
+            listaChangelog.unshift({
+                id: Date.now() + Math.floor(Math.random() * 100000),
+                versao: sugerirProximaVersaoChangelog(),
+                data: resultado.dataFormatada,
+                entries: resultado.entradasChangelog
+            });
+            ordenarListaChangelogPorData();
+            salvarListaChangelog();
+        }
+
+        carregarCardsSalvos();
+        renderizarChangelog();
+    }
+
+    // Função chamada pelo botão "🪄 Processar e Atualizar Tudo" — lê a
+    // textarea, roda processDraft(), mostra um resumo de confirmação (com
+    // aviso de nomes não encontrados) e só aplica de fato se o usuário topar.
+    function processarRascunhoColado() {
+        const textarea = document.getElementById('parserRascunhoTexto');
+        const texto = textarea.value;
+
+        if (!texto || !texto.trim()) {
+            alert('Cole o rascunho de texto na caixa antes de processar.');
+            return;
+        }
+
+        const resultado = processDraft(texto, listaDeMarretas);
+
+        const resumoLinhas = [
+            `📦 Itens que serão atualizados: ${resultado.idsAtualizados.length}`,
+            `📋 Entradas geradas para o Changelog: ${resultado.entradasChangelog.length}`,
+            `📅 Data usada: ${resultado.dataFormatada}`
+        ];
+
+        if (resultado.nomesNaoEncontrados.length > 0) {
+            resumoLinhas.push(
+                `\n⚠️ Não encontrei ${resultado.nomesNaoEncontrados.length} nome(s) no banco de dados (adicione manualmente depois):\n- ${resultado.nomesNaoEncontrados.join('\n- ')}`
+            );
+        }
+
+        resumoLinhas.push('\nConfirma aplicar essas mudanças e publicar a nova versão no Changelog?');
+
+        if (!confirm(resumoLinhas.join('\n'))) return;
+
+        aplicarResultadoDoParser(resultado);
+        textarea.value = '';
+        alert('Pronto! Itens atualizados e nova versão publicada no Changelog. 🎉');
     }
 
     // Mapa de nomes de mês (em inglês, já que as datas do changelog são
