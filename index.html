@@ -4185,17 +4185,34 @@ function renderizarCardHTML(item) {
     // ===== PARSER AUTOMÁTICO DE RASCUNHO (Texto solto -> Banco + Changelog) =====
     // ==========================================================================
     // Ideia geral: cada linha do rascunho colado representa UMA mudança.
-    // Usamos Regex pra separar "quem" (nomes) de "o quê" (verbo + valor +
+    // Usamos Regex pra separar "quem" (nomes) de "o quê" (verbo/seta + valor +
     // atributos extras), decidir a categoria da mudança, atualizar os itens
     // já existentes em listaDeMarretas por nome, e montar a entrada de
     // Changelog no MESMO formato que o formulário manual já usa — assim toda
     // a lógica de exibição (CHANGELOG_TIPOS, textoDaEntryChangelog, etc.)
     // continua funcionando sem precisar de nenhuma mudança extra.
+    //
+    // IMPORTANTE sobre "subiu ou desceu": pra Valor e pra Demanda, a direção
+    // (aumento/queda) é decidida comparando o valor NOVO com o valor ATUAL
+    // já salvo no banco de dados daquele item — não com a palavra que você
+    // escreveu ("increased"/"decreased"). Isso significa que:
+    //   - "Nome 270 > 280" e "Nome 270 > 260" funcionam mesmo sem nenhuma
+    //     palavra em inglês, só comparando os dois números da seta;
+    //   - se você escrever "increased to" por engano num item que na
+    //     verdade caiu, o sistema corrige sozinho e categoriza certo no
+    //     Changelog (usa a palavra escrita só quando o item não é
+    //     encontrado no banco, como último recurso).
 
     // Verbos-gatilho reconhecidos no rascunho (em inglês, como o changelog
-    // real é escrito). A ordem não importa pro regex, mas todos precisam
-    // estar cercados por espaço pra não confundir com nomes de itens.
+    // real é escrito). Todos precisam estar cercados por espaço pra não
+    // confundir com nomes de itens.
     const REGEX_LINHA_DRAFT = /^(.+?)\s+(set to|increased to|decreased to|corrected to|labeled to)\s+(.+)$/i;
+
+    // Notação de seta: "Nome 270 > 280" ou "Nome 3 > 4 stars" (aceita >, ->
+    // ou →). Os dois números ficam nos grupos 2 e 3; "stars"/"star" opcional
+    // logo depois indica que é uma mudança de Demanda, não de Valor; o que
+    // vier depois de uma vírgula é tratado como atributo extra (Range etc.).
+    const REGEX_LINHA_SETA_DRAFT = /^(.+?)\s+(\d+(?:\.\d+)?)\s*(?:>|->|→)\s*(\d+(?:\.\d+)?)\s*(stars?)?\s*(?:,\s*(.+))?$/i;
 
     // "Range [130-170]" ou "Range 130-170" (colchetes são opcionais)
     const REGEX_RANGE_DRAFT = /^range\s*\[?\s*(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\s*\]?$/i;
@@ -4211,6 +4228,19 @@ function renderizarCardHTML(item) {
     const LISTA_ESTABILIDADE_DRAFT = ['rising', 'doing well', 'improving', 'stable', 'fluctuating', 'struggling', 'receding', 'dropping'];
     const LISTA_BADGE_DRAFT = ['overpaid for', 'underpaid for', 'niche'];
 
+    // Mapas de capitalização "oficial" — assim, não importa se você digitou
+    // "doing well", "DOING WELL" ou "Doing Well" no rascunho, o item recebe
+    // sempre o texto exato que a interface espera (usado pra pintar a cor
+    // de fundo do selo de estabilidade/status corretamente).
+    const MAPA_ESTABILIDADE_CANONICA = {
+        'rising': 'Rising', 'doing well': 'Doing Well', 'improving': 'Improving',
+        'stable': 'Stable', 'fluctuating': 'Fluctuating', 'struggling': 'Struggling',
+        'receding': 'Receding', 'dropping': 'Dropping'
+    };
+    const MAPA_BADGE_CANONICO = {
+        'overpaid for': 'Overpaid For', 'underpaid for': 'Underpaid For', 'niche': 'Niche'
+    };
+
     // Divide o pedaço de nomes da linha ("Fudge Bunny & Cuddly Bunny", ou
     // "A, B, C") numa lista simples, aceitando tanto vírgula quanto "&".
     function dividirNomesDraft(segmentoNomes) {
@@ -4225,15 +4255,6 @@ function renderizarCardHTML(item) {
     function juntarNomesParaChangelog(nomes) {
         if (nomes.length <= 1) return nomes.join('');
         return nomes.slice(0, -1).join(', ') + ' & ' + nomes[nomes.length - 1];
-    }
-
-    // Traduz o verbo bruto do rascunho ("increased to" etc.) pro valor que o
-    // <select> de Demanda/Status do formulário manual já usa internamente.
-    function mapearVerboParaChangelogDraft(verboBruto) {
-        if (verboBruto === 'increased to') return 'increased';
-        if (verboBruto === 'decreased to') return 'decreased';
-        if (verboBruto === 'labeled to') return 'labeled to';
-        return 'corrected'; // "corrected to" e "set to" (numérico) caem aqui
     }
 
     // Selo de status ("Overpaid For" etc.) -> chave interna usada em item.status
@@ -4272,9 +4293,9 @@ function renderizarCardHTML(item) {
             } else if (matchStars) {
                 info.demanda = matchStars[1];
             } else if (LISTA_ESTABILIDADE_DRAFT.includes(parte.toLowerCase())) {
-                info.estabilidade = parte;
+                info.estabilidade = MAPA_ESTABILIDADE_CANONICA[parte.toLowerCase()];
             } else if (LISTA_BADGE_DRAFT.includes(parte.toLowerCase())) {
-                info.badge = parte;
+                info.badge = MAPA_BADGE_CANONICO[parte.toLowerCase()];
             } else {
                 // Inclui frases de Tier (High/Mid/Low Tier) e qualquer outra
                 // coisa não reconhecida — apenas ignoradas pro banco de dados.
@@ -4302,23 +4323,89 @@ function renderizarCardHTML(item) {
         }
     }
 
+    // Decide se a mudança foi "subiu" ou "caiu" comparando o valor NOVO com
+    // o valor ATUAL do item no banco de dados (prioridade 1). Se o item não
+    // for encontrado, usa o valor antigo que o próprio rascunho informou
+    // (só existe na notação de seta — prioridade 2). Se nada disso estiver
+    // disponível, devolve null (quem chamou decide o que fazer, geralmente
+    // caindo de volta pro verbo que a pessoa escreveu).
+    function determinarDirecaoMudanca(itemReferencia, campo, valorNovoNum, valorAntigoEscritoNum) {
+        if (itemReferencia) {
+            const valorAtualNum = parseFloat(itemReferencia[campo]);
+            if (!isNaN(valorAtualNum)) {
+                if (valorNovoNum > valorAtualNum) return 'subiu';
+                if (valorNovoNum < valorAtualNum) return 'caiu';
+                return 'igual';
+            }
+        }
+        if (typeof valorAntigoEscritoNum === 'number' && !isNaN(valorAntigoEscritoNum)) {
+            if (valorNovoNum > valorAntigoEscritoNum) return 'subiu';
+            if (valorNovoNum < valorAntigoEscritoNum) return 'caiu';
+            return 'igual';
+        }
+        return null;
+    }
+
     /**
-     * Processa UMA linha do rascunho e devolve um objeto padronizado:
+     * Processa UMA linha do rascunho e devolve um objeto padronizado.
+     *
+     * Linhas de Valor/Demanda (que dependem de comparação com o banco de
+     * dados) voltam com `precisaCompararBanco: true` e ainda SEM a entrada
+     * de Changelog fechada — quem decide a direção final (subiu/caiu) e
+     * monta a entrada é o processDraft(), que tem acesso ao valor atual de
+     * cada item. As demais linhas (Novo Item, Status, Estabilidade, Selo,
+     * Other) já voltam com tudo pronto, pois não dependem de comparação.
+     *
+     * Formato de retorno:
      * {
-     *   nomes: string[],                 // nomes citados na linha (vazio = linha "Other")
-     *   entradaChangelog: {...},         // pronta pra entrar em listaChangelog[].entries
-     *   atualizacoesBanco: [{campo,valor}, ...] // aplicado em CADA item de `nomes`
+     *   nomes: string[],                        // nomes citados (vazio = linha "Other")
+     *   precisaCompararBanco: boolean,
+     *   // --- se precisaCompararBanco = true ---
+     *   campoComparar: 'valor' | 'demanda',
+     *   valorNovo: string,
+     *   direcaoEscrita: 'subiu' | 'caiu' | null, // fallback se o item não existir no banco
+     *   atualizacoesBancoExtras: [{campo,valor}, ...],
+     *   // --- se precisaCompararBanco = false ---
+     *   entradaChangelog: {...},
+     *   atualizacoesBanco: [{campo,valor}, ...]
      * }
-     * Linhas que não batem com nenhum padrão reconhecido viram uma nota livre
-     * na categoria "Other" (outros), sem nenhuma atualização de banco.
      */
     function processarLinhaDraft(linhaBruta) {
         const linha = linhaBruta.trim();
         if (!linha) return null;
 
+        // ----- Tentativa 0: notação de SETA "Nome 270 > 280" ou "Nome 2 > 3 stars" -----
+        const matchSeta = linha.match(REGEX_LINHA_SETA_DRAFT);
+        if (matchSeta) {
+            const nomes = dividirNomesDraft(matchSeta[1].trim());
+            const numAntigoInformado = parseFloat(matchSeta[2]);
+            const numNovo = parseFloat(matchSeta[3]);
+            const ehDemanda = !!matchSeta[4]; // capturou "star"/"stars" depois do 2º número?
+            const infoExtra = interpretarExtrasDraft(matchSeta[5] ? matchSeta[5].split(',').map(p => p.trim()).filter(Boolean) : []);
+
+            if (numNovo === numAntigoInformado) {
+                // Os dois números da seta são iguais -> não é uma mudança de
+                // verdade, só vira uma nota (não mexe no banco).
+                return { nomes: [], precisaCompararBanco: false, entradaChangelog: { tipo: 'outros', texto: `${linha} (sem alteração real de valor)` }, atualizacoesBanco: [] };
+            }
+
+            const atualizacoesBancoExtras = [];
+            extrasParaAtualizacoesBanco(atualizacoesBancoExtras, infoExtra);
+
+            return {
+                nomes,
+                precisaCompararBanco: true,
+                campoComparar: ehDemanda ? 'demanda' : 'valor',
+                valorNovo: numNovo.toString(),
+                direcaoEscrita: numNovo > numAntigoInformado ? 'subiu' : 'caiu', // fallback (usa o próprio valor antigo escrito na seta)
+                atualizacoesBancoExtras
+            };
+        }
+
+        // ----- Tentativa 1: verbos em inglês ("increased to", "set to", etc.) -----
         const match = linha.match(REGEX_LINHA_DRAFT);
         if (!match) {
-            return { nomes: [], entradaChangelog: { tipo: 'outros', texto: linha }, atualizacoesBanco: [] };
+            return { nomes: [], precisaCompararBanco: false, entradaChangelog: { tipo: 'outros', texto: linha }, atualizacoesBanco: [] };
         }
 
         const nomes = dividirNomesDraft(match[1].trim());
@@ -4341,54 +4428,65 @@ function renderizarCardHTML(item) {
         if (!valorPrincipalEhNumero) {
             const matchStarsDireto = valorPrincipal.match(REGEX_STARS_DRAFT);
             if (matchStarsDireto) {
+                // "Nome increased/decreased to N stars" -> também é uma
+                // mudança de Demanda que depende de comparação com o banco.
                 return {
                     nomes,
-                    entradaChangelog: { tipo: 'demanda', nome: nomeParaChangelog, valor: matchStarsDireto[1], verbo: mapearVerboParaChangelogDraft(verboBruto) },
-                    atualizacoesBanco: [{ campo: 'demanda', valor: matchStarsDireto[1] }]
+                    precisaCompararBanco: true,
+                    campoComparar: 'demanda',
+                    valorNovo: matchStarsDireto[1],
+                    direcaoEscrita: verboBruto === 'decreased to' ? 'caiu' : 'subiu', // fallback pelo verbo escrito
+                    atualizacoesBancoExtras: []
                 };
             }
             if (LISTA_ESTABILIDADE_DRAFT.includes(valorPrincipal.toLowerCase())) {
+                const estabilidadeCanonica = MAPA_ESTABILIDADE_CANONICA[valorPrincipal.toLowerCase()];
                 return {
                     nomes,
-                    entradaChangelog: { tipo: 'status', nome: nomeParaChangelog, valor: valorPrincipal, verbo: verboBruto === 'labeled to' ? 'labeled to' : 'set to' },
-                    atualizacoesBanco: [{ campo: 'templates', valor: valorPrincipal }]
+                    precisaCompararBanco: false,
+                    entradaChangelog: { tipo: 'status', nome: nomeParaChangelog, valor: estabilidadeCanonica, verbo: verboBruto === 'labeled to' ? 'labeled to' : 'set to' },
+                    atualizacoesBanco: [{ campo: 'templates', valor: estabilidadeCanonica }]
                 };
             }
             if (LISTA_BADGE_DRAFT.includes(valorPrincipal.toLowerCase())) {
+                const badgeCanonico = MAPA_BADGE_CANONICO[valorPrincipal.toLowerCase()];
                 return {
                     nomes,
-                    entradaChangelog: { tipo: 'status', nome: nomeParaChangelog, valor: valorPrincipal, verbo: verboBruto === 'labeled to' ? 'labeled to' : 'set to' },
+                    precisaCompararBanco: false,
+                    entradaChangelog: { tipo: 'status', nome: nomeParaChangelog, valor: badgeCanonico, verbo: verboBruto === 'labeled to' ? 'labeled to' : 'set to' },
                     atualizacoesBanco: [{ campo: 'status', valor: mapearBadgeParaChaveDraft(valorPrincipal) }]
                 };
             }
             // "High/Mid/Low Tier" solto, ou qualquer outro texto não mapeado
             // -> vira só uma nota informativa, sem mexer no banco de dados.
-            return { nomes: [], entradaChangelog: { tipo: 'outros', texto: linha }, atualizacoesBanco: [] };
+            return { nomes: [], precisaCompararBanco: false, entradaChangelog: { tipo: 'outros', texto: linha }, atualizacoesBanco: [] };
         }
 
         // ----- Caso 2: valor principal é número -----
         if (verboBruto === 'increased to' || verboBruto === 'decreased to') {
-            // Mudança de valor normal de um item já existente
-            const subiu = verboBruto === 'increased to';
-            const atualizacoesBanco = [
-                { campo: 'valor', valor: valorPrincipal },
-                { campo: 'tendencia', valor: subiu ? 'subiu' : 'caiu' }
-            ];
-            extrasParaAtualizacoesBanco(atualizacoesBanco, infoExtra);
+            // Mudança de valor de um item já existente -> depende de
+            // comparação com o banco (ver determinarDirecaoMudanca).
+            const atualizacoesBancoExtras = [];
+            extrasParaAtualizacoesBanco(atualizacoesBancoExtras, infoExtra);
             return {
                 nomes,
-                entradaChangelog: { tipo: subiu ? 'valor_sobe' : 'valor_desce', nome: nomeParaChangelog, valor: valorPrincipal },
-                atualizacoesBanco
+                precisaCompararBanco: true,
+                campoComparar: 'valor',
+                valorNovo: valorPrincipal,
+                direcaoEscrita: verboBruto === 'decreased to' ? 'caiu' : 'subiu', // fallback pelo verbo escrito
+                atualizacoesBancoExtras
             };
         }
 
         // "set to <número>" ou "corrected to <número>" com atributos extras
         // (Range, estrelas, estabilidade) junto -> tratado como Novo Item /
         // correção completa, e cai na categoria "New Items" do Changelog.
+        // (Não depende de comparação: o texto inteiro da linha vira a nota.)
         const atualizacoesBanco = [{ campo: 'valor', valor: valorPrincipal }];
         extrasParaAtualizacoesBanco(atualizacoesBanco, infoExtra);
         return {
             nomes,
+            precisaCompararBanco: false,
             entradaChangelog: { tipo: 'bundle_novo', texto: linha },
             atualizacoesBanco
         };
@@ -4414,6 +4512,11 @@ function renderizarCardHTML(item) {
      * Função PRINCIPAL do parser — pura (não mexe em listaDeMarretas nem no
      * localStorage): recebe o texto colado e um snapshot da lista de itens, e
      * devolve tudo já calculado, pronto pra ser aplicado.
+     *
+     * Pra linhas de Valor/Demanda, a direção (subiu/desceu) é resolvida AQUI,
+     * comparando o valor novo com o valor ATUAL do primeiro item encontrado
+     * daquela linha — é por isso que essa função recebe `listaItensAtual`
+     * (o snapshot do banco), e não só o texto.
      *
      * @param {string} textoColado     - o rascunho colado na textarea, uma mudança por linha
      * @param {Array}  listaItensAtual - snapshot de listaDeMarretas (não é alterado)
@@ -4442,19 +4545,72 @@ function renderizarCardHTML(item) {
             const resultadoLinha = processarLinhaDraft(linha);
             if (!resultadoLinha) return;
 
-            entradasChangelog.push(resultadoLinha.entradaChangelog);
+            // ----- Linhas SEM comparação (Novo Item, Status, Estabilidade, Other) -----
+            if (!resultadoLinha.precisaCompararBanco) {
+                entradasChangelog.push(resultadoLinha.entradaChangelog);
+                resultadoLinha.nomes.forEach(nomeCitado => {
+                    const itemEncontrado = encontrarItemPorNomeDraft(itensAtualizados, nomeCitado);
+                    if (!itemEncontrado) {
+                        nomesNaoEncontrados.push(nomeCitado);
+                        return;
+                    }
+                    resultadoLinha.atualizacoesBanco.forEach(({ campo, valor }) => {
+                        itemEncontrado[campo] = valor;
+                    });
+                    itemEncontrado.lastUpdated = dataFormatada;
+                    idsAtualizadosSet.add(itemEncontrado.id);
+                });
+                return;
+            }
 
-            // Linhas "Other" não citam nomes reconhecidos -> nada a atualizar
-            if (resultadoLinha.nomes.length === 0) return;
+            // ----- Linhas COM comparação (Valor ou Demanda) -----
+            const { nomes, campoComparar, valorNovo, direcaoEscrita, atualizacoesBancoExtras } = resultadoLinha;
+            const valorNovoNum = parseFloat(valorNovo);
+            const nomeParaChangelog = juntarNomesParaChangelog(nomes);
 
-            resultadoLinha.nomes.forEach(nomeCitado => {
+            // Usa o primeiro item ENCONTRADO da linha como referência pra
+            // decidir a direção (na prática, todos os nomes de uma mesma
+            // linha sobem/descem juntos pro mesmo valor novo).
+            let itemReferencia = null;
+            for (const nomeCitado of nomes) {
+                const encontrado = encontrarItemPorNomeDraft(itensAtualizados, nomeCitado);
+                if (encontrado) { itemReferencia = encontrado; break; }
+            }
+
+            let direcao = determinarDirecaoMudanca(itemReferencia, campoComparar, valorNovoNum, null);
+            if (!direcao) direcao = direcaoEscrita || 'subiu'; // último recurso: o que foi escrito no rascunho
+            if (direcao === 'igual') direcao = direcaoEscrita || 'subiu'; // sem mudança real, mas ainda assim gera log
+
+            // Monta a entrada final do Changelog só agora, já com a direção correta
+            if (campoComparar === 'demanda') {
+                entradasChangelog.push({
+                    tipo: 'demanda',
+                    nome: nomeParaChangelog,
+                    valor: valorNovo,
+                    verbo: direcao === 'caiu' ? 'decreased' : 'increased'
+                });
+            } else {
+                entradasChangelog.push({
+                    tipo: direcao === 'caiu' ? 'valor_desce' : 'valor_sobe',
+                    nome: nomeParaChangelog,
+                    valor: valorNovo
+                });
+            }
+
+            // Aplica a atualização de banco em TODOS os itens citados na linha
+            const atualizacoesBanco = [{ campo: campoComparar, valor: valorNovo }];
+            if (campoComparar === 'valor') {
+                atualizacoesBanco.push({ campo: 'tendencia', valor: direcao === 'caiu' ? 'caiu' : 'subiu' });
+            }
+            atualizacoesBanco.push(...atualizacoesBancoExtras);
+
+            nomes.forEach(nomeCitado => {
                 const itemEncontrado = encontrarItemPorNomeDraft(itensAtualizados, nomeCitado);
                 if (!itemEncontrado) {
                     nomesNaoEncontrados.push(nomeCitado);
                     return;
                 }
-
-                resultadoLinha.atualizacoesBanco.forEach(({ campo, valor }) => {
+                atualizacoesBanco.forEach(({ campo, valor }) => {
                     itemEncontrado[campo] = valor;
                 });
                 itemEncontrado.lastUpdated = dataFormatada;
@@ -4470,6 +4626,7 @@ function renderizarCardHTML(item) {
             dataFormatada
         };
     }
+
 
     // Sugere o próximo número de versão do Changelog somando 0.1 à maior
     // versão numérica já publicada (ex: 4.9 -> 5.0). Se não conseguir achar
